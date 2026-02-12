@@ -1,6 +1,7 @@
 # ĐỒ ÁN PHÁT TRIỂN ỨNG DỤNG VỚI J2EE
 # HỆ THỐNG DU LỊCH 3D GIỚI THIỆU VĂN HÓA, ĐẶC SẢN VÀ ĐỊA ĐIỂM TỈNH AN GIANG
-![Logo](src/main/resources/static/image/dl.jpg)
+![Logo](vietlutravel/vietlutravel/src/main/resources/static/image/dl.jpg)
+
 
 
 
