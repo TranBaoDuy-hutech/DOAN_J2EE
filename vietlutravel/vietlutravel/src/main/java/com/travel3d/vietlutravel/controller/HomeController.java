@@ -62,6 +62,12 @@ public class HomeController {
         return "contact";
     }
 
+    // Trang điều khoản
+    @GetMapping("/terms")
+    public String termsPage() {
+        return "terms";
+    }
+
     // Lưu liên hệ
     @PostMapping("/contact")
     @Transactional

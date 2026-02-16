@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Liên hệ | Việt Lữ Travel</title>
@@ -11,79 +12,229 @@
     <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
 
     <style>
-        body { background:#f0f9ff; }
-        .hero {
-            background: linear-gradient(135deg,#0891b2,#0e7490);
-            color:white; padding:70px 20px; text-align:center;
+        body {
+            background: #f0f9ff;
         }
+
+        .hero {
+            background: linear-gradient(135deg, #0891b2, #0e7490);
+            color: white;
+            padding: 70px 20px;
+            text-align: center;
+        }
+
         .contact-card {
-            border:none; border-radius:18px;
-            box-shadow:0 10px 35px rgba(8,145,178,.15);
+            border: 1px solid transparent;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(8, 145, 178, .15);
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(8, 145, 178, .25);
+            border-color: rgba(8, 145, 178, 0.3);
+        }
+
+        .contact-item-card {
+            transition: all 0.3s ease;
+            cursor: default;
+            border: 1px solid transparent;
+        }
+
+        .contact-item-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            border-color: rgba(8, 145, 178, 0.2);
+        }
+
+        .icon-box {
+            width: 45px;
+            height: 45px;
+            background-color: #e0f2fe;
+            color: #0891b2;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item-card:hover .icon-box {
+            background-color: #0891b2;
+            color: #fff;
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        /* Dark Mode Support */
+        [data-theme="dark"] body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .bg-white {
+            background-color: #1e293b !important;
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .text-muted,
+        [data-theme="dark"] .text-secondary {
+            color: #cbd5e1 !important;
+        }
+
+        [data-theme="dark"] .contact-item-card:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .icon-box {
+            background-color: rgba(8, 145, 178, 0.2);
+            color: #22d3ee;
+        }
+
+        [data-theme="dark"] .card {
+            background-color: #1e293b;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .contact-card {
+            background-color: #1e293b;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, .3);
+        }
+
+        [data-theme="dark"] .contact-card:hover {
+            background-color: #1e293b;
+            border-color: rgba(34, 211, 238, 0.3);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, .4);
+        }
+
+        [data-theme="dark"] input.form-control,
+        [data-theme="dark"] textarea.form-control {
+            background-color: #334155;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] input.form-control:focus,
+        [data-theme="dark"] textarea.form-control:focus {
+            background-color: #334155;
+            border-color: #22d3ee;
+            color: #f1f5f9;
+            box-shadow: 0 0 0 0.25rem rgba(34, 211, 238, 0.25);
+        }
+
+        [data-theme="dark"] label {
+            color: #cbd5e1;
         }
     </style>
 </head>
+
 <body>
 
-<th:block th:replace="~{fragments/header :: header}"></th:block>
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-<div class="hero">
-    <h2 class="fw-bold">Liên hệ với Việt Lữ Travel</h2>
-    <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
-</div>
-
-<div class="container py-5">
-    <div class="row g-5">
-
-        <!-- Thông tin -->
-        <div class="col-md-5">
-            <div class="p-4 bg-white rounded-4 shadow-sm h-100">
-                <h4 class="text-primary fw-bold mb-4">Thông tin liên hệ</h4>
-                <p><i class="bi bi-geo-alt-fill"></i> Khu Công nghệ cao TP.HCM, Xa lộ Hà Nội, Phường Tăng Nhơn Phú, TP.HCM</p>
-                <p><i class="bi bi-telephone-fill"></i> 090 123 4567</p>
-                <p><i class="bi bi-envelope-fill"></i> vietlutravel@gmail.com</p>
-                <p><i class="bi bi-clock-fill"></i> 8:00 - 20:00 hằng ngày</p>
-            </div>
-        </div>
-        <!-- Form -->
-        <div class="col-md-7">
-            <div class="card contact-card p-4">
-                <h4 class="fw-bold text-primary mb-3">Gửi tin nhắn cho chúng tôi</h4>
-
-                <div th:if="${param.success}" class="alert alert-success">
-                    Gửi liên hệ thành công! Chúng tôi sẽ phản hồi sớm.
-                </div>
-
-                <form method="post" th:action="@{/contact}" th:object="${contact}">
-                    <div class="mb-3">
-                        <label>Họ tên</label>
-                        <input th:field="*{name}" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input th:field="*{email}" type="email" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Số điện thoại</label>
-                        <input th:field="*{phone}" class="form-control">
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Nội dung</label>
-                        <textarea th:field="*{message}" rows="5" class="form-control" required></textarea>
-                    </div>
-
-                    <button class="btn btn-primary w-100 py-2">
-                        <i class="bi bi-send-fill"></i> Gửi liên hệ
-                    </button>
-                </form>
-            </div>
-        </div>
-
+    <div class="hero">
+        <h2 class="fw-bold">Liên hệ với Việt Lữ Travel</h2>
+        <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
     </div>
-</div>
 
-<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+    <div class="container py-5">
+        <div class="row g-5">
+
+            <!-- Thông tin -->
+            <div class="col-md-5">
+                <div class="card contact-card p-4 h-100">
+                    <h4 class="text-primary fw-bold mb-4"><i class="bi bi-info-circle-fill me-2"></i>Thông tin liên hệ
+                    </h4>
+                    <div class="contact-item-card d-flex align-items-start mb-3 p-3 rounded-3">
+                        <div class="icon-box me-3">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Địa chỉ</h6>
+                            <p class="mb-0 text-muted details-text">Khu Công nghệ cao TP.HCM, Xa lộ Hà Nội, Phường Tăng
+                                Nhơn Phú,
+                                TP.HCM</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item-card d-flex align-items-start mb-3 p-3 rounded-3">
+                        <div class="icon-box me-3">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Điện thoại</h6>
+                            <p class="mb-0 text-muted details-text">090 123 4567</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item-card d-flex align-items-start mb-3 p-3 rounded-3">
+                        <div class="icon-box me-3">
+                            <i class="bi bi-envelope-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Email</h6>
+                            <p class="mb-0 text-muted details-text">vietlutravel@gmail.com</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item-card d-flex align-items-start mb-0 p-3 rounded-3">
+                        <div class="icon-box me-3">
+                            <i class="bi bi-clock-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Giờ làm việc</h6>
+                            <p class="mb-0 text-muted details-text">8:00 - 20:00 hằng ngày</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Form -->
+            <div class="col-md-7">
+                <div class="card contact-card p-4">
+                    <h4 class="fw-bold text-primary mb-3"><i class="bi bi-chat-dots-fill me-2"></i>Gửi tin nhắn cho
+                        chúng tôi</h4>
+
+                    <div th:if="${param.success}" class="alert alert-success">
+                        Gửi liên hệ thành công! Chúng tôi sẽ phản hồi sớm.
+                    </div>
+
+                    <form method="post" th:action="@{/contact}" th:object="${contact}">
+                        <div class="mb-3">
+                            <label>Họ tên</label>
+                            <input th:field="*{name}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input th:field="*{email}" type="email" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Số điện thoại</label>
+                            <input th:field="*{phone}" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Nội dung</label>
+                            <textarea th:field="*{message}" rows="5" class="form-control" required></textarea>
+                        </div>
+
+                        <button class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-send-fill"></i> Gửi liên hệ
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 </body>
+
 </html>

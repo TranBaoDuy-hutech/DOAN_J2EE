@@ -1,4 +1,4 @@
-package com.travel3d.vietlutravel.controller;  // sửa package cho đúng (không cần .Admin riêng)
+package com.travel3d.vietlutravel.controller.Admin; // sửa package cho đúng (không cần .Admin riêng)
 
 import com.travel3d.vietlutravel.model.Booking;
 import com.travel3d.vietlutravel.model.Customer;
@@ -40,7 +40,7 @@ public class AdminBookingController {
         model.addAttribute("bookings", bookings);
         model.addAttribute("pageTitle", "Quản lý Booking");
 
-        return "admin/bookings";  // templates/admin/bookings.html
+        return "admin/bookings"; // templates/admin/bookings.html
     }
 
     /**
@@ -65,7 +65,7 @@ public class AdminBookingController {
         model.addAttribute("booking", booking);
         model.addAttribute("pageTitle", "Chi tiết Booking #" + id);
 
-        return "admin/booking-detail";  // templates/admin/booking-detail.html
+        return "admin/booking-detail"; // templates/admin/booking-detail.html
     }
 
     /**

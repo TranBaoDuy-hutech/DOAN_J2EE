@@ -44,7 +44,7 @@ public class AuthService {
         // Kiểm tra email trùng
         try {
             entityManager.createQuery(
-                            "SELECT c FROM Customer c WHERE c.email = :email", Customer.class)
+                    "SELECT c FROM Customer c WHERE c.email = :email", Customer.class)
                     .setParameter("email", customer.getEmail())
                     .getSingleResult();
             // Nếu đến đây → email đã tồn tại
@@ -69,10 +69,10 @@ public class AuthService {
 
         try {
             Customer customer = entityManager.createQuery(
-                            "SELECT c FROM Customer c WHERE c.email = :email AND c.passwordHash = :pass",
-                            Customer.class)
+                    "SELECT c FROM Customer c WHERE c.email = :email AND c.passwordHash = :pass",
+                    Customer.class)
                     .setParameter("email", email.trim())
-                    .setParameter("pass", password.trim())  // plain text
+                    .setParameter("pass", password.trim()) // plain text
                     .getSingleResult();
 
             return customer;
@@ -82,6 +82,33 @@ public class AuthService {
         } catch (Exception e) {
             System.err.println("Lỗi login: " + e.getMessage());
             return null;
+        }
+    }
+
+    @Transactional
+    public Customer processSocialLogin(String email, String name) {
+        if (email == null || email.trim().isEmpty()) {
+            return null;
+        }
+
+        try {
+            // Check if user exists
+            return entityManager.createQuery(
+                    "SELECT c FROM Customer c WHERE c.email = :email", Customer.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            // Create new user
+            Customer newCustomer = new Customer();
+            newCustomer.setEmail(email);
+            newCustomer.setUserName(name != null ? name : "Google User");
+            newCustomer.setPasswordHash("GOOGLE_AUTH_NO_PASS"); // Dummy password to satisfy DB NOT NULL constraint
+            newCustomer.setRole("USER");
+            newCustomer.setPhone("0000000000"); // Dummy phone
+            newCustomer.setAddress("N/A"); // Dummy address
+
+            entityManager.persist(newCustomer);
+            return newCustomer;
         }
     }
 }
