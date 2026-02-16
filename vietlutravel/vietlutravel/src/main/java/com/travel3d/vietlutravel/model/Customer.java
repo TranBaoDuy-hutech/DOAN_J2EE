@@ -30,13 +30,13 @@ public class Customer {
     @Column(name = "Gender", length = 10)
     private String gender;
 
-    @Column(name = "PasswordHash", nullable = false, length = 256)
+    @Column(name = "PasswordHash", nullable = true, length = 256)
     private String passwordHash;
 
     // Thêm field role để hỗ trợ phân quyền (USER / ADMIN)
     // Nếu bạn không muốn admin trong bảng Customers, có thể bỏ field này
     @Column(name = "Role", length = 20, nullable = false)
-    private String role = "USER";  // mặc định là USER
+    private String role = "USER"; // mặc định là USER
 
     // Constructor mặc định (cần cho JPA)
     public Customer() {
@@ -44,7 +44,7 @@ public class Customer {
 
     // Constructor đầy đủ (tùy chọn, tiện khi test)
     public Customer(String userName, String email, String phone, String address,
-                    LocalDate dateOfBirth, String gender, String passwordHash, String role) {
+            LocalDate dateOfBirth, String gender, String passwordHash, String role) {
         this.userName = userName;
         this.email = email;
         this.phone = phone;

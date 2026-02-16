@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Đăng ký | Việt Lữ Travel</title>
@@ -296,201 +297,191 @@
         }
     </style>
 </head>
+
 <body>
 
-<!-- ========== INCLUDE HEADER ========== -->
-<th:block th:replace="~{fragments/header :: header}"></th:block>
+    <!-- ========== INCLUDE HEADER ========== -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-<!-- ========== MAIN CONTENT ========== -->
-<main class="main-content">
-    <div class="register-container">
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="main-content">
+        <div class="register-container">
 
-        <div class="register-card">
+            <div class="register-card">
 
-            <!-- Register Header -->
-            <div class="register-header">
-                <div class="register-icon">
-                    <i class="bi bi-person-plus-fill"></i>
-                </div>
-                <h2>Tạo tài khoản</h2>
-                <p>Bắt đầu hành trình khám phá cùng Việt Lữ Travel</p>
-            </div>
-
-            <!-- Register Form -->
-            <div class="register-form">
-
-                <!-- Success/Error Message (nếu có) -->
-                <div class="success-message" th:if="${success}">
-                    <i class="bi bi-check-circle-fill"></i>
-                    <span th:text="${success}"></span>
+                <!-- Register Header -->
+                <div class="register-header">
+                    <div class="register-icon">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+                    <h2>Tạo tài khoản</h2>
+                    <p>Bắt đầu hành trình khám phá cùng Việt Lữ Travel</p>
                 </div>
 
-                <div class="error-message" th:if="${error}">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <span th:text="${error}"></span>
-                </div>
+                <!-- Register Form -->
+                <div class="register-form">
 
-                <form th:action="@{/register}" method="post" th:object="${customer}">
-
-                    <!-- Tên người dùng -->
-                    <div class="input-group-custom">
-                        <label class="form-label">
-                            <i class="bi bi-person-fill"></i> Tên người dùng
-                            <span class="required-star">*</span>
-                        </label>
-                        <i class="input-icon bi bi-person"></i>
-                        <input th:field="*{userName}"
-                               type="text"
-                               class="form-control"
-                               placeholder="Nhập tên người dùng"
-                               required>
+                    <!-- Success/Error Message (nếu có) -->
+                    <div class="success-message" th:if="${success}">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span th:text="${success}"></span>
                     </div>
 
-                    <!-- Email -->
-                    <div class="input-group-custom">
-                        <label class="form-label">
-                            <i class="bi bi-envelope-fill"></i> Email
-                            <span class="required-star">*</span>
-                        </label>
-                        <i class="input-icon bi bi-envelope"></i>
-                        <input th:field="*{email}"
-                               type="email"
-                               class="form-control"
-                               placeholder="example@email.com"
-                               required>
+                    <div class="error-message" th:if="${error}">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span th:text="${error}"></span>
                     </div>
 
-                    <!-- Số điện thoại -->
-                    <div class="input-group-custom">
-                        <label class="form-label">
-                            <i class="bi bi-telephone-fill"></i> Số điện thoại
-                            <span class="required-star">*</span>
-                        </label>
-                        <i class="input-icon bi bi-telephone"></i>
-                        <input th:field="*{phone}"
-                               type="tel"
-                               class="form-control"
-                               placeholder="090 123 4567"
-                               required>
-                    </div>
+                    <form th:action="@{/register}" method="post" th:object="${customer}">
 
-                    <!-- Mật khẩu + Yêu cầu mật khẩu -->
-                    <div class="input-group-custom">
-                        <label class="form-label">
-                            <i class="bi bi-lock-fill"></i> Mật khẩu
-                            <span class="required-star">*</span>
-                        </label>
-                        <i class="input-icon bi bi-lock"></i>
-                        <input th:field="*{passwordHash}"
-                               type="password"
-                               id="password"
-                               class="form-control"
-                               placeholder="Nhập mật khẩu"
-                               required>
-                        <i class="password-toggle bi bi-eye" id="togglePassword"></i>
-
-                        <!-- THÊM PHẦN YÊU CẦU MẬT KHẨU NGAY DƯỚI Ô NÀY -->
-                        <div class="password-requirements">
-                            <strong>Yêu cầu mật khẩu:</strong>
-                            <ul>
-                                <li id="length" class="not-met">Ít nhất 6 ký tự</li>
-                                <li id="uppercase" class="not-met">Ít nhất 1 chữ cái in hoa</li>
-                                <li id="lowercase" class="not-met">Ít nhất 1 chữ cái thường</li>
-                                <li id="number" class="not-met">Ít nhất 1 chữ số</li>
-                                <li id="special" class="not-met">Ít nhất 1 ký tự đặc biệt (ví dụ: ! @ # $ %)</li>
-                            </ul>
+                        <!-- Tên người dùng -->
+                        <div class="input-group-custom">
+                            <label class="form-label">
+                                <i class="bi bi-person-fill"></i> Tên người dùng
+                                <span class="required-star">*</span>
+                            </label>
+                            <i class="input-icon bi bi-person"></i>
+                            <input th:field="*{userName}" type="text" class="form-control"
+                                placeholder="Nhập tên người dùng" required>
                         </div>
+
+                        <!-- Email -->
+                        <div class="input-group-custom">
+                            <label class="form-label">
+                                <i class="bi bi-envelope-fill"></i> Email
+                                <span class="required-star">*</span>
+                            </label>
+                            <i class="input-icon bi bi-envelope"></i>
+                            <input th:field="*{email}" type="email" class="form-control" placeholder="example@email.com"
+                                required>
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div class="input-group-custom">
+                            <label class="form-label">
+                                <i class="bi bi-telephone-fill"></i> Số điện thoại
+                                <span class="required-star">*</span>
+                            </label>
+                            <i class="input-icon bi bi-telephone"></i>
+                            <input th:field="*{phone}" type="tel" class="form-control" placeholder="090 123 4567"
+                                required>
+                        </div>
+
+                        <!-- Mật khẩu + Yêu cầu mật khẩu -->
+                        <div class="input-group-custom">
+                            <label class="form-label">
+                                <i class="bi bi-lock-fill"></i> Mật khẩu
+                                <span class="required-star">*</span>
+                            </label>
+                            <i class="input-icon bi bi-lock"></i>
+                            <input th:field="*{passwordHash}" type="password" id="password" class="form-control"
+                                placeholder="Nhập mật khẩu" required>
+                            <i class="password-toggle bi bi-eye" id="togglePassword"></i>
+
+                            <!-- THÊM PHẦN YÊU CẦU MẬT KHẨU NGAY DƯỚI Ô NÀY -->
+                            <div class="password-requirements">
+                                <strong>Yêu cầu mật khẩu:</strong>
+                                <ul>
+                                    <li id="length" class="not-met">Ít nhất 6 ký tự</li>
+                                    <li id="uppercase" class="not-met">Ít nhất 1 chữ cái in hoa</li>
+                                    <li id="lowercase" class="not-met">Ít nhất 1 chữ cái thường</li>
+                                    <li id="number" class="not-met">Ít nhất 1 chữ số</li>
+                                    <li id="special" class="not-met">Ít nhất 1 ký tự đặc biệt (ví dụ: ! @ # $ %)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="terms-text">
+                            Bằng việc đăng ký, bạn đồng ý với
+                            <a href="/terms">Điều khoản sử dụng</a> và
+                            <a href="/privacy">Chính sách bảo mật</a>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-register">
+                            <i class="bi bi-check-circle-fill"></i> Đăng ký ngay
+                        </button>
+
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="divider">
+                        <span>hoặc đăng ký với</span>
                     </div>
 
-                    <!-- Terms and Conditions -->
-                    <div class="terms-text">
-                        Bằng việc đăng ký, bạn đồng ý với
-                        <a href="/terms">Điều khoản sử dụng</a> và
-                        <a href="/privacy">Chính sách bảo mật</a>
+                    <!-- Social Register Buttons -->
+                    <div class="social-register">
+                        <a href="/oauth2/authorization/google"
+                            class="social-btn text-decoration-none d-flex justify-content-center align-items-center">
+                            <i class="bi bi-google"></i> Google
+                        </a>
+                        <a href="/oauth2/authorization/facebook"
+                            class="social-btn text-decoration-none d-flex justify-content-center align-items-center">
+                            <i class="bi bi-facebook"></i> Facebook
+                        </a>
                     </div>
 
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-register">
-                        <i class="bi bi-check-circle-fill"></i> Đăng ký ngay
-                    </button>
+                    <!-- Login Link -->
+                    <div class="login-link">
+                        Đã có tài khoản?
+                        <a href="/login">Đăng nhập ngay</a>
 
-                </form>
+                    </div>
 
-                <!-- Divider -->
-                <div class="divider">
-                    <span>hoặc đăng ký với</span>
                 </div>
 
-                <!-- Social Register Buttons -->
-                <div class="social-register">
-                    <button class="social-btn">
-                        <i class="bi bi-google"></i> Google
-                    </button>
-                    <button class="social-btn">
-                        <i class="bi bi-facebook"></i> Facebook
-                    </button>
-                </div>
-
-                <!-- Login Link -->
-                <div class="login-link">
-                    Đã có tài khoản?
-                    <a href="/login">Đăng nhập ngay</a>
+                <!-- Help Text -->
+                <div class="text-center mt-4">
+                    <p class="text-muted">
+                        <i class="bi bi-shield-check"></i>
+                        Thông tin của bạn được bảo mật tuyệt đối
+                    </p>
                 </div>
 
             </div>
+    </main>
 
-        </div>
+    <!-- ========== INCLUDE FOOTER ========== -->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
-        <!-- Help Text -->
-        <div class="text-center mt-4">
-            <p class="text-muted">
-                <i class="bi bi-shield-check"></i>
-                Thông tin của bạn được bảo mật tuyệt đối
-            </p>
-        </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    </div>
-</main>
+    <script>
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('password');
 
-<!-- ========== INCLUDE FOOTER ========== -->
-<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+        togglePassword.addEventListener('click', function () {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+            // Toggle icon
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
 
-<script>
-    // Toggle password visibility
-    const togglePassword = document.getElementById('togglePassword');
-    const password = document.getElementById('password');
+        // Real-time check yêu cầu mật khẩu
+        password.addEventListener('input', function () {
+            const pwd = this.value;
 
-    togglePassword.addEventListener('click', function() {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
+            // Độ dài
+            document.getElementById('length').className = pwd.length >= 6 ? 'met' : 'not-met';
 
-        // Toggle icon
-        this.classList.toggle('bi-eye');
-        this.classList.toggle('bi-eye-slash');
-    });
+            // Chữ hoa
+            document.getElementById('uppercase').className = /[A-Z]/.test(pwd) ? 'met' : 'not-met';
 
-    // Real-time check yêu cầu mật khẩu
-    password.addEventListener('input', function () {
-        const pwd = this.value;
+            // Chữ thường
+            document.getElementById('lowercase').className = /[a-z]/.test(pwd) ? 'met' : 'not-met';
 
-        // Độ dài
-        document.getElementById('length').className = pwd.length >= 6 ? 'met' : 'not-met';
+            // Số
+            document.getElementById('number').className = /[0-9]/.test(pwd) ? 'met' : 'not-met';
 
-        // Chữ hoa
-        document.getElementById('uppercase').className = /[A-Z]/.test(pwd) ? 'met' : 'not-met';
-
-        // Chữ thường
-        document.getElementById('lowercase').className = /[a-z]/.test(pwd) ? 'met' : 'not-met';
-
-        // Số
-        document.getElementById('number').className = /[0-9]/.test(pwd) ? 'met' : 'not-met';
-
-        // Ký tự đặc biệt
-        document.getElementById('special').className = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) ? 'met' : 'not-met';
-    });
-</script>
+            // Ký tự đặc biệt
+            document.getElementById('special').className = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) ? 'met' : 'not-met';
+        });
+    </script>
 
 </body>
+
 </html>
