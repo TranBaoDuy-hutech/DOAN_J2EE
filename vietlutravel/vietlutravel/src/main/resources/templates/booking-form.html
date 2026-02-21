@@ -1,325 +1,1006 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đặt tour | Việt Lữ Travel</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Include Header CSS -->
     <th:block th:replace="~{fragments/header :: header-css}"></th:block>
-
-    <!-- Include Footer CSS -->
     <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
 
     <style>
+        /* ════════════════════════════════════════
+           TOKENS
+        ════════════════════════════════════════ */
         :root {
-            --ocean-blue: #0891b2;
-            --ocean-blue-dark: #0e7490;
-            --ocean-blue-light: #06b6d4;
+            --sea:         #0369a1;
+            --sea-mid:     #0284c7;
+            --sea-light:   #38bdf8;
+            --sea-pale:    #e0f2fe;
+            --ink:         #0c2340;
+            --ink-soft:    #1e3a5f;
+            --sand:        #c8a96e;
+            --sand-light:  #e8d5a3;
+            --sand-pale:   #fdf8f0;
+            --white:       #ffffff;
+            --gray-1:      #f8fafc;
+            --gray-2:      #f1f5f9;
+            --gray-3:      #e2e8f0;
+            --muted:       #64748b;
+            --success:     #059669;
+            --danger:      #dc2626;
+            --r-sm:        10px;
+            --r-md:        16px;
+            --r-lg:        22px;
+            --r-xl:        30px;
+            --font-h:      'Cormorant Garamond', Georgia, serif;
+            --font-b:      'Outfit', system-ui, sans-serif;
+            --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+            --shadow-sm:   0 4px 16px rgba(12,35,64,0.07);
+            --shadow-md:   0 12px 36px rgba(12,35,64,0.11);
+            --shadow-lg:   0 24px 64px rgba(12,35,64,0.15);
         }
 
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background: #f0f9ff;
+            font-family: var(--font-b);
+            background: var(--gray-1);
+            color: var(--ink);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        .main-content {
-            flex: 1;
-            padding: 3rem 0;
+        .main-content { flex: 1; }
+
+        /* ════════════════════════════════════════
+           PAGE HEADER BANNER
+        ════════════════════════════════════════ */
+        .page-banner {
+            background: var(--ink);
+            position: relative;
+            overflow: hidden;
+            padding: 3.5rem 5%;
         }
 
-        .booking-container {
-            max-width: 900px;
+        .page-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 100% at 100% 50%, rgba(56,189,248,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 80% at 0% 100%, rgba(200,169,110,0.1) 0%, transparent 60%);
+        }
+
+        /* subtle grid lines */
+        .page-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .page-banner-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 820px;
+        }
+
+        .banner-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 1.2rem;
+            animation: fadeRight 0.6s ease 0.1s both;
+        }
+
+        .banner-breadcrumb a {
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .banner-breadcrumb a:hover { color: var(--sand-light); }
+        .banner-breadcrumb i { font-size: 0.65rem; }
+
+        .banner-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(200,169,110,0.18);
+            border: 1px solid rgba(200,169,110,0.38);
+            color: var(--sand-light);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 50px;
+            margin-bottom: 0.8rem;
+            backdrop-filter: blur(8px);
+            animation: fadeRight 0.6s ease 0.2s both;
+        }
+
+        .banner-title {
+            font-family: var(--font-h);
+            font-size: clamp(1.9rem, 4vw, 3rem);
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.15;
+            animation: fadeRight 0.6s ease 0.32s both;
+        }
+
+        .banner-title em { font-style: italic; color: var(--sand-light); }
+
+        .banner-tour-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.85);
+            font-size: 0.88rem;
+            padding: 8px 18px;
+            border-radius: 50px;
+            margin-top: 1.1rem;
+            backdrop-filter: blur(8px);
+            animation: fadeRight 0.6s ease 0.44s both;
+        }
+
+        .banner-tour-tag i { color: var(--sand); }
+
+        /* ════════════════════════════════════════
+           STEP INDICATOR
+        ════════════════════════════════════════ */
+        .steps-bar {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-3);
+            padding: 0 5%;
+        }
+
+        .steps {
+            display: flex;
+            max-width: 820px;
             margin: 0 auto;
         }
 
-        .booking-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(8, 145, 178, 0.15);
-            border: 2px solid #e0f2fe;
+        .step {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 1rem 0;
+            position: relative;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--muted);
         }
 
-        .booking-header {
-            background: linear-gradient(135deg, var(--ocean-blue-dark), var(--ocean-blue));
-            color: white;
-            padding: 2.5rem 2rem;
-            text-align: center;
+        .step::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 1px;
+            background: var(--gray-3);
         }
 
-        .booking-header h2 {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
+        .step:last-child::after { display: none; }
 
-        .tour-name-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.8rem 1.5rem;
-            border-radius: 30px;
-            display: inline-block;
-            margin-top: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .booking-form {
-            padding: 3rem 2.5rem;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: var(--ocean-blue-dark);
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        .form-control {
-            border: 2px solid #e0f2fe;
-            border-radius: 10px;
-            padding: 0.8rem 1rem;
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--gray-3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            flex-shrink: 0;
             transition: all 0.3s;
         }
 
-        .form-control:focus {
-            border-color: var(--ocean-blue);
-            box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.15);
+        .step.active { color: var(--ink); }
+        .step.active .step-num {
+            background: var(--sea);
+            border-color: var(--sea);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(2,132,199,0.3);
         }
 
-        .input-group-icon {
+        .step.done .step-num {
+            background: var(--success);
+            border-color: var(--success);
+            color: #fff;
+        }
+
+        .step.done { color: var(--success); }
+
+        /* ════════════════════════════════════════
+           MAIN LAYOUT
+        ════════════════════════════════════════ */
+        .booking-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 28px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2.5rem 5% 5rem;
+        }
+
+        /* ════════════════════════════════════════
+           FORM CARD
+        ════════════════════════════════════════ */
+        .form-card {
+            background: var(--white);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--gray-3);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            animation: fadeUp 0.55s ease 0.1s both;
+        }
+
+        .form-section {
+            padding: 1.8rem 2rem;
+            border-bottom: 1px solid var(--gray-2);
+        }
+
+        .form-section:last-child { border-bottom: none; }
+
+        .form-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.4rem;
+        }
+
+        .form-section-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--sea-mid), var(--sea));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .form-section-title h5 {
+            font-family: var(--font-h);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin: 0;
+        }
+
+        /* Field groups */
+        .field-group { display: flex; flex-direction: column; gap: 18px; }
+
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        .field-item { display: flex; flex-direction: column; gap: 5px; }
+
+        .field-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .field-label .req { color: var(--danger); }
+
+        .field-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.8rem;
+            border: 1.5px solid var(--gray-3);
+            border-radius: var(--r-sm);
+            font-family: var(--font-b);
+            font-size: 0.93rem;
+            color: var(--ink);
+            background: var(--gray-1);
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+            outline: none;
+        }
+
+        .field-input:focus {
+            border-color: var(--sea);
+            box-shadow: 0 0 0 3px rgba(2,132,199,0.1);
+            background: var(--white);
+        }
+
+        .field-input.no-icon { padding-left: 1rem; }
+
+        .field-input::placeholder { color: #94a3b8; }
+
+        .field-wrap {
             position: relative;
         }
 
-        .input-group-icon i {
+        .field-wrap .field-icon {
             position: absolute;
-            left: 1rem;
+            left: 0.9rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--ocean-blue);
-            font-size: 1.2rem;
-            z-index: 10;
+            color: var(--sea-light);
+            font-size: 1rem;
+            pointer-events: none;
         }
 
-        .input-group-icon .form-control {
-            padding-left: 3rem;
+        .field-wrap.textarea-wrap .field-icon {
+            top: 0.9rem;
+            transform: none;
         }
 
-        .btn-submit {
-            background: linear-gradient(135deg, var(--ocean-blue), var(--ocean-blue-light));
+        textarea.field-input {
+            resize: vertical;
+            min-height: 110px;
+            padding-top: 0.8rem;
+        }
+
+        /* People counter */
+        .counter-wrap {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid var(--gray-3);
+            border-radius: var(--r-sm);
+            overflow: hidden;
+            background: var(--gray-1);
+            transition: border-color 0.25s;
+        }
+
+        .counter-wrap:focus-within {
+            border-color: var(--sea);
+            box-shadow: 0 0 0 3px rgba(2,132,199,0.1);
+            background: var(--white);
+        }
+
+        .counter-btn {
+            width: 44px;
+            height: 44px;
+            background: none;
             border: none;
-            color: white;
-            padding: 1rem 3rem;
-            border-radius: 12px;
-            font-size: 1.2rem;
+            color: var(--sea);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .counter-btn:hover { background: var(--sea-pale); }
+
+        .counter-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            text-align: center;
+            font-family: var(--font-b);
+            font-size: 1rem;
             font-weight: 600;
-            transition: all 0.3s;
+            color: var(--ink);
+            background: transparent;
+            width: 0; /* flex will handle */
+        }
+
+        /* Info note */
+        .info-note {
+            display: flex;
+            gap: 10px;
+            background: var(--sea-pale);
+            border-radius: var(--r-sm);
+            padding: 1rem 1.2rem;
+            font-size: 0.855rem;
+            color: var(--sea);
+            margin-bottom: 0;
+        }
+
+        .info-note i { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+        /* Submit button */
+        .btn-submit {
+            display: block;
             width: 100%;
-            margin-top: 1rem;
+            background: linear-gradient(135deg, var(--sand), #b8943c);
+            color: var(--ink);
+            font-family: var(--font-b);
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 1rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.35s var(--ease-spring);
+            box-shadow: 0 8px 24px rgba(200,169,110,0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
         }
 
         .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(8, 145, 178, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 14px 36px rgba(200,169,110,0.5);
         }
 
-        .info-box {
-            background: #f0f9ff;
-            border-left: 4px solid var(--ocean-blue);
-            padding: 1.2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-        }
+        .btn-submit:active { transform: translateY(0) scale(0.99); }
 
-        .info-box i {
-            color: var(--ocean-blue);
-            font-size: 1.3rem;
-            margin-right: 0.8rem;
-        }
-
-        .tour-summary {
-            background: linear-gradient(135deg, #ecfeff, #e0f2fe);
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border: 2px solid var(--ocean-blue-light);
-        }
-
-        .tour-summary-item {
+        .security-note {
             display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 10px;
+        }
+
+        .security-note i { color: var(--success); }
+
+        /* ════════════════════════════════════════
+           RIGHT COLUMN — SUMMARY CARD
+        ════════════════════════════════════════ */
+        .summary-card {
+            background: var(--white);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--gray-3);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            position: sticky;
+            top: 24px;
+            animation: fadeUp 0.55s ease 0.2s both;
+        }
+
+        .summary-card::before {
+            content: '';
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, var(--sand), var(--sea-light), var(--sand));
+        }
+
+        .summary-top {
+            padding: 1.6rem;
+            border-bottom: 1px solid var(--gray-2);
+        }
+
+        .summary-title {
+            font-family: var(--font-h);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 1rem;
+        }
+
+        .summary-tour-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--ink);
+            line-height: 1.4;
+            margin-bottom: 0.4rem;
+        }
+
+        .summary-location {
+            font-size: 0.8rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .summary-location i { color: var(--sea); }
+
+        .summary-rows {
+            padding: 1.4rem 1.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-bottom: 1px solid var(--gray-2);
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: center;
             justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(8, 145, 178, 0.2);
+            font-size: 0.875rem;
+            gap: 10px;
         }
 
-        .tour-summary-item:last-child {
-            border-bottom: none;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--ocean-blue-dark);
-            padding-top: 1rem;
+        .summary-row-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--muted);
         }
 
-        .required-star {
-            color: #dc3545;
+        .summary-row-label i { color: var(--sea-light); font-size: 0.9rem; }
+        .summary-row-value { font-weight: 600; color: var(--ink); font-size: 0.88rem; }
+
+        /* Price total */
+        .summary-total {
+            padding: 1.4rem 1.6rem;
+            border-bottom: 1px solid var(--gray-2);
+        }
+
+        .total-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .total-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .total-price {
+            font-family: var(--font-h);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .total-note {
+            font-size: 0.72rem;
+            color: var(--muted);
+            text-align: right;
+            margin-top: 2px;
+        }
+
+        /* Dynamic total (JS) */
+        #dynamicTotal {
+            transition: all 0.3s;
+        }
+
+        /* Guarantee list */
+        .guarantee-list {
+            padding: 1.4rem 1.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .guarantee-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 0.835rem;
+            color: #374151;
+        }
+
+        .guarantee-item i { color: var(--success); font-size: 0.9rem; flex-shrink: 0; }
+
+        /* Hotline */
+        .hotline-box {
+            margin: 0 1.6rem 1.6rem;
+            background: var(--gray-1);
+            border-radius: var(--r-md);
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--gray-3);
+        }
+
+        .hotline-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sea-mid), var(--sea));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .hotline-text { display: flex; flex-direction: column; }
+        .hotline-label { font-size: 0.68rem; color: var(--muted); font-weight: 500; }
+        .hotline-number {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--sea);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .hotline-number:hover { color: var(--sea-mid); }
+
+        /* ════════════════════════════════════════
+           ANIMATIONS
+        ════════════════════════════════════════ */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        @keyframes fadeRight {
+            from { opacity: 0; transform: translateX(-16px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* ════════════════════════════════════════
+           RESPONSIVE
+        ════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .booking-layout {
+                grid-template-columns: 1fr;
+                padding: 2rem 4% 4rem;
+            }
+            .summary-card { position: static; order: -1; }
+            .field-row { grid-template-columns: 1fr; }
+            .steps { gap: 0; }
+            .step span { display: none; }
+            .step::after { width: 12px; }
+        }
+
+        @media (max-width: 480px) {
+            .page-banner { padding: 2.5rem 4%; }
         }
     </style>
 </head>
 <body>
 
-<!-- ========== INCLUDE HEADER ========== -->
 <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-<!-- ========== MAIN CONTENT ========== -->
 <main class="main-content">
-    <div class="booking-container">
 
-        <div class="booking-card">
-
-            <!-- Booking Header -->
-            <div class="booking-header">
-                <i class="bi bi-calendar-check-fill" style="font-size: 3rem;"></i>
-                <h2>Đặt Tour Du Lịch</h2>
-                <div class="tour-name-badge">
-                    <i class="bi bi-geo-alt-fill"></i>
-                    <span th:text="${tour.tourName}">Tên tour</span>
-                </div>
+    <!-- ════ PAGE BANNER ════ -->
+    <div class="page-banner">
+        <div class="page-banner-inner">
+            <div class="banner-breadcrumb">
+                <a href="/"><i class="bi bi-house-fill"></i> Trang chủ</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="/tours">Danh sách tour</a>
+                <i class="bi bi-chevron-right"></i>
+                <a th:href="@{/tour/{id}(id=${tour.tourID})}" th:text="${tour.tourName}">Tên tour</a>
+                <i class="bi bi-chevron-right"></i>
+                <span style="color:rgba(255,255,255,0.85);">Đặt tour</span>
             </div>
+            <div class="banner-eyebrow">
+                <i class="bi bi-calendar-check-fill"></i> Đặt chỗ ngay
+            </div>
+            <h1 class="banner-title">
+                Xác nhận <em>hành trình</em> của bạn
+            </h1>
+            <div class="banner-tour-tag">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span th:text="${tour.tourName}">Tên tour</span>
+            </div>
+        </div>
+    </div>
 
-            <!-- Booking Form -->
-            <div class="booking-form">
+    <!-- ════ STEPS ════ -->
+    <div class="steps-bar">
+        <div class="steps">
+            <div class="step active">
+                <div class="step-num">1</div>
+                <span>Điền thông tin</span>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <span>Xác nhận</span>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <span>Thanh toán</span>
+            </div>
+        </div>
+    </div>
 
-                <!-- Info Box -->
-                <div class="info-box">
-                    <i class="bi bi-info-circle-fill"></i>
-                    <strong>Lưu ý:</strong> Vui lòng điền đầy đủ thông tin để chúng tôi có thể liên hệ và xác nhận đặt tour cho bạn.
-                </div>
+    <!-- ════ LAYOUT ════ -->
+    <div class="booking-layout">
 
-                <!-- Tour Summary -->
-                <div class="tour-summary">
-                    <h5 class="fw-bold mb-3" style="color: var(--ocean-blue-dark);">
-                        <i class="bi bi-ticket-detailed-fill"></i> Thông tin tour
-                    </h5>
-                    <div class="tour-summary-item">
-                        <span><i class="bi bi-geo-alt"></i> Điểm đến:</span>
-                        <strong th:text="${tour.location}"></strong>
+        <!-- ── FORM ── -->
+        <div class="form-col">
+            <form action="/booking-tour" method="post" id="bookingForm">
+                <input type="hidden" name="tourID" th:value="${tour.tourID}">
+
+                <div class="form-card">
+
+                    <!-- Contact info -->
+                    <div class="form-section">
+                        <div class="form-section-title">
+                            <div class="form-section-icon"><i class="bi bi-person-fill"></i></div>
+                            <h5>Thông tin liên hệ</h5>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-row">
+                                <!-- Full name -->
+                                <div class="field-item">
+                                    <label class="field-label" for="name">
+                                        Họ và tên <span class="req">*</span>
+                                    </label>
+                                    <div class="field-wrap">
+                                        <i class="bi bi-person field-icon"></i>
+                                        <input type="text" id="name" name="name"
+                                               class="field-input"
+                                               placeholder="Nguyễn Văn A"
+                                               required autocomplete="name">
+                                    </div>
+                                </div>
+                                <!-- Phone -->
+                                <div class="field-item">
+                                    <label class="field-label" for="phone">
+                                        Số điện thoại <span class="req">*</span>
+                                    </label>
+                                    <div class="field-wrap">
+                                        <i class="bi bi-telephone field-icon"></i>
+                                        <input type="tel" id="phone" name="phone"
+                                               class="field-input"
+                                               placeholder="090 123 4567"
+                                               required autocomplete="tel">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="field-item">
+                                <label class="field-label" for="email">
+                                    Email <span class="req">*</span>
+                                </label>
+                                <div class="field-wrap">
+                                    <i class="bi bi-envelope field-icon"></i>
+                                    <input type="email" id="email" name="email"
+                                           class="field-input"
+                                           placeholder="example@email.com"
+                                           required autocomplete="email">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="tour-summary-item">
-                        <span><i class="bi bi-calendar3"></i> Số ngày:</span>
-                        <strong><span th:text="${tour.durationDays}"></span> ngày</strong>
+
+                    <!-- Tour options -->
+                    <div class="form-section">
+                        <div class="form-section-title">
+                            <div class="form-section-icon"><i class="bi bi-people-fill"></i></div>
+                            <h5>Chi tiết đặt tour</h5>
+                        </div>
+                        <div class="field-group">
+
+                            <!-- Số người -->
+                            <div class="field-item">
+                                <label class="field-label">
+                                    Số lượng người <span class="req">*</span>
+                                </label>
+                                <div class="counter-wrap">
+                                    <button type="button" class="counter-btn" id="btnMinus">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input type="number" id="numberOfPeople" name="numberOfPeople"
+                                           class="counter-input"
+                                           value="1" min="1" max="50" required readonly>
+                                    <button type="button" class="counter-btn" id="btnPlus">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Note -->
+                            <div class="field-item">
+                                <label class="field-label" for="note">
+                                    Ghi chú & yêu cầu đặc biệt
+                                </label>
+                                <div class="field-wrap textarea-wrap">
+                                    <i class="bi bi-chat-left-text field-icon"></i>
+                                    <textarea id="note" name="note"
+                                              class="field-input"
+                                              placeholder="Ví dụ: ăn chay, cần xe lăn, phòng đặc biệt..."></textarea>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                    <div class="tour-summary-item">
-                        <span><i class="bi bi-cash-stack"></i> Giá tour:</span>
-                        <strong th:text="${#numbers.formatDecimal(tour.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
-                    </div>
-                </div>
 
-                <!-- Form -->
-                <form action="/booking-tour" method="post">
-
-                    <input type="hidden" name="tourID" th:value="${tour.tourID}"/>
-
-                    <div class="row g-4">
-
-                        <!-- Họ tên -->
-                        <div class="col-md-6">
-                            <label class="form-label">
-                                <i class="bi bi-person-fill"></i> Họ và tên
-                                <span class="required-star">*</span>
-                            </label>
-                            <div class="input-group-icon">
-                                <i class="bi bi-person"></i>
-                                <input name="name" class="form-control" placeholder="Nhập họ và tên đầy đủ" required>
-                            </div>
+                    <!-- Submit section -->
+                    <div class="form-section">
+                        <div class="info-note mb-4">
+                            <i class="bi bi-info-circle-fill"></i>
+                            <span>Thông tin của bạn chỉ dùng để liên hệ xác nhận tour. Chúng tôi không chia sẻ dữ liệu với bên thứ ba.</span>
                         </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button type="button" class="btn-submit" onclick="previewContract()" style="background:linear-gradient(135deg,#0284c7,#0369a1); color:white;">
+                                <i class="bi bi-eye-fill"></i>
+                                Xem trước hợp đồng
+                            </button>
 
-                        <!-- Email -->
-                        <div class="col-md-6">
-                            <label class="form-label">
-                                <i class="bi bi-envelope-fill"></i> Email
-                                <span class="required-star">*</span>
-                            </label>
-                            <div class="input-group-icon">
-                                <i class="bi bi-envelope"></i>
-                                <input name="email" type="email" class="form-control" placeholder="example@email.com" required>
-                            </div>
-                        </div>
-
-                        <!-- Số điện thoại -->
-                        <div class="col-md-6">
-                            <label class="form-label">
-                                <i class="bi bi-telephone-fill"></i> Số điện thoại
-                                <span class="required-star">*</span>
-                            </label>
-                            <div class="input-group-icon">
-                                <i class="bi bi-telephone"></i>
-                                <input name="phone" type="tel" class="form-control" placeholder="090 123 4567" required>
-                            </div>
-                        </div>
-
-                        <!-- Số người -->
-                        <div class="col-md-6">
-                            <label class="form-label">
-                                <i class="bi bi-people-fill"></i> Số lượng người
-                                <span class="required-star">*</span>
-                            </label>
-                            <div class="input-group-icon">
-                                <i class="bi bi-people"></i>
-                                <input name="numberOfPeople" type="number" class="form-control" placeholder="Nhập số người" min="1" required>
-                            </div>
-                        </div>
-
-                        <!-- Ghi chú -->
-                        <div class="col-md-12">
-                            <label class="form-label">
-                                <i class="bi bi-chat-left-text-fill"></i> Ghi chú (Tùy chọn)
-                            </label>
-                            <textarea name="note" class="form-control" rows="4" placeholder="Nhập yêu cầu đặc biệt hoặc câu hỏi của bạn..."></textarea>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="col-md-12">
-                            <button type="submit" class="btn btn-submit">
-                                <i class="bi bi-check-circle-fill"></i> Xác nhận đặt tour
+                            <button type="submit" class="btn-submit">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Xác nhận đặt tour
                             </button>
                         </div>
-
-                        <!-- Help Text -->
-                        <div class="col-md-12 text-center">
-                            <small class="text-muted">
-                                <i class="bi bi-shield-check"></i>
-                                Thông tin của bạn được bảo mật tuyệt đối
-                            </small>
+                        <div class="security-note">
+                            <i class="bi bi-shield-fill-check"></i>
+                            Giao dịch được mã hoá & bảo mật
                         </div>
-
                     </div>
 
-                </form>
-
-            </div>
-
+                </div>
+            </form>
         </div>
 
-        <!-- Contact Support -->
-        <div class="text-center mt-4">
-            <p class="text-muted">
-                <i class="bi bi-headset"></i>
-                Cần hỗ trợ? Liên hệ hotline:
-                <a href="tel:0901234567" style="color: var(--ocean-blue); font-weight: 600;">
-                    090 123 4567
-                </a>
-            </p>
+        <!-- ── SUMMARY ── -->
+        <div class="summary-col">
+            <div class="summary-card">
+
+                <div class="summary-top">
+                    <div class="summary-title">Tóm tắt đơn</div>
+                    <div class="summary-tour-name" th:text="${tour.tourName}">Tên tour</div>
+                    <div class="summary-location">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span th:text="${tour.location}">Địa điểm</span>
+                    </div>
+                </div>
+
+                <div class="summary-rows">
+                    <div class="summary-row">
+                        <span class="summary-row-label">
+                            <i class="bi bi-calendar3"></i> Số ngày
+                        </span>
+                        <span class="summary-row-value">
+                            <span th:text="${tour.durationDays}">N</span> ngày
+                        </span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-row-label">
+                            <i class="bi bi-geo-alt"></i> Khởi hành
+                        </span>
+                        <span class="summary-row-value" th:text="${tour.departureLocation}">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-row-label">
+                            <i class="bi bi-people"></i> Số người
+                        </span>
+                        <span class="summary-row-value" id="summaryPeople">1</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-row-label">
+                            <i class="bi bi-tag"></i> Giá / người
+                        </span>
+                        <span class="summary-row-value"
+                              th:text="${#numbers.formatDecimal(tour.price,0,'COMMA',0,'POINT')} + '₫'"
+                              id="pricePerPerson">—</span>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="summary-total">
+                    <div class="total-row">
+                        <div>
+                            <div class="total-label">Tổng cộng</div>
+                        </div>
+                        <div>
+                            <div class="total-price" id="dynamicTotal"
+                                 th:text="${#numbers.formatDecimal(tour.price,0,'COMMA',0,'POINT')} + '₫'">
+                            </div>
+                            <div class="total-note">Chưa bao gồm phụ phí (nếu có)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guarantees -->
+                <div class="guarantee-list">
+                    <div class="guarantee-item">
+                        <i class="bi bi-check-circle-fill"></i> Xe đưa đón chuyên nghiệp
+                    </div>
+                    <div class="guarantee-item">
+                        <i class="bi bi-check-circle-fill"></i> Khách sạn tiêu chuẩn
+                    </div>
+                    <div class="guarantee-item">
+                        <i class="bi bi-check-circle-fill"></i> Hướng dẫn viên kinh nghiệm
+                    </div>
+                    <div class="guarantee-item">
+                        <i class="bi bi-check-circle-fill"></i> Bảo hiểm du lịch đầy đủ
+                    </div>
+                    <div class="guarantee-item">
+                        <i class="bi bi-check-circle-fill"></i> Hoàn tiền nếu huỷ đúng hạn
+                    </div>
+                </div>
+
+                <!-- Hotline -->
+                <div class="hotline-box">
+                    <div class="hotline-icon"><i class="bi bi-headset"></i></div>
+                    <div class="hotline-text">
+                        <span class="hotline-label">Hỗ trợ 24/7</span>
+                        <a href="tel:0901234567" class="hotline-number">090 123 4567</a>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
     </div>
 </main>
 
-<!-- ========== INCLUDE FOOTER ========== -->
 <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    (function () {
+        'use strict';
+
+        var basePrice   = [[${tour.price}]];
+        var peopleInput = document.getElementById('numberOfPeople');
+        var btnMinus    = document.getElementById('btnMinus');
+        var btnPlus     = document.getElementById('btnPlus');
+        var summaryPpl  = document.getElementById('summaryPeople');
+        var totalEl     = document.getElementById('dynamicTotal');
+
+        function formatVND(n) {
+            return n.toLocaleString('vi-VN') + '₫';
+        }
+
+        function updateTotal() {
+            var qty = parseInt(peopleInput.value, 10) || 1;
+            summaryPpl.textContent  = qty;
+            totalEl.textContent     = formatVND(basePrice * qty);
+            btnMinus.disabled = qty <= 1;
+        }
+
+        btnMinus.addEventListener('click', function () {
+            var v = parseInt(peopleInput.value, 10);
+            if (v > 1) { peopleInput.value = v - 1; updateTotal(); }
+        });
+
+        btnPlus.addEventListener('click', function () {
+            var v = parseInt(peopleInput.value, 10);
+            if (v < 50) { peopleInput.value = v + 1; updateTotal(); }
+        });
+
+        updateTotal();
+    })();
+
+function previewContract() {
+
+    const tourID = document.querySelector("input[name='tourID']").value;
+    const people = document.getElementById("numberOfPeople").value;
+    const name   = document.getElementById("name").value;
+    const phone  = document.getElementById("phone").value;
+    const email  = document.getElementById("email").value;
+    const note   = document.getElementById("note").value;
+
+    if (!name || !phone || !email) {
+        alert("Vui lòng nhập đầy đủ thông tin trước khi xem hợp đồng");
+        return;
+    }
+
+    const url =
+        `/preview-contract?tourID=${tourID}`
+        + `&numberOfPeople=${people}`
+        + `&name=${encodeURIComponent(name)}`
+        + `&phone=${encodeURIComponent(phone)}`
+        + `&email=${encodeURIComponent(email)}`
+        + `&note=${encodeURIComponent(note)}`;
+
+    window.open(url, "_blank");
+}
+
+</script>
+
 </body>
 </html>

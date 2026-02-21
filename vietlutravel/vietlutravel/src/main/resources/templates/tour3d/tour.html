@@ -3,459 +3,602 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Tour An Giang - Khám Phá Miền Tây</title>
+    <title>Virtual Tour An Giang — Khám Phá Miền Tây</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.css"/>
     <script src="https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #f0d080;
+            --gold-glow: rgba(201,168,76,0.25);
+            --deep: #04070e;
+            --dark1: #080c18;
+            --dark2: #0e1525;
+            --dark3: #141e33;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.07);
+            --text: #f0e8d8;
+            --text-dim: rgba(240,232,216,0.55);
+            --green-hs: #2ecc71;
+            --amber-hs: #f39c12;
         }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--deep);
+            color: var(--text);
             overflow-x: hidden;
+            cursor: none;
         }
 
-        /* Header */
+        /* ─── CURSOR ─── */
+        #cur { position: fixed; width: 7px; height: 7px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.1s; mix-blend-mode: difference; }
+        #curR { position: fixed; width: 28px; height: 28px; border: 1px solid rgba(201,168,76,0.55); border-radius: 50%; pointer-events: none; z-index: 9998; transition: all 0.14s ease; }
+
+        /* ─── HEADER ─── */
         .header {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 20px 0;
+            position: relative;
+            padding: 28px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(to bottom, var(--deep) 60%, transparent);
+            z-index: 50;
+        }
+        .header-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+        .header-logo span { color: var(--text-dim); font-weight: 300; }
+
+        .header-title {
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .header-title h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+        .header-title h1 em { font-style: italic; color: var(--gold); }
+        .header-title p {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 4px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-top: 4px;
         }
 
-        .header h1 {
-            color: #fff;
-            font-size: 2.5em;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            margin-bottom: 5px;
+        .header-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            border: 1px solid var(--glass-border);
+            padding: 8px 14px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+        .badge-dot { width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; animation: blink 1.5s infinite; }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        .header p {
-            color: #ffd700;
-            font-size: 1.1em;
-            font-style: italic;
-        }
-
-        /* Navigation Menu */
+        /* ─── MENU ─── */
         #menu {
-            background: rgba(0, 0, 0, 0.9);
-            padding: 20px;
+            background: rgba(4,7,14,0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0 40px;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            align-items: stretch;
             position: sticky;
             top: 0;
             z-index: 100;
+            gap: 0;
         }
 
         #menu button {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #28a745, #20c997);
+            padding: 18px 24px;
+            background: transparent;
             border: none;
-            color: white;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        #menu button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        #menu button:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        #menu button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 25px rgba(40, 167, 69, 0.5);
-        }
-
-        #menu button.active {
-            background: linear-gradient(135deg, #ffc107, #ff9800);
-            box-shadow: 0 4px 20px rgba(255, 193, 7, 0.5);
-        }
-
-        /* Viewer Container */
-        .viewer-container {
-            position: relative;
-            width: 100%;
-            height: 75vh;
-            margin: 0;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        #viewer {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Scene Counter */
-        .scene-counter {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Info Panel */
-        #info {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(40, 40, 40, 0.95));
-            color: white;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        #title {
-            font-size: 2.2em;
-            margin-bottom: 15px;
-            color: #ffd700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            font-weight: 700;
-        }
-
-        #desc {
-            font-size: 1.2em;
-            margin-bottom: 25px;
-            color: #e0e0e0;
-            line-height: 1.6;
-        }
-
-        .book-button {
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-            border: none;
-            color: white;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
+            border-right: 1px solid var(--glass-border);
+            color: var(--text-dim);
+            cursor: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .book-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 35px rgba(255, 107, 107, 0.6);
-            background: linear-gradient(135deg, #ee5a6f, #ff6b6b);
-        }
-
-        /* Control Icons */
-        .controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 15px;
-            z-index: 10;
-        }
-
-        .control-btn {
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            font-size: 20px;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            position: relative;
+            white-space: nowrap;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 7px;
         }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        /* Loading Animation */
-        .loading {
+        #menu button::after {
+            content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 24px;
-            z-index: 5;
-            display: none;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        #menu button:hover { color: var(--text); background: var(--glass); }
+        #menu button:hover::after { transform: scaleX(1); }
+        #menu button.active { color: var(--gold); }
+        #menu button.active::after { transform: scaleX(1); }
+
+        .menu-icon { font-size: 1rem; }
+
+        /* ─── VIEWER LAYOUT ─── */
+        .viewer-wrap {
+            position: relative;
+            width: 100%;
+            height: 78vh;
         }
 
-        .loading.active {
-            display: block;
-        }
+        #viewer { width: 100%; height: 100%; }
 
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8em;
-            }
-
-            #menu button {
-                padding: 10px 18px;
-                font-size: 13px;
-            }
-
-            .viewer-container {
-                height: 60vh;
-            }
-
-            #title {
-                font-size: 1.6em;
-            }
-
-            #desc {
-                font-size: 1em;
-            }
-
-            .book-button {
-                padding: 12px 30px;
-                font-size: 16px;
-            }
-        }
-
-        /* Fade Animation */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        #info {
-            animation: fadeIn 0.6s ease;
-        }
-
-        /* Custom Hotspot Styles */
-        .custom-hotspot {
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.95), rgba(32, 201, 151, 0.95)) !important;
-            color: white !important;
-            padding: 12px 20px !important;
-            border-radius: 25px !important;
-            font-weight: 600 !important;
-            font-size: 15px !important;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
-            backdrop-filter: blur(10px) !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
-            cursor: pointer !important;
-        }
-
-        .custom-hotspot:hover {
-            background: linear-gradient(135deg, rgba(32, 201, 151, 0.95), rgba(40, 167, 69, 0.95)) !important;
-            box-shadow: 0 6px 30px rgba(40, 167, 69, 0.6) !important;
-        }
-
-        .view-hotspot {
-            background: linear-gradient(135deg, rgba(255, 193, 7, 0.95), rgba(255, 152, 0, 0.95)) !important;
-            color: white !important;
-            padding: 10px 18px !important;
-            border-radius: 20px !important;
-            font-weight: 700 !important;
-            font-size: 14px !important;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
-            backdrop-filter: blur(10px) !important;
-            border: 2px solid rgba(255, 255, 255, 0.4) !important;
-            cursor: pointer !important;
-        }
-
-        .view-hotspot:hover {
-            box-shadow: 0 6px 30px rgba(255, 193, 7, 0.8) !important;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        /* View Navigation */
-        .view-nav {
+        /* ─── HUD OVERLAYS ─── */
+        .hud {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 15;
+            top: 20px; left: 20px;
+            z-index: 20;
             display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .hud-box {
+            background: rgba(4,7,14,0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hud-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+        .hud-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        /* Scene / View counter */
+        .hud-top-right {
+            position: absolute;
+            top: 20px; right: 20px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
             gap: 10px;
         }
 
-        .view-nav.left {
-            left: 20px;
+        /* View nav arrows */
+        .vnav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
         }
+        .vnav.l { left: 24px; }
+        .vnav.r { right: 24px; }
 
-        .view-nav.right {
-            right: 20px;
-        }
-
-        .view-nav-btn {
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            font-size: 28px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+        .vnav-btn {
+            width: 56px; height: 56px;
+            background: rgba(4,7,14,0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-dim);
+            cursor: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
+        .vnav-btn:hover { background: var(--gold); color: var(--deep); border-color: var(--gold); }
+        .vnav-btn:disabled { opacity: 0.2; pointer-events: none; }
 
-        .view-nav-btn:hover {
-            background: rgba(255, 193, 7, 0.9);
-            transform: scale(1.15);
-            box-shadow: 0 6px 30px rgba(255, 193, 7, 0.6);
-        }
-
-        .view-nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .view-nav-btn:disabled:hover {
-            transform: none;
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        /* View Counter */
-        .view-counter {
+        /* Bottom controls */
+        .controls {
             position: absolute;
-            top: 70px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 15px;
-            font-size: 13px;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+        }
+        .ctrl-btn {
+            width: 48px; height: 48px;
+            background: rgba(4,7,14,0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-dim);
+            cursor: none;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ctrl-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .ctrl-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-glow); }
+
+        /* Loading */
+        .loading {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(4,7,14,0.92);
+            backdrop-filter: blur(20px);
+            z-index: 30;
+            gap: 20px;
+        }
+        .loading.show { display: flex; }
+        .load-ring {
+            width: 60px; height: 60px;
+            border: 1px solid var(--glass-border);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .load-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 4px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        /* Compass ring deco */
+        .compass-deco {
+            position: absolute;
+            bottom: 90px;
+            right: 28px;
+            width: 70px; height: 70px;
+            border: 1px solid rgba(201,168,76,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            animation: rotateCompass 30s linear infinite;
+        }
+        .compass-deco::before {
+            content: 'N';
+            position: absolute;
+            top: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+        .compass-deco i { color: rgba(201,168,76,0.4); font-size: 1.2rem; }
+        @keyframes rotateCompass { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+        /* ─── INFO PANEL ─── */
+        .info-panel {
+            background: var(--dark1);
+            border-top: 1px solid var(--glass-border);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            padding: 0 60px;
+            gap: 40px;
+            min-height: 120px;
+        }
+
+        .info-left {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 28px 0;
+        }
+        .info-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .info-tag::before { content: ''; width: 20px; height: 1px; background: var(--gold); }
+
+        #title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1;
+        }
+        #desc {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            font-weight: 300;
+            line-height: 1.7;
+            max-width: 600px;
+        }
+
+        .info-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .book-btn {
+            padding: 16px 40px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            cursor: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .book-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+            z-index: -1;
+        }
+        .book-btn:hover { color: var(--deep); }
+        .book-btn:hover::before { transform: scaleX(1); }
+
+        .share-btn {
+            width: 50px; height: 50px;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-dim);
+            cursor: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .share-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+        /* ─── PANNELLUM OVERRIDES ─── */
+        .pnlm-container { background: var(--deep) !important; }
+        .pnlm-ui { font-family: 'Rajdhani', sans-serif !important; }
+
+        /* Custom hotspot */
+        .pnlm-hotspot-base.custom-hotspot {
+            background: rgba(4,7,14,0.9) !important;
+            backdrop-filter: blur(12px) !important;
+            color: var(--text) !important;
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 0 !important;
+            padding: 8px 16px !important;
+            font-family: 'Rajdhani', sans-serif !important;
+            font-size: 0.85rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 1.5px !important;
+            transition: all 0.3s !important;
+            white-space: nowrap !important;
+        }
+        .pnlm-hotspot-base.custom-hotspot:hover {
+            background: var(--gold-glow) !important;
+            border-color: var(--gold) !important;
+            color: var(--gold) !important;
+        }
+
+        .pnlm-hotspot-base.view-hotspot {
+            background: rgba(201,168,76,0.15) !important;
+            backdrop-filter: blur(12px) !important;
+            color: var(--gold) !important;
+            border: 1px solid rgba(201,168,76,0.5) !important;
+            border-radius: 0 !important;
+            padding: 8px 16px !important;
+            font-family: 'Space Mono', monospace !important;
+            font-size: 0.65rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 2px !important;
+            white-space: nowrap !important;
+        }
+        .pnlm-hotspot-base.view-hotspot:hover {
+            background: var(--gold-glow) !important;
+            border-color: var(--gold) !important;
+        }
+
+        /* Scan line overlay on panorama */
+        .viewer-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            .header { padding: 20px 24px; }
+            .header-badge { display: none; }
+            .info-panel { grid-template-columns: 1fr; padding: 24px; gap: 20px; }
+            #menu { padding: 0 10px; }
+            #menu button { padding: 14px 12px; font-size: 0.75rem; gap: 4px; }
+            .viewer-wrap { height: 60vh; }
+            .hud { display: none; }
         }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>🌄 Virtual Tour An Giang 🌄</h1>
-    <p>Khám phá vẻ đẹp thiên nhiên và văn hóa miền Tây</p>
-</div>
+<div id="cur"></div>
+<div id="curR"></div>
 
+<!-- Header -->
+<header class="header">
+    <div class="header-logo">An <span>Giang</span></div>
+    <div class="header-title">
+        <h1>Virtual <em>Tour</em></h1>
+        <p>360° Immersive Experience · An Giang Province</p>
+    </div>
+    <div class="header-badge">
+        <div class="badge-dot"></div>
+        Live · 9 Địa Điểm
+    </div>
+</header>
+
+<!-- Menu -->
 <div id="menu">
-    <button onclick="loadScene('angiang')" class="active" data-scene="angiang">🏞️ An Giang</button>
-    <button onclick="loadScene('chaudoc1')" data-scene="chaudoc1">🏯 Châu Đốc</button>
-    <button onclick="loadScene('nuicam1')" data-scene="nuicam1">⛰️ Núi Cấm</button>
-    <button onclick="loadScene('nuisam1')" data-scene="nuisam1">🙏 Núi Sam</button>
-    <button onclick="loadScene('tapa1')" data-scene="tapa1">💙 Hồ Tà Pạ</button>
-    <button onclick="loadScene('rung1')" data-scene="rung1">🌳 Rừng Tràm</button>
-    <button onclick="loadScene('chuatapa1')" data-scene="chuatapa1">🛕 Chùa Tà Pạ</button>
-    <button onclick="loadScene('tayan1')" data-scene="tayan1">🏛️ Tây An</button>
-    <button onclick="loadScene('lang1')" data-scene="lang1">👑 Lăng Thoại Ngọc Hầu</button>
+    <button onclick="loadScene('angiang')" class="active" data-scene="angiang"><span class="menu-icon">🏞️</span>An Giang</button>
+    <button onclick="loadScene('chaudoc1')" data-scene="chaudoc1"><span class="menu-icon">🏯</span>Châu Đốc</button>
+    <button onclick="loadScene('nuicam1')" data-scene="nuicam1"><span class="menu-icon">⛰️</span>Núi Cấm</button>
+    <button onclick="loadScene('nuisam1')" data-scene="nuisam1"><span class="menu-icon">🙏</span>Núi Sam</button>
+    <button onclick="loadScene('tapa1')" data-scene="tapa1"><span class="menu-icon">💙</span>Hồ Tà Pạ</button>
+    <button onclick="loadScene('rung1')" data-scene="rung1"><span class="menu-icon">🌳</span>Rừng Tràm</button>
+    <button onclick="loadScene('chuatapa1')" data-scene="chuatapa1"><span class="menu-icon">🛕</span>Chùa Tà Pạ</button>
+    <button onclick="loadScene('tayan1')" data-scene="tayan1"><span class="menu-icon">🏛️</span>Tây An</button>
+    <button onclick="loadScene('lang1')" data-scene="lang1"><span class="menu-icon">👑</span>Lăng TNH</button>
 </div>
 
-<div class="viewer-container">
+<!-- Viewer -->
+<div class="viewer-wrap">
     <div id="viewer"></div>
-    <div class="scene-counter" id="sceneCounter">Cảnh 1/9</div>
-    <div class="view-counter" id="viewCounter" style="display:none;">Góc 1/3</div>
 
-    <!-- View Navigation Arrows -->
-    <div class="view-nav left" id="viewNavLeft" style="display:none;">
-        <button class="view-nav-btn" onclick="previousView()" title="Góc xem trước">
-            ◀
-        </button>
-    </div>
-    <div class="view-nav right" id="viewNavRight" style="display:none;">
-        <button class="view-nav-btn" onclick="nextView()" title="Góc xem tiếp">
-            ▶
-        </button>
+    <!-- HUD Top Left -->
+    <div class="hud">
+        <div class="hud-box">
+            <div>
+                <div class="hud-label">Địa điểm</div>
+                <div class="hud-value" id="hudLocation">An Giang</div>
+            </div>
+        </div>
+        <div class="hud-box">
+            <div>
+                <div class="hud-label">Cảnh</div>
+                <div class="hud-value" id="sceneCounter">1 / 9</div>
+            </div>
+        </div>
     </div>
 
+    <!-- HUD Top Right -->
+    <div class="hud-top-right">
+        <div class="hud-box" id="viewCounter" style="display:none;">
+            <div>
+                <div class="hud-label">Góc nhìn</div>
+                <div class="hud-value" id="viewCounterVal">1 / 3</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View nav arrows -->
+    <div class="vnav l" id="viewNavLeft" style="display:none;">
+        <button class="vnav-btn" onclick="previousView()"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <div class="vnav r" id="viewNavRight" style="display:none;">
+        <button class="vnav-btn" onclick="nextView()"><i class="bi bi-chevron-right"></i></button>
+    </div>
+
+    <!-- Loading -->
     <div class="loading" id="loading">
-        <div class="spinner"></div>
-        Đang tải...
+        <div class="load-ring"></div>
+        <div class="load-text">Đang tải cảnh</div>
     </div>
+
+    <!-- Controls -->
     <div class="controls">
-        <button class="control-btn" id="audioBtn" onclick="toggleAudio()" title="Phát/Tắt âm thanh">
-            🔊
+        <button class="ctrl-btn active" id="audioBtn" onclick="toggleAudio()" title="Âm thanh">
+            <i class="bi bi-volume-up-fill"></i>
         </button>
-        <button class="control-btn" onclick="toggleAutoRotate()" title="Tự động xoay">
-            🔄
+        <button class="ctrl-btn" id="rotateBtn" onclick="toggleAutoRotate()" title="Tự động xoay">
+            <i class="bi bi-arrow-repeat"></i>
         </button>
-        <button class="control-btn" onclick="toggleFullscreen()" title="Toàn màn hình">
-            ⛶
+        <button class="ctrl-btn" onclick="toggleFullscreen()" title="Toàn màn hình">
+            <i class="bi bi-fullscreen"></i>
         </button>
+    </div>
+
+    <!-- Compass deco -->
+    <div class="compass-deco">
+        <i class="bi bi-compass"></i>
     </div>
 </div>
 
-<div id="info">
-    <h2 id="title">An Giang</h2>
-    <p id="desc">Toàn cảnh An Giang - Vùng đất giàu bản sắc văn hóa miền Tây</p>
-    <button class="book-button" onclick="bookTour()">
-        🎫 Đặt tour ngay
-    </button>
+<!-- Info Panel -->
+<div class="info-panel">
+    <div class="info-left">
+        <div class="info-tag" id="infoTag">Virtual Reality · 360°</div>
+        <h2 id="title">An Giang</h2>
+        <p id="desc">Toàn cảnh An Giang - Vùng đất giàu bản sắc văn hóa miền Tây</p>
+    </div>
+    <div class="info-right">
+        <button class="share-btn" title="Chia sẻ"><i class="bi bi-share"></i></button>
+        <button class="share-btn" title="Yêu thích"><i class="bi bi-heart"></i></button>
+        <button class="book-btn" onclick="bookTour()">
+            Đặt tour ngay <i class="bi bi-arrow-right"></i>
+        </button>
+    </div>
 </div>
 
 <script>
+    // ─── Custom Cursor ───
+    const cur = document.getElementById('cur');
+    const curR = document.getElementById('curR');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cur.style.left = (mx - 3.5) + 'px';
+        cur.style.top = (my - 3.5) + 'px';
+    });
+    (function loop() {
+        rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+        curR.style.left = (rx - 14) + 'px';
+        curR.style.top = (ry - 14) + 'px';
+        requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('button, a').forEach(el => {
+        el.addEventListener('mouseenter', () => { cur.style.transform = 'scale(3)'; curR.style.transform = 'scale(1.4)'; curR.style.borderColor = 'rgba(201,168,76,1)'; });
+        el.addEventListener('mouseleave', () => { cur.style.transform = 'scale(1)'; curR.style.transform = 'scale(1)'; curR.style.borderColor = 'rgba(201,168,76,0.55)'; });
+    });
+
+    // ─── Data ───
     const descriptions = {
         "angiang": "Toàn cảnh An Giang - Vùng đất giàu bản sắc văn hóa miền Tây",
         "chaudoc1": "Miếu Bà Châu Đốc - Nơi linh thiêng bậc nhất miền Tây",
@@ -467,37 +610,32 @@
         "tayan1": "Tây An Cổ Tự - Kiến trúc Khmer độc đáo và tinh xảo",
         "lang1": "Lăng Thoại Ngọc Hầu - Di tích lịch sử văn hóa quốc gia"
     };
-
+    const infoTags = {
+        "angiang": "Tổng quan · Panorama 360°",
+        "chaudoc1": "Tâm Linh · Châu Đốc",
+        "nuicam1": "Thiên Nhiên · Thất Sơn · 710m",
+        "nuisam1": "Tâm Linh · Núi Sam",
+        "tapa1": "Thiên Nhiên · Tuyệt Tình Cốc",
+        "rung1": "Sinh Thái · Rừng Tràm Trà Sư",
+        "chuatapa1": "Tâm Linh · Phật Giáo Khmer",
+        "tayan1": "Di Sản · Kiến Trúc Khmer",
+        "lang1": "Lịch Sử · Di Tích Quốc Gia"
+    };
     const tourIds = {
-        "angiang": 1,
-        "chaudoc1": 1,
-        "nuicam1": 31,
-        "nuisam1": 32,
-        "tapa1": 4,
-        "rung1": 3,
-        "chuatapa1": 33,
-        "tayan1": 7,
-        "lang1": 34
+        "angiang": 1, "chaudoc1": 1, "nuicam1": 31, "nuisam1": 32,
+        "tapa1": 4, "rung1": 3, "chuatapa1": 33, "tayan1": 7, "lang1": 34
     };
-
-    const sceneNames = [
-        "angiang", "chaudoc1", "nuicam1", "nuisam1",
-        "tapa1", "rung1", "chuatapa1", "tayan1", "lang1"
-    ];
-
-    // Map of location views
+    const sceneNames = ["angiang","chaudoc1","nuicam1","nuisam1","tapa1","rung1","chuatapa1","tayan1","lang1"];
     const locationViews = {
-        "chaudoc": ["chaudoc1", "chaudoc2"],
-        "nuicam": ["nuicam1", "nuicam2", "nuicam3"],
-        "nuisam": ["nuisam1", "nuisam2", "nuisam3"],
-        "tapa": ["tapa1", "tapa2", "tapa3"],
-        "rung": ["rung1", "rung2", "rung3"],
-        "chuatapa": ["chuatapa1", "chuatapa2", "chuatapa3"],
-        "tayan": ["tayan1", "tayan2", "tayan3"],
-        "lang": ["lang1", "lang2"]
+        "chaudoc": ["chaudoc1","chaudoc2"],
+        "nuicam": ["nuicam1","nuicam2","nuicam3"],
+        "nuisam": ["nuisam1","nuisam2","nuisam3"],
+        "tapa": ["tapa1","tapa2","tapa3"],
+        "rung": ["rung1","rung2","rung3"],
+        "chuatapa": ["chuatapa1","chuatapa2","chuatapa3"],
+        "tayan": ["tayan1","tayan2","tayan3"],
+        "lang": ["lang1","lang2"]
     };
-
-    // Audio files for each location
     const locationAudios = {
         "angiang": "/audio/angiang.mp3",
         "chaudoc1": "/audio/chaudoc.mp3",
@@ -509,945 +647,294 @@
         "tayan1": "/audio/tayan.mp3",
         "lang1": "/audio/thoaingochau.mp3"
     };
+    const sceneDisplayNames = {
+        "angiang": "An Giang", "chaudoc1": "Châu Đốc", "nuicam1": "Núi Cấm",
+        "nuisam1": "Núi Sam", "tapa1": "Hồ Tà Pạ", "rung1": "Rừng Tràm Trà Sư",
+        "chuatapa1": "Chùa Tà Pạ", "tayan1": "Tây An Cổ Tự", "lang1": "Lăng Thoại Ngọc Hầu"
+    };
 
     let autoRotateEnabled = true;
     let currentLocation = "angiang";
     let currentViewIndex = 0;
     let currentAudio = null;
 
+    // ─── Pannellum ───
     const viewer = pannellum.viewer('viewer', {
         "default": {
             "firstScene": "angiang",
             "autoLoad": true,
-            "autoRotate": -2, // Tự động xoay nhẹ sang trái (-2 độ/giây)
-            "autoRotateInactivityDelay": 2000, // Sau 2 giây không tương tác sẽ tự xoay
-            "autoRotateStopDelay": 3000,
-            "compass": true,
-            "northOffset": 0,
-            "showZoomCtrl": true,
+            "autoRotate": -2,
+            "autoRotateInactivityDelay": 2000,
+            "compass": false,
+            "showZoomCtrl": false,
             "mouseZoom": true,
             "draggable": true,
             "friction": 0.15,
             "hfov": 100,
-            "pitch": 0,
-            "yaw": 0
         },
         "scenes": {
             "angiang": {
-                "panorama": "/image/test.JPG",
-                "autoRotate": -2,
+                "panorama": "/image/test.JPG", "autoRotate": -2,
                 "hotSpots": [
-                    {
-                        "pitch": -5,
-                        "yaw": 45,
-                        "type": "scene",
-                        "sceneId": "chaudoc1",
-                        "text": "🏯 Châu Đốc",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": 0,
-                        "yaw": 90,
-                        "type": "scene",
-                        "sceneId": "nuicam1",
-                        "text": "⛰️ Núi Cấm",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -5,
-                        "yaw": 135,
-                        "type": "scene",
-                        "sceneId": "nuisam1",
-                        "text": "🙏 Núi Sam",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": 0,
-                        "yaw": 180,
-                        "type": "scene",
-                        "sceneId": "tapa1",
-                        "text": "💙 Hồ Tà Pạ",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -5,
-                        "yaw": -135,
-                        "type": "scene",
-                        "sceneId": "rung1",
-                        "text": "🌳 Rừng Tràm",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": 0,
-                        "yaw": -90,
-                        "type": "scene",
-                        "sceneId": "chuatapa1",
-                        "text": "🛕 Chùa Tà Pạ",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -5,
-                        "yaw": -45,
-                        "type": "scene",
-                        "sceneId": "tayan1",
-                        "text": "🏛️ Tây An",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": 0,
-                        "yaw": 0,
-                        "type": "scene",
-                        "sceneId": "lang1",
-                        "text": "👑 Lăng Thoại Ngọc Hầu",
-                        "cssClass": "custom-hotspot"
-                    }
+                    {"pitch":-5,"yaw":45,"type":"scene","sceneId":"chaudoc1","text":"🏯 Châu Đốc","cssClass":"custom-hotspot"},
+                    {"pitch":0,"yaw":90,"type":"scene","sceneId":"nuicam1","text":"⛰️ Núi Cấm","cssClass":"custom-hotspot"},
+                    {"pitch":-5,"yaw":135,"type":"scene","sceneId":"nuisam1","text":"🙏 Núi Sam","cssClass":"custom-hotspot"},
+                    {"pitch":0,"yaw":180,"type":"scene","sceneId":"tapa1","text":"💙 Hồ Tà Pạ","cssClass":"custom-hotspot"},
+                    {"pitch":-5,"yaw":-135,"type":"scene","sceneId":"rung1","text":"🌳 Rừng Tràm","cssClass":"custom-hotspot"},
+                    {"pitch":0,"yaw":-90,"type":"scene","sceneId":"chuatapa1","text":"🛕 Chùa Tà Pạ","cssClass":"custom-hotspot"},
+                    {"pitch":-5,"yaw":-45,"type":"scene","sceneId":"tayan1","text":"🏛️ Tây An","cssClass":"custom-hotspot"},
+                    {"pitch":0,"yaw":0,"type":"scene","sceneId":"lang1","text":"👑 Lăng TNH","cssClass":"custom-hotspot"}
                 ]
             },
-
-            "chaudoc1": {
-                "panorama": "/image/thoaingochau2.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "chaudoc2",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": -45,
-                        "type": "scene",
-                        "sceneId": "nuicam1",
-                        "text": "⛰️ Núi Cấm",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 180,
-                        "type": "scene",
-                        "sceneId": "angiang",
-                        "text": "🏞️ Tổng quan An Giang",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "chaudoc2": {
-                "panorama": "/image/test3.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "chaudoc1",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 45,
-                        "type": "scene",
-                        "sceneId": "nuicam1",
-                        "text": "⛰️ Núi Cấm",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-
-            "nuicam1": {
-                "panorama": "/image/dlnuicam1.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "nuicam2",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": -90,
-                        "type": "scene",
-                        "sceneId": "chaudoc1",
-                        "text": "🏯 Châu Đốc",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 45,
-                        "type": "scene",
-                        "sceneId": "nuisam1",
-                        "text": "🙏 Núi Sam",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "nuicam2": {
-                "panorama": "/image/dlnuicam2.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "nuicam1",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "nuicam3",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 0,
-                        "type": "scene",
-                        "sceneId": "nuisam1",
-                        "text": "🙏 Núi Sam",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "nuicam3": {
-                "panorama": "/image/dlnuicam3.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "nuicam2",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 90,
-                        "type": "scene",
-                        "sceneId": "nuisam1",
-                        "text": "🙏 Núi Sam",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-
-            "nuisam1": {
-                "panorama": "/image/dlnuisam1.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "nuisam2",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": -90,
-                        "type": "scene",
-                        "sceneId": "nuicam1",
-                        "text": "⛰️ Núi Cấm",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 45,
-                        "type": "scene",
-                        "sceneId": "tapa1",
-                        "text": "💙 Hồ Tà Pạ",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "nuisam2": {
-                "panorama": "/image/dlnuisam2.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "nuisam1",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "nuisam3",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 0,
-                        "type": "scene",
-                        "sceneId": "tapa1",
-                        "text": "💙 Hồ Tà Pạ",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "nuisam3": {
-                "panorama": "/image/dlnuisam3.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "nuisam2",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 90,
-                        "type": "scene",
-                        "sceneId": "tapa1",
-                        "text": "💙 Hồ Tà Pạ",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-
-            "tapa1": {
-                "panorama": "/image/tapa3.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "tapa2",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": -90,
-                        "type": "scene",
-                        "sceneId": "nuisam1",
-                        "text": "🙏 Núi Sam",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 45,
-                        "type": "scene",
-                        "sceneId": "rung1",
-                        "text": "🌳 Rừng Tràm",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "tapa2": {
-                "panorama": "/image/tapa2.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "tapa1",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "tapa3",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 0,
-                        "type": "scene",
-                        "sceneId": "rung1",
-                        "text": "🌳 Rừng Tràm",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "tapa3": {
-                "panorama": "/image/tapa1.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "tapa2",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 90,
-                        "type": "scene",
-                        "sceneId": "rung1",
-                        "text": "🌳 Rừng Tràm",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-
-            "rung1": {
-                "panorama": "/image/rungtram1.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "rung2",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": -90,
-                        "type": "scene",
-                        "sceneId": "tapa1",
-                        "text": "💙 Hồ Tà Pạ",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 45,
-                        "type": "scene",
-                        "sceneId": "chuatapa1",
-                        "text": "🛕 Chùa Tà Pạ",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "rung2": {
-                "panorama": "/image/rungtram2.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "rung1",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "rung3",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 0,
-                        "type": "scene",
-                        "sceneId": "chuatapa1",
-                        "text": "🛕 Chùa Tà Pạ",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "rung3": {
-                "panorama": "/image/rungtram3.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "rung2",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 90,
-                        "type": "scene",
-                        "sceneId": "chuatapa1",
-                        "text": "🛕 Chùa Tà Pạ",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-
-            "chuatapa1": {
-                "panorama": "/image/tapa1.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "chuatapa2",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": -90,
-                        "type": "scene",
-                        "sceneId": "rung1",
-                        "text": "🌳 Rừng Tràm",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 45,
-                        "type": "scene",
-                        "sceneId": "tayan1",
-                        "text": "🏛️ Tây An",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "chuatapa2": {
-                "panorama": "/image/tapa2.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "chuatapa1",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "chuatapa3",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 0,
-                        "type": "scene",
-                        "sceneId": "tayan1",
-                        "text": "🏛️ Tây An",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "chuatapa3": {
-                "panorama": "/image/tapa3.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "chuatapa2",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 90,
-                        "type": "scene",
-                        "sceneId": "tayan1",
-                        "text": "🏛️ Tây An",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-
-            "tayan1": {
-                "panorama": "/image/tayan1.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "tayan2",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": -90,
-                        "type": "scene",
-                        "sceneId": "chuatapa1",
-                        "text": "🛕 Chùa Tà Pạ",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 45,
-                        "type": "scene",
-                        "sceneId": "lang1",
-                        "text": "👑 Lăng Thoại Ngọc Hầu",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "tayan2": {
-                "panorama": "/image/tayan2.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "tayan1",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "tayan3",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 0,
-                        "type": "scene",
-                        "sceneId": "lang1",
-                        "text": "👑 Lăng Thoại Ngọc Hầu",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "tayan3": {
-                "panorama": "/image/tayan3.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "tayan2",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 90,
-                        "type": "scene",
-                        "sceneId": "lang1",
-                        "text": "👑 Lăng Thoại Ngọc Hầu",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-
-            "lang1": {
-                "panorama": "/image/thoaingochau2.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": 100,
-                        "type": "scene",
-                        "sceneId": "lang2",
-                        "text": "➡️ Góc xem khác",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": -90,
-                        "type": "scene",
-                        "sceneId": "tayan1",
-                        "text": "🏛️ Tây An",
-                        "cssClass": "custom-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 180,
-                        "type": "scene",
-                        "sceneId": "angiang",
-                        "text": "🏞️ Tổng quan An Giang",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            },
-            "lang2": {
-                "panorama": "/image/thoaingochau1.jpg",
-                "autoRotate": -2,
-                "hotSpots": [
-                    {
-                        "pitch": 5,
-                        "yaw": -100,
-                        "type": "scene",
-                        "sceneId": "lang1",
-                        "text": "⬅️ Góc xem trước",
-                        "cssClass": "view-hotspot"
-                    },
-                    {
-                        "pitch": -8,
-                        "yaw": 45,
-                        "type": "scene",
-                        "sceneId": "angiang",
-                        "text": "🏞️ Tổng quan An Giang",
-                        "cssClass": "custom-hotspot"
-                    }
-                ]
-            }
+            "chaudoc1": {"panorama":"/image/thoaingochau2.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"chaudoc2","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":-45,"type":"scene","sceneId":"nuicam1","text":"⛰️ Núi Cấm","cssClass":"custom-hotspot"},
+                {"pitch":-8,"yaw":180,"type":"scene","sceneId":"angiang","text":"🏞️ Tổng quan","cssClass":"custom-hotspot"}
+            ]},
+            "chaudoc2": {"panorama":"/image/test3.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"chaudoc1","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":45,"type":"scene","sceneId":"nuicam1","text":"⛰️ Núi Cấm","cssClass":"custom-hotspot"}
+            ]},
+            "nuicam1": {"panorama":"/image/dlnuicam1.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"nuicam2","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":-90,"type":"scene","sceneId":"chaudoc1","text":"🏯 Châu Đốc","cssClass":"custom-hotspot"},
+                {"pitch":-8,"yaw":45,"type":"scene","sceneId":"nuisam1","text":"🙏 Núi Sam","cssClass":"custom-hotspot"}
+            ]},
+            "nuicam2": {"panorama":"/image/dlnuicam2.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"nuicam1","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"nuicam3","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":0,"type":"scene","sceneId":"nuisam1","text":"🙏 Núi Sam","cssClass":"custom-hotspot"}
+            ]},
+            "nuicam3": {"panorama":"/image/dlnuicam3.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"nuicam2","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":90,"type":"scene","sceneId":"nuisam1","text":"🙏 Núi Sam","cssClass":"custom-hotspot"}
+            ]},
+            "nuisam1": {"panorama":"/image/dlnuisam1.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"nuisam2","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":-90,"type":"scene","sceneId":"nuicam1","text":"⛰️ Núi Cấm","cssClass":"custom-hotspot"},
+                {"pitch":-8,"yaw":45,"type":"scene","sceneId":"tapa1","text":"💙 Hồ Tà Pạ","cssClass":"custom-hotspot"}
+            ]},
+            "nuisam2": {"panorama":"/image/dlnuisam2.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"nuisam1","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"nuisam3","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":0,"type":"scene","sceneId":"tapa1","text":"💙 Hồ Tà Pạ","cssClass":"custom-hotspot"}
+            ]},
+            "nuisam3": {"panorama":"/image/dlnuisam3.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"nuisam2","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":90,"type":"scene","sceneId":"tapa1","text":"💙 Hồ Tà Pạ","cssClass":"custom-hotspot"}
+            ]},
+            "tapa1": {"panorama":"/image/tapa3.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"tapa2","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":-90,"type":"scene","sceneId":"nuisam1","text":"🙏 Núi Sam","cssClass":"custom-hotspot"},
+                {"pitch":-8,"yaw":45,"type":"scene","sceneId":"rung1","text":"🌳 Rừng Tràm","cssClass":"custom-hotspot"}
+            ]},
+            "tapa2": {"panorama":"/image/tapa2.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"tapa1","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"tapa3","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":0,"type":"scene","sceneId":"rung1","text":"🌳 Rừng Tràm","cssClass":"custom-hotspot"}
+            ]},
+            "tapa3": {"panorama":"/image/tapa1.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"tapa2","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":90,"type":"scene","sceneId":"rung1","text":"🌳 Rừng Tràm","cssClass":"custom-hotspot"}
+            ]},
+            "rung1": {"panorama":"/image/rungtram1.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"rung2","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":-90,"type":"scene","sceneId":"tapa1","text":"💙 Hồ Tà Pạ","cssClass":"custom-hotspot"},
+                {"pitch":-8,"yaw":45,"type":"scene","sceneId":"chuatapa1","text":"🛕 Chùa Tà Pạ","cssClass":"custom-hotspot"}
+            ]},
+            "rung2": {"panorama":"/image/rungtram2.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"rung1","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"rung3","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":0,"type":"scene","sceneId":"chuatapa1","text":"🛕 Chùa Tà Pạ","cssClass":"custom-hotspot"}
+            ]},
+            "rung3": {"panorama":"/image/rungtram3.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"rung2","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":90,"type":"scene","sceneId":"chuatapa1","text":"🛕 Chùa Tà Pạ","cssClass":"custom-hotspot"}
+            ]},
+            "chuatapa1": {"panorama":"/image/tapa1.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"chuatapa2","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":-90,"type":"scene","sceneId":"rung1","text":"🌳 Rừng Tràm","cssClass":"custom-hotspot"},
+                {"pitch":-8,"yaw":45,"type":"scene","sceneId":"tayan1","text":"🏛️ Tây An","cssClass":"custom-hotspot"}
+            ]},
+            "chuatapa2": {"panorama":"/image/tapa2.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"chuatapa1","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"chuatapa3","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":0,"type":"scene","sceneId":"tayan1","text":"🏛️ Tây An","cssClass":"custom-hotspot"}
+            ]},
+            "chuatapa3": {"panorama":"/image/tapa3.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"chuatapa2","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":90,"type":"scene","sceneId":"tayan1","text":"🏛️ Tây An","cssClass":"custom-hotspot"}
+            ]},
+            "tayan1": {"panorama":"/image/tayan1.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"tayan2","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":-90,"type":"scene","sceneId":"chuatapa1","text":"🛕 Chùa Tà Pạ","cssClass":"custom-hotspot"},
+                {"pitch":-8,"yaw":45,"type":"scene","sceneId":"lang1","text":"👑 Lăng TNH","cssClass":"custom-hotspot"}
+            ]},
+            "tayan2": {"panorama":"/image/tayan2.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"tayan1","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"tayan3","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":0,"type":"scene","sceneId":"lang1","text":"👑 Lăng TNH","cssClass":"custom-hotspot"}
+            ]},
+            "tayan3": {"panorama":"/image/tayan3.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"tayan2","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":90,"type":"scene","sceneId":"lang1","text":"👑 Lăng TNH","cssClass":"custom-hotspot"}
+            ]},
+            "lang1": {"panorama":"/image/thoaingochau2.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":100,"type":"scene","sceneId":"lang2","text":"→ Góc xem khác","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":-90,"type":"scene","sceneId":"tayan1","text":"🏛️ Tây An","cssClass":"custom-hotspot"},
+                {"pitch":-8,"yaw":180,"type":"scene","sceneId":"angiang","text":"🏞️ Tổng quan","cssClass":"custom-hotspot"}
+            ]},
+            "lang2": {"panorama":"/image/thoaingochau1.jpg","autoRotate":-2,"hotSpots":[
+                {"pitch":5,"yaw":-100,"type":"scene","sceneId":"lang1","text":"← Góc xem trước","cssClass":"view-hotspot"},
+                {"pitch":-8,"yaw":45,"type":"scene","sceneId":"angiang","text":"🏞️ Tổng quan","cssClass":"custom-hotspot"}
+            ]}
         }
     });
 
+    // ─── Functions ───
     function loadScene(id) {
-        // Show loading
-        document.getElementById('loading').classList.add('active');
+        document.getElementById('loading').classList.add('show');
+        let base = getBase(id);
 
-        // Update active button - find base location
-        let baseLocation = getBaseLocation(id);
         document.querySelectorAll('#menu button').forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.scene === baseLocation) {
-                btn.classList.add('active');
-            }
+            btn.classList.toggle('active', btn.dataset.scene === base);
         });
 
-        // Load scene
         viewer.loadScene(id);
+        currentLocation = base;
+        updateViewNav(id);
+        playAudio(base);
+        updateInfo(base);
+        updateCounter(base);
 
-        // Update current location and view
-        currentLocation = baseLocation;
-        updateViewNavigation(id);
-
-        // Play audio for this location
-        playLocationAudio(baseLocation);
-
-        // Update info
-        document.getElementById("title").innerText = getSceneTitle(baseLocation);
-        document.getElementById("desc").innerText = descriptions[baseLocation] || "";
-        window.currentScene = baseLocation;
-
-        // Update scene counter
-        updateSceneCounter(baseLocation);
-
-        // Hide loading after scene loads
-        setTimeout(() => {
-            document.getElementById('loading').classList.remove('active');
-        }, 500);
+        setTimeout(() => document.getElementById('loading').classList.remove('show'), 600);
     }
 
-    function playLocationAudio(location) {
-        // Stop current audio if playing
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio.currentTime = 0;
-        }
-
-        // Get audio file for this location
-        const audioFile = locationAudios[location];
-        if (audioFile) {
-            currentAudio = new Audio(audioFile);
+    function playAudio(loc) {
+        if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+        const f = locationAudios[loc];
+        if (f) {
+            currentAudio = new Audio(f);
             currentAudio.loop = true;
             currentAudio.volume = 0.5;
-
-            // Play audio
-            currentAudio.play().catch(err => {
-                console.log('Audio autoplay prevented:', err);
-            });
-
-            // Update button icon
-            document.getElementById('audioBtn').innerHTML = '🔊';
+            currentAudio.play().catch(() => {});
         }
+        document.querySelector('#audioBtn i').className = 'bi bi-volume-up-fill';
     }
 
     function toggleAudio() {
+        const icon = document.querySelector('#audioBtn i');
         const btn = document.getElementById('audioBtn');
         if (currentAudio) {
             if (currentAudio.paused) {
                 currentAudio.play();
-                btn.innerHTML = '🔊';
+                icon.className = 'bi bi-volume-up-fill';
+                btn.classList.add('active');
             } else {
                 currentAudio.pause();
-                btn.innerHTML = '🔇';
+                icon.className = 'bi bi-volume-mute-fill';
+                btn.classList.remove('active');
             }
         }
     }
 
-    function getBaseLocation(sceneId) {
-        // Extract base location from scene ID
-        for (let location in locationViews) {
-            if (locationViews[location].includes(sceneId)) {
-                return locationViews[location][0];
-            }
+    function getBase(id) {
+        for (let loc in locationViews) {
+            if (locationViews[loc].includes(id)) return locationViews[loc][0];
         }
-        return sceneId;
+        return id;
     }
 
-    function getLocationFromScene(sceneId) {
-        // Get the location key (e.g., "chaudoc" from "chaudoc1")
-        for (let location in locationViews) {
-            if (locationViews[location].includes(sceneId)) {
-                return location;
-            }
+    function getLoc(id) {
+        for (let loc in locationViews) {
+            if (locationViews[loc].includes(id)) return loc;
         }
         return null;
     }
 
-    function updateViewNavigation(sceneId) {
-        const location = getLocationFromScene(sceneId);
+    function updateViewNav(id) {
+        const loc = getLoc(id);
+        const vc = document.getElementById('viewCounter');
+        const vcVal = document.getElementById('viewCounterVal');
+        const nl = document.getElementById('viewNavLeft');
+        const nr = document.getElementById('viewNavRight');
 
-        if (location && locationViews[location]) {
-            const views = locationViews[location];
-            currentViewIndex = views.indexOf(sceneId);
-
-            // Show view counter and navigation
-            const viewCounter = document.getElementById('viewCounter');
-            viewCounter.textContent = `Góc ${currentViewIndex + 1}/${views.length}`;
-            viewCounter.style.display = 'block';
-
-            // Show/hide navigation buttons
-            const navLeft = document.getElementById('viewNavLeft');
-            const navRight = document.getElementById('viewNavRight');
-
+        if (loc && locationViews[loc]) {
+            const views = locationViews[loc];
+            currentViewIndex = views.indexOf(id);
             if (views.length > 1) {
-                navLeft.style.display = 'flex';
-                navRight.style.display = 'flex';
-
-                // Enable/disable buttons
-                navLeft.querySelector('button').disabled = currentViewIndex === 0;
-                navRight.querySelector('button').disabled = currentViewIndex === views.length - 1;
+                vc.style.display = 'flex';
+                vcVal.textContent = `${currentViewIndex + 1} / ${views.length}`;
+                nl.style.display = 'flex'; nr.style.display = 'flex';
+                nl.querySelector('button').disabled = currentViewIndex === 0;
+                nr.querySelector('button').disabled = currentViewIndex === views.length - 1;
             } else {
-                navLeft.style.display = 'none';
-                navRight.style.display = 'none';
+                vc.style.display = 'none'; nl.style.display = 'none'; nr.style.display = 'none';
             }
         } else {
-            // Single view location
-            document.getElementById('viewCounter').style.display = 'none';
-            document.getElementById('viewNavLeft').style.display = 'none';
-            document.getElementById('viewNavRight').style.display = 'none';
+            vc.style.display = 'none'; nl.style.display = 'none'; nr.style.display = 'none';
         }
+    }
+
+    function updateInfo(base) {
+        document.getElementById('title').textContent = sceneDisplayNames[base] || base;
+        document.getElementById('desc').textContent = descriptions[base] || '';
+        document.getElementById('infoTag').textContent = infoTags[base] || 'Virtual Reality · 360°';
+        document.getElementById('hudLocation').textContent = sceneDisplayNames[base] || base;
+        window.currentScene = base;
+    }
+
+    function updateCounter(base) {
+        const i = sceneNames.indexOf(base);
+        if (i !== -1) document.getElementById('sceneCounter').textContent = `${i + 1} / ${sceneNames.length}`;
     }
 
     function previousView() {
-        const location = getLocationFromScene(viewer.getScene());
-        if (location && locationViews[location] && currentViewIndex > 0) {
-            const views = locationViews[location];
-            loadScene(views[currentViewIndex - 1]);
-        }
+        const loc = getLoc(viewer.getScene());
+        if (loc && currentViewIndex > 0) loadScene(locationViews[loc][currentViewIndex - 1]);
     }
 
     function nextView() {
-        const location = getLocationFromScene(viewer.getScene());
-        if (location && locationViews[location]) {
-            const views = locationViews[location];
-            if (currentViewIndex < views.length - 1) {
-                loadScene(views[currentViewIndex + 1]);
-            }
-        }
-    }
-
-    function getSceneTitle(id) {
-        const titles = {
-            "angiang": "An Giang",
-            "chaudoc1": "Châu Đốc",
-            "nuicam1": "Núi Cấm",
-            "nuisam1": "Núi Sam",
-            "tapa1": "Hồ Tà Pạ",
-            "rung1": "Rừng Tràm Trà Sư",
-            "chuatapa1": "Chùa Tà Pạ",
-            "tayan1": "Tây An Cổ Tự",
-            "lang1": "Lăng Thoại Ngọc Hầu"
-        };
-        return titles[id] || id;
-    }
-
-    function updateSceneCounter(id) {
-        const index = sceneNames.indexOf(id);
-        if (index !== -1) {
-            document.getElementById('sceneCounter').innerText = `Cảnh ${index + 1}/${sceneNames.length}`;
-        }
+        const loc = getLoc(viewer.getScene());
+        if (loc && currentViewIndex < locationViews[loc].length - 1) loadScene(locationViews[loc][currentViewIndex + 1]);
     }
 
     function toggleAutoRotate() {
         autoRotateEnabled = !autoRotateEnabled;
-        if (autoRotateEnabled) {
-            viewer.setAutoRotate(-2);
-        } else {
-            viewer.setAutoRotate(false);
-        }
+        viewer.setAutoRotate(autoRotateEnabled ? -2 : false);
+        document.getElementById('rotateBtn').classList.toggle('active', autoRotateEnabled);
     }
 
     function toggleFullscreen() {
-        const elem = document.querySelector('.viewer-container');
-        if (!document.fullscreenElement) {
-            elem.requestFullscreen().catch(err => {
-                console.log(`Error: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
+        const el = document.querySelector('.viewer-wrap');
+        if (!document.fullscreenElement) el.requestFullscreen().catch(() => {});
+        else document.exitFullscreen();
     }
 
     function bookTour() {
-        let id = tourIds[window.currentScene] || 1;
-        window.location.href = "/tour/" + id;
+        window.location.href = "/tour/" + (tourIds[window.currentScene] || 1);
     }
 
-    // Initialize
+    // ─── Init ───
     window.currentScene = "angiang";
-    updateSceneCounter("angiang");
-    updateViewNavigation("angiang");
+    updateCounter("angiang");
+    updateViewNav("angiang");
 
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowLeft') {
-            previousView();
-        } else if (e.key === 'ArrowRight') {
-            nextView();
-        }
+    // Keyboard
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') previousView();
+        else if (e.key === 'ArrowRight') nextView();
     });
 
-    // Listen for scene changes to update navigation and menu
-    viewer.on('scenechange', function(sceneId) {
-        // Update view navigation
-        updateViewNavigation(sceneId);
-
-        // Update menu active state
-        let baseLocation = getBaseLocation(sceneId);
-        document.querySelectorAll('#menu button').forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.scene === baseLocation) {
-                btn.classList.add('active');
-            }
-        });
-
-        // Update info panel
-        document.getElementById("title").innerText = getSceneTitle(baseLocation);
-        document.getElementById("desc").innerText = descriptions[baseLocation] || "";
-        window.currentScene = baseLocation;
-
-        // Update scene counter
-        updateSceneCounter(baseLocation);
-
-        // Update current location
-        if (currentLocation !== baseLocation) {
-            currentLocation = baseLocation;
-            // Play new audio when changing to different location
-            playLocationAudio(baseLocation);
-        }
+    // Scene change listener
+    viewer.on('scenechange', id => {
+        const base = getBase(id);
+        updateViewNav(id);
+        document.querySelectorAll('#menu button').forEach(btn => btn.classList.toggle('active', btn.dataset.scene === base));
+        updateInfo(base);
+        updateCounter(base);
+        if (currentLocation !== base) { currentLocation = base; playAudio(base); }
     });
 </script>
-
 </body>
 </html>

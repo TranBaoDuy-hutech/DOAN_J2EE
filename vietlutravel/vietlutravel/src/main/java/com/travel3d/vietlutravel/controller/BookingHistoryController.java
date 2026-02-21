@@ -2,11 +2,11 @@ package com.travel3d.vietlutravel.controller;
 
 import com.travel3d.vietlutravel.model.Booking;
 import com.travel3d.vietlutravel.model.Customer;
-import com.travel3d.vietlutravel.service.BookingService;  // ← Thêm import này
+import com.travel3d.vietlutravel.service.BookingService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;  // ← Thêm import
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ public class BookingHistoryController {
     private EntityManager entityManager;
 
     @Autowired
-    private BookingService bookingService;  // ← Quan trọng: inject service ở đây!
+    private BookingService bookingService;
 
     // ================= LỊCH SỬ BOOKING =================
     @GetMapping("/booking-history")
@@ -56,8 +56,6 @@ public class BookingHistoryController {
         if (customer == null) {
             return "redirect:/login";
         }
-
-        // Gọi service → transaction sẽ được xử lý bên trong service
         boolean success = bookingService.cancelBooking(id, customer.getCustomerID());
 
         if (success) {

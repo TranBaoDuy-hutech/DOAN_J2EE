@@ -1,7 +1,5 @@
 package com.travel3d.vietlutravel.model;
 
-import java.time.LocalDateTime;
-
 public class Messages {
 
     private Integer customerID;

@@ -23,7 +23,7 @@ public class StaffController {
         Object staff = session.getAttribute("user");
         if (staff == null) return "redirect:/login";
 
-        model.addAttribute("staffId", 2); // ID staff
+        model.addAttribute("staffId", 2);
         model.addAttribute("customers", messageService.getCustomerList());
 
         return "staff/chat";

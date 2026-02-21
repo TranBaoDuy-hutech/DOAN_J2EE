@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Câu hỏi thường gặp - Việt Lữ Travel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Include Header & Footer fragments -->
+    <th:block th:replace="~{fragments/header :: header-css}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
+</head>
+
+<body>
+
+<!-- Header -->
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+<!-- Page Title Section -->
+<div class="container-fluid py-5" style="background: linear-gradient(135deg, #2c7a8e 0%, #1e5a6d 100%);">
+    <div class="container">
+        <h1 class="text-center text-white fw-bold mb-0">CÂU HỎI THƯỜNG GẶP (FAQ)</h1>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+
+            <!-- 1. Giới thiệu ngắn -->
+            <section class="mb-5">
+                <p class="text-secondary lh-lg text-center lead">
+                    Dưới đây là những câu hỏi phổ biến nhất mà du khách thường hỏi khi đặt tour cùng Việt Lữ Travel.
+                    Nếu bạn chưa tìm thấy câu trả lời, hãy liên hệ ngay với chúng tôi qua hotline hoặc email nhé!
+                </p>
+            </section>
+
+            <!-- 2. Danh sách FAQ dùng accordion để gọn gàng -->
+            <div class="accordion accordion-flush" id="faqAccordion">
+
+                <!-- Câu 1 -->
+                <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1"
+                                style="color: #2c7a8e;">
+                            Làm thế nào để đặt tour trên website?
+                        </button>
+                    </h2>
+                    <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-secondary lh-lg">
+                            Quý khách chọn tour yêu thích → Nhấn "Đặt ngay" → Điền thông tin liên hệ và số lượng người tham gia →
+                            Chọn phương thức thanh toán → Hoàn tất đặt cọc. Hệ thống sẽ gửi email/tin nhắn xác nhận ngay lập tức.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Câu 2 -->
+                <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2"
+                                style="color: #2c7a8e;">
+                            Tôi cần đặt cọc bao nhiêu và thanh toán như thế nào?
+                        </button>
+                    </h2>
+                    <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-secondary lh-lg">
+                            Quý khách cần đặt cọc ít nhất 50% giá trị tour để giữ chỗ. Số tiền còn lại thanh toán trước ngày khởi hành 3 ngày.
+                            Chúng tôi chấp nhận chuyển khoản ngân hàng, ví điện tử (Momo, ZaloPay, VNPAY), hoặc tiền mặt tại văn phòng.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Câu 3 -->
+                <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3"
+                                style="color: #2c7a8e;">
+                            Chính sách hủy tour và hoàn tiền ra sao?
+                        </button>
+                    </h2>
+                    <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-secondary lh-lg">
+                            <ul class="mb-0">
+                                <li>Hủy trước 20 ngày: Miễn phí, hoàn 100% cọc</li>
+                                <li>Hủy 10–19 ngày: Phạt 30%</li>
+                                <li>Hủy 05–09 ngày: Phạt 50%</li>
+                                <li>Hủy trong 04 ngày: Phạt 100%</li>
+                            </ul>
+                            <small class="d-block mt-3 text-info">Lễ, Tết có chính sách riêng, vui lòng xem chi tiết trong chương trình tour.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Câu 4 -->
+                <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4"
+                                style="color: #2c7a8e;">
+                            Trẻ em được tính giá vé như thế nào?
+                        </button>
+                    </h2>
+                    <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-secondary lh-lg">
+                            <ul class="mb-0">
+                                <li>Dưới 05 tuổi: Miễn phí (gia đình tự lo ăn uống, vé nếu có)</li>
+                                <li>05 – 10 tuổi: 75% giá người lớn (có suất ăn và ghế riêng)</li>
+                                <li>Từ 11 tuổi trở lên: Tính như người lớn</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Câu 5 -->
+                <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5"
+                                style="color: #2c7a8e;">
+                            Tour có bảo hiểm du lịch không? Mức bảo hiểm là bao nhiêu?
+                        </button>
+                    </h2>
+                    <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-secondary lh-lg">
+                            Tất cả các tour của Việt Lữ Travel đều mua bảo hiểm du lịch toàn diện cho hành khách, mức bồi thường tối đa lên đến 100 triệu đồng/người/vụ (theo quy định của công ty bảo hiểm đối tác).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Câu 6 -->
+                <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6"
+                                style="color: #2c7a8e;">
+                            Công nghệ tham quan ảo 360°/3D trên website dùng để làm gì?
+                        </button>
+                    </h2>
+                    <div id="collapse6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-secondary lh-lg">
+                            Công nghệ này giúp quý khách trải nghiệm trước điểm đến, xem chi tiết khách sạn, phương tiện, nhà hàng... hoàn toàn miễn phí.
+                            Giúp hình dung rõ ràng lịch trình trước khi quyết định đặt tour.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Câu 7 -->
+                <div class="accordion-item border-0 shadow-sm mb-3 rounded">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7"
+                                style="color: #2c7a8e;">
+                            Nếu tôi có nhu cầu tour riêng (team building, đoàn công ty, gia đình) thì liên hệ thế nào?
+                        </button>
+                    </h2>
+                    <div id="collapse7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-secondary lh-lg">
+                            Quý khách vui lòng liên hệ hotline <strong>090x xxx xxx</strong> hoặc email <strong>info@vietlutral.com</strong>.
+                            Chúng tôi sẽ thiết kế chương trình riêng theo yêu cầu và báo giá chi tiết trong vòng 24h.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Call to action cuối trang -->
+            <div class="text-center mt-5 pt-4">
+                <h5 class="fw-bold mb-3" style="color: #2c7a8e;">Vẫn còn thắc mắc?</h5>
+                <p class="text-secondary mb-4">
+                    Đội ngũ Việt Lữ Travel luôn sẵn sàng hỗ trợ 24/7!
+                </p>
+                <a href="tel:090xxxxxxx" class="btn btn-lg btn-outline-primary me-3">
+                    <i class="bi bi-telephone-fill me-2"></i> Gọi ngay: 090x xxx xxx
+                </a>
+                <a href="mailto:info@vietlutral.com" class="btn btn-lg btn-primary">
+                    <i class="bi bi-envelope-fill me-2"></i> Gửi email hỗ trợ
+                </a>
+            </div>
+
+            <!-- Update Info -->
+            <div class="text-center mt-5 pt-4 border-top">
+                <p class="text-muted mb-0">
+                    <i class="bi bi-calendar-check me-2"></i>
+                    <em>Cập nhật lần cuối: 20/02/2026</em>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

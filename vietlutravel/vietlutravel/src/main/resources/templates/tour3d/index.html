@@ -1,420 +1,1030 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tour 3D - Khám phá An Giang</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #f0d080;
+            --gold-dim: rgba(201,168,76,0.15);
+            --jade: #3dbf8a;
+            --crimson: #c0392b;
+            --deep: #05080f;
+            --dark1: #0a0e1a;
+            --dark2: #111827;
+            --dark3: #1a2236;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --text-primary: #f0e8d8;
+            --text-secondary: rgba(240,232,216,0.6);
         }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--deep);
+            color: var(--text-primary);
             min-height: 100vh;
-            position: relative;
             overflow-x: hidden;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%); /* fallback */
+            cursor: none;
         }
 
-        /* Overlay mờ kính cho nền */
-        .background-overlay {
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 8px; height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s;
+            mix-blend-mode: difference;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 32px; height: 32px;
+            border: 1px solid rgba(201,168,76,0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s ease;
+        }
+
+        /* ─── CANVAS BG ─── */
+        #bgCanvas {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.35); /* tối nhẹ để chữ dễ đọc */
-            backdrop-filter: blur(6px);      /* độ mờ nền - chỉnh 4px đến 10px tùy thích */
-            -webkit-backdrop-filter: blur(6px);
-            z-index: -2;
-            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
         }
 
-        /* Animated Background - giảm opacity để không lấn át */
-        .bg-animation {
+        /* ─── NOISE GRAIN OVERLAY ─── */
+        body::after {
+            content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.08;  /* rất mờ, chỉ làm nền sống động */
-        }
-
-        .floating-icon {
-            position: absolute;
-            font-size: 3rem;
-            animation: float 6s ease-in-out infinite;
-            opacity: 0.4;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(10deg); }
-        }
-
-        .icon-1 { top: 10%; left: 10%; animation-delay: 0s; }
-        .icon-2 { top: 20%; right: 15%; animation-delay: 1s; }
-        .icon-3 { bottom: 15%; left: 20%; animation-delay: 2s; }
-        .icon-4 { top: 60%; right: 10%; animation-delay: 3s; }
-        .icon-5 { bottom: 25%; right: 25%; animation-delay: 1.5s; }
-
-        .container {
-            position: relative;
+            inset: 0;
             z-index: 1;
-            padding: 40px 20px;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+            opacity: 0.03;
         }
 
-        /* Header Section */
-        .header-section {
-            text-align: center;
-            margin-bottom: 60px;
-            animation: fadeInDown 1s ease;
+        /* ─── MAIN WRAPPER ─── */
+        .wrapper {
+            position: relative;
+            z-index: 2;
         }
 
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ─── NAV ─── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(5,8,15,0.9), transparent);
         }
-
-        .main-title {
-            color: white;
-            font-size: 3.5rem;
-            font-weight: 800;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-            margin-bottom: 15px;
-            letter-spacing: 2px;
-        }
-
-        .sub-title {
-            color: #ffd700;
-            font-size: 1.8rem;
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
             font-weight: 600;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .nav-logo span { color: var(--text-secondary); font-weight: 300; }
+        .nav-line {
+            height: 1px;
+            flex: 1;
+            margin: 0 40px;
+            background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+        }
+        .nav-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 1px solid var(--glass-border);
+            padding: 6px 14px;
+            border-radius: 2px;
         }
 
-        .description {
-            color: rgba(255,255,255,0.95);
-            font-size: 1.2rem;
-            max-width: 700px;
+        /* ─── HERO ─── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 40px 80px;
+            position: relative;
+        }
+
+        .hero-eyebrow {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeUp 1s 0.3s forwards;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .hero-eyebrow::before, .hero-eyebrow::after {
+            content: '';
+            width: 40px; height: 1px;
+            background: var(--gold);
+            opacity: 0.5;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4rem, 10vw, 9rem);
+            font-weight: 300;
+            line-height: 0.95;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeUp 1.2s 0.5s forwards;
+        }
+        .hero-title em {
+            font-style: italic;
+            color: var(--gold);
+        }
+        .hero-title .outline {
+            -webkit-text-stroke: 1px rgba(240,232,216,0.4);
+            color: transparent;
+        }
+
+        .hero-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--text-secondary);
+            letter-spacing: 4px;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeUp 1.2s 0.7s forwards;
+        }
+
+        .hero-desc {
+            max-width: 560px;
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--text-secondary);
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeUp 1.2s 0.9s forwards;
+            margin-bottom: 60px;
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--text-secondary);
+            opacity: 0;
+            animation: fadeUp 1s 1.5s forwards;
+        }
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            animation: scrollPulse 2s infinite;
+        }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; transform: scaleY(1); }
+            50% { opacity: 1; transform: scaleY(1.2); }
+        }
+
+        /* ─── SECTION LABEL ─── */
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gold-dim);
+        }
+
+        /* ─── CARDS SECTION ─── */
+        .tours-section {
+            padding: 100px 60px;
+            max-width: 1400px;
             margin: 0 auto;
-            line-height: 1.8;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
         }
 
-        .description i {
-            color: #ffd700;
+        .section-header {
+            margin-bottom: 80px;
         }
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 300;
+            line-height: 1.1;
+        }
+        .section-title em { font-style: italic; color: var(--gold); }
 
-        /* Tour Cards - giữ nguyên nhưng tăng shadow cho nổi bật trên nền mờ */
-        .tour-cards {
+        /* ─── HORIZONTAL SCROLL CARDS ─── */
+        .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
         }
 
         .tour-card {
-            background: rgba(255, 255, 255, 0.92); /* hơi trong suốt nhẹ để hòa quyện */
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.35);
-            transition: all 0.4s ease;
-            animation: fadeInUp 1s ease;
-            animation-fill-mode: both;
             position: relative;
-            backdrop-filter: blur(4px); /* card cũng có hiệu ứng mờ nhẹ */
-        }
-
-        .tour-card:hover {
-            transform: translateY(-15px) scale(1.03);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.45);
-        }
-
-        /* Các phần còn lại giữ nguyên (card-header, card-body, colors, features...) */
-        .card-header {
-            height: 200px;
-            position: relative;
+            height: 600px;
             overflow: hidden;
+            cursor: none;
+            group: true;
         }
 
-        .card-bg {
-            width: 100%;
-            height: 100%;
+        .card-bg-img {
+            position: absolute;
+            inset: 0;
             background-size: cover;
             background-position: center;
-            transition: transform 0.5s ease;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            filter: brightness(0.4) saturate(0.8);
+        }
+        .tour-card:hover .card-bg-img {
+            transform: scale(1.08);
+            filter: brightness(0.55) saturate(1.1);
         }
 
-        .tour-card:hover .card-bg {
-            transform: scale(1.15);
-        }
+        /* Unique gradient per card */
+        .card-360 .card-bg-img { background-image: url('/image/b4.jpg'); }
+        .card-food .card-bg-img { background-image: url('/image/ds.jpg'); }
+        .card-culture .card-bg-img { background-image: url('/image/vh.jpg'); }
 
+        /* Tinted overlay unique per card */
         .card-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
+            inset: 0;
+            transition: opacity 0.5s;
+        }
+        .card-360 .card-overlay { background: linear-gradient(160deg, rgba(102,126,234,0.3) 0%, transparent 60%), linear-gradient(to top, rgba(5,8,15,0.95) 0%, transparent 60%); }
+        .card-food .card-overlay { background: linear-gradient(160deg, rgba(240,87,108,0.3) 0%, transparent 60%), linear-gradient(to top, rgba(5,8,15,0.95) 0%, transparent 60%); }
+        .card-culture .card-overlay { background: linear-gradient(160deg, rgba(79,172,254,0.3) 0%, transparent 60%), linear-gradient(to top, rgba(5,8,15,0.95) 0%, transparent 60%); }
+
+        .card-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 50px 40px;
+        }
+
+        .card-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s 0.1s;
+        }
+        .tour-card:hover .card-num { opacity: 1; transform: translateY(0); }
+
+        .card-icon-big {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            transform: translateY(0);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 0 20px rgba(201,168,76,0.4));
+        }
+        .tour-card:hover .card-icon-big { transform: translateY(-8px) scale(1.1); }
+
+        .card-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .card-title-main {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            font-weight: 300;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s;
+            opacity: 0;
+        }
+        .tour-card:hover .card-desc { max-height: 100px; opacity: 1; }
+
+        .card-cta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 28px;
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            width: fit-content;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.4s 0.15s;
+        }
+        .tour-card:hover .card-cta { opacity: 1; transform: translateY(0); }
+
+        .cta-arrow {
+            width: 40px; height: 40px;
+            border: 1px solid var(--gold);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--gold);
+            transition: all 0.3s;
+        }
+        .card-cta:hover .cta-arrow {
+            background: var(--gold);
+            color: var(--deep);
+            transform: rotate(45deg);
         }
 
-        .card-icon {
-            font-size: 5rem;
-            animation: bounce 2s infinite;
-            color: white;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        .card-body {
-            padding: 30px;
-            text-align: center;
-        }
-
-        .card-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .card-description {
-            color: #555;
-            font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .card-link {
-            display: inline-block;
-            padding: 14px 35px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            color: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .card-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            color: white;
-        }
-
-        /* Card colors giữ nguyên */
-        .tour-360 .card-link { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .tour-360 .card-link:hover { background: linear-gradient(135deg, #764ba2, #667eea); }
-
-        .food-3d .card-link { background: linear-gradient(135deg, #f093fb, #f5576c); }
-        .food-3d .card-link:hover { background: linear-gradient(135deg, #f5576c, #f093fb); }
-
-        .culture-360 .card-link { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-        .culture-360 .card-link:hover { background: linear-gradient(135deg, #00f2fe, #4facfe); }
-
-        /* Features - đã có backdrop-filter rồi, rất hợp */
-        .features {
-            background: rgba(255,255,255,0.12);
-            backdrop-filter: blur(12px);
-            border-radius: 25px;
-            padding: 40px;
-            margin-top: 60px;
-            text-align: center;
-            animation: fadeIn 1.5s ease;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .features h3 {
-            color: white;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-        }
-
-        .feature-items {
+        /* Top right decorative element */
+        .card-deco {
+            position: absolute;
+            top: 30px; right: 30px;
+            width: 60px; height: 60px;
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 50%;
             display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+            transform: rotate(-15deg);
+            transition: transform 0.4s;
+        }
+        .tour-card:hover .card-deco { transform: rotate(0deg); }
+
+        /* Divider line between cards */
+        .card-divider {
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.3), transparent);
         }
 
-        .feature-item {
-            color: white;
-            flex: 1;
-            min-width: 200px;
+        /* ─── STATS ROW ─── */
+        .stats-row {
+            padding: 80px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--glass-border);
         }
 
-        .feature-item i {
-            font-size: 3rem;
-            color: #ffd700;
-            margin-bottom: 15px;
+        .stat-item {
+            background: var(--dark1);
+            padding: 50px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            transform: scaleX(0);
+            transition: transform 0.5s;
+        }
+        .stat-item:hover::before { transform: scaleX(1); }
+
+        .stat-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4rem;
+            font-weight: 300;
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .stat-unit {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            font-weight: 300;
+            letter-spacing: 1px;
         }
 
-        .feature-item h4 {
-            font-size: 1.3rem;
+        /* ─── FEATURES ─── */
+        .features-section {
+            padding: 100px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: center;
+        }
+
+        .features-left .section-label { max-width: 300px; }
+
+        .features-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 300;
+            line-height: 1.15;
+            margin-bottom: 30px;
+        }
+        .features-title em { font-style: italic; color: var(--gold); }
+
+        .features-body {
+            font-size: 1rem;
+            line-height: 1.9;
+            color: var(--text-secondary);
+            font-weight: 300;
+            margin-bottom: 40px;
+        }
+
+        .features-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 32px;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            letter-spacing: 3px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .features-cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+            z-index: -1;
+        }
+        .features-cta:hover { color: var(--deep); }
+        .features-cta:hover::before { transform: scaleX(1); }
+
+        .features-right {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            background: var(--glass-border);
+        }
+
+        .feature-card {
+            background: var(--dark1);
+            padding: 40px 30px;
+            transition: background 0.3s;
+        }
+        .feature-card:hover { background: var(--dark3); }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
             font-weight: 600;
             margin-bottom: 10px;
         }
 
-        .feature-item p {
-            font-size: 0.95rem;
-            opacity: 0.9;
+        .feature-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-weight: 300;
         }
 
-        @media (max-width: 768px) {
-            .main-title { font-size: 2.5rem; }
-            .sub-title { font-size: 1.4rem; }
-            .tour-cards { grid-template-columns: 1fr; gap: 30px; }
-            .card-icon { font-size: 4rem; }
+        /* ─── MARQUEE ─── */
+        .marquee-section {
+            padding: 40px 0;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            overflow: hidden;
+            position: relative;
+        }
+        .marquee-track {
+            display: flex;
+            gap: 60px;
+            width: max-content;
+            animation: marquee 20s linear infinite;
+        }
+        .marquee-item {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-style: italic;
+            font-weight: 300;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .marquee-dot {
+            width: 5px; height: 5px;
+            background: var(--gold);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            padding: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--gold);
+            letter-spacing: 4px;
+        }
+
+        .footer-copy {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+        }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Intersection Observer classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1024px) {
+            .cards-grid { grid-template-columns: 1fr; }
+            .card-divider { display: none; }
+            .tour-card { height: 450px; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .features-section { grid-template-columns: 1fr; gap: 60px; }
+            nav { padding: 20px 30px; }
+            .tours-section, .features-section { padding: 80px 30px; }
+            footer { padding: 40px 30px; flex-direction: column; gap: 20px; text-align: center; }
+        }
+
+        @media (max-width: 600px) {
+            .hero-title { font-size: 3.5rem; letter-spacing: -1px; }
+            .nav-line { display: none; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .features-right { grid-template-columns: 1fr; }
+        }
+
+        /* Horizontal line deco */
+        .h-line {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--glass-border), transparent);
+            margin: 0 60px;
         }
     </style>
 </head>
 <body>
 
-<!-- Overlay mờ nền -->
-<div class="background-overlay"></div>
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
-<!-- Hình nền body -->
-<div th:style="'position: fixed; inset: 0; z-index: -3; background-image: url(' + @{/image/dl.jpg} + '); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;'"></div>
+<!-- Animated background canvas -->
+<canvas id="bgCanvas"></canvas>
 
-<!-- Animated icons -->
-<div class="bg-animation">
-    <div class="floating-icon icon-1">🏔️</div>
-    <div class="floating-icon icon-2">🛶</div>
-    <div class="floating-icon icon-3">🍲</div>
-    <div class="floating-icon icon-4">🎭</div>
-    <div class="floating-icon icon-5">🌾</div>
-</div>
+<div class="wrapper">
 
-<div class="container">
-    <!-- Header Section -->
-    <div class="header-section">
-        <h1 class="main-title">
-            <i class="bi bi-globe-americas"></i> Tour 3D An Giang
+    <!-- Nav -->
+    <nav>
+        <div class="nav-logo">An <span>Giang</span></div>
+        <div class="nav-line"></div>
+        <div class="nav-badge">Tour 3D · VR Experience</div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-eyebrow">Khám phá · Trải nghiệm · Cảm nhận</div>
+        <h1 class="hero-title">
+            <span class="outline">Thất</span><em>Sơn</em><br>
+            <span>Huyền Bí</span>
         </h1>
-        <h2 class="sub-title">
-            <i class="bi bi-stars"></i> Khám phá vùng đất An Giang <i class="bi bi-stars"></i>
-        </h2>
-        <p class="description">
-            <i class="bi bi-compass"></i>
-            Trải nghiệm thực tế ảo độc đáo với công nghệ 360°,
-            khám phá vẻ đẹp thiên nhiên, ẩm thực và văn hóa đặc sắc
-            của An Giang - miền đất của Núi Bảy, sông nước và đạo Phật Nam Tông
+        <p class="hero-subtitle">An Giang — Miền đất của mây trời & sông nước</p>
+        <p class="hero-desc">
+            Trải nghiệm thực tế ảo 360° đắm chìm vào vẻ đẹp hoang sơ của núi Cấm,
+            làng nổi Châu Đốc và tinh hoa ẩm thực miền Tây Nam Bộ.
         </p>
-    </div>
-
-    <!-- Tour Cards -->
-    <div class="tour-cards">
-        <!-- Tour 360 Card -->
-        <div class="tour-card tour-360">
-            <div class="card-header">
-                <div class="card-bg" th:style="'background-image: url(' + @{/image/b4.jpg} + ');'"></div>
-                <div class="card-overlay">
-                    <div class="card-icon">🗺️</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <h3 class="card-title">Tour 360°</h3>
-                <p class="card-description">
-                    Chiêm ngưỡng núi Cấm, núi Tô, Tháp Bà Chúa Xứ,
-                    chùa Thái Sơn, rừng tràm Trà Sư. Khám phá vẻ đẹp
-                    hùng vĩ của vùng Thất Sơn qua góc nhìn 360°
-                </p>
-                <a href="/tour3d/tour" class="card-link">
-                    <i class="bi bi-play-circle"></i> Khám phá ngay
-                </a>
-            </div>
+        <div class="hero-scroll">
+            <div class="scroll-line"></div>
+            CUỘN XUỐNG
         </div>
+    </section>
 
-        <!-- Food 3D Card -->
-        <div class="tour-card food-3d">
-            <div class="card-header">
-                <div class="card-bg" th:style="'background-image: url(' + @{/image/ds.jpg} + ');'"></div>
-                <div class="card-overlay">
-                    <div class="card-icon">🍜</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <h3 class="card-title">Đặc sản</h3>
-                <p class="card-description">
-                    Thưởng thức bún nước lèo, cá linh kho tộ,
-                    bánh xèo miền Tây, nem nướng Bảy Núi.
-                    Trải nghiệm ẩm thực độc đáo với mô hình 3D sinh động
-                </p>
-                <a href="/tour3d/food" class="card-link">
-                    <i class="bi bi-play-circle"></i> Khám phá ngay
-                </a>
-            </div>
-        </div>
-
-        <!-- Culture 360 Card -->
-        <div class="tour-card culture-360">
-            <div class="card-header">
-                <div class="card-bg" th:style="'background-image: url(' + @{/image/vh.jpg} + ');'"></div>
-                <div class="card-overlay">
-                    <div class="card-icon">🎎</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <h3 class="card-title">Văn hóa</h3>
-                <p class="card-description">
-                    Tìm hiểu lễ hội Ok Om Bok, văn hóa Khmer,
-                    chùa Dơi, làng nổi Châu Đốc.
-                    Đắm chìm trong không gian văn hóa đa sắc màu
-                </p>
-                <a href="/tour3d/culture" class="card-link">
-                    <i class="bi bi-play-circle"></i> Khám phá ngay
-                </a>
-            </div>
+    <!-- Marquee -->
+    <div class="marquee-section">
+        <div class="marquee-track" id="marqueeTrack">
+            <span class="marquee-item">Núi Cấm <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Tháp Bà Chúa Xứ <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Rừng Tràm Trà Sư <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Cá Linh Kho Tộ <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Lễ Hội Ok Om Bok <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Làng Nổi Châu Đốc <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Bún Nước Lèo <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Chùa Thái Sơn <span class="marquee-dot"></span></span>
+            <!-- duplicate for seamless loop -->
+            <span class="marquee-item">Núi Cấm <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Tháp Bà Chúa Xứ <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Rừng Tràm Trà Sư <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Cá Linh Kho Tộ <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Lễ Hội Ok Om Bok <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Làng Nổi Châu Đốc <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Bún Nước Lèo <span class="marquee-dot"></span></span>
+            <span class="marquee-item">Chùa Thái Sơn <span class="marquee-dot"></span></span>
         </div>
     </div>
 
-    <!-- Features Section -->
-    <div class="features">
-        <h3><i class="bi bi-trophy"></i> Tính năng nổi bật</h3>
-        <div class="feature-items">
-            <div class="feature-item">
-                <i class="bi bi-badge-vr"></i>
-                <h4>Công nghệ VR</h4>
-                <p>Trải nghiệm thực tế ảo 360° sống động</p>
+    <!-- Tours Section -->
+    <section class="tours-section">
+        <div class="section-header reveal">
+            <div class="section-label">01 — Trải Nghiệm</div>
+            <h2 class="section-title">
+                Ba <em>hành trình</em><br>
+                không thể quên
+            </h2>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Card 360 -->
+            <div class="tour-card card-360">
+                <div class="card-bg-img" th:style="'background-image: url(' + @{/image/b4.jpg} + ')'"></div>
+                <div class="card-overlay"></div>
+                <div class="card-deco">360°</div>
+                <div class="card-content">
+                    <div class="card-num">01 / 03</div>
+                    <div class="card-icon-big">🗺️</div>
+                    <div class="card-tag">Virtual Reality</div>
+                    <h3 class="card-title-main">Tour<br>360°</h3>
+                    <p class="card-desc">
+                        Chiêm ngưỡng núi Cấm, núi Tô, Tháp Bà Chúa Xứ, chùa Thái Sơn và rừng tràm Trà Sư qua góc nhìn toàn cảnh 360° sống động.
+                    </p>
+                    <a href="/tour3d/tour" class="card-cta">
+                        Khám phá ngay
+                        <div class="cta-arrow">
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </a>
+                </div>
             </div>
-            <div class="feature-item">
-                <i class="bi bi-camera-reels"></i>
-                <h4>Hình ảnh 4K</h4>
-                <p>Chất lượng hình ảnh siêu nét, màu sắc rực rỡ</p>
+
+            <!-- Card Food -->
+            <div class="tour-card card-food">
+                <div class="card-bg-img" th:style="'background-image: url(' + @{/image/ds.jpg} + ')'"></div>
+                <div class="card-overlay"></div>
+                <div class="card-deco">3D</div>
+                <div class="card-content">
+                    <div class="card-num">02 / 03</div>
+                    <div class="card-icon-big">🍜</div>
+                    <div class="card-tag">Culinary Journey</div>
+                    <h3 class="card-title-main">Đặc<br>Sản</h3>
+                    <p class="card-desc">
+                        Thưởng thức bún nước lèo, cá linh kho tộ, bánh xèo miền Tây qua mô hình 3D và trải nghiệm ẩm thực độc đáo.
+                    </p>
+                    <a href="/tour3d/food" class="card-cta">
+                        Khám phá ngay
+                        <div class="cta-arrow">
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </a>
+                </div>
             </div>
-            <div class="feature-item">
-                <i class="bi bi-soundwave"></i>
-                <h4>Âm thanh sống động</h4>
-                <p>Âm thanh đa chiều, tái hiện không gian thực</p>
-            </div>
-            <div class="feature-item">
-                <i class="bi bi-phone"></i>
-                <h4>Đa nền tảng</h4>
-                <p>Tương thích mọi thiết bị di động & máy tính</p>
+
+            <!-- Card Culture -->
+            <div class="tour-card card-culture">
+                <div class="card-bg-img" th:style="'background-image: url(' + @{/image/vh.jpg} + ')'"></div>
+                <div class="card-overlay"></div>
+                <div class="card-deco">VR</div>
+                <div class="card-content">
+                    <div class="card-num">03 / 03</div>
+                    <div class="card-icon-big">🎎</div>
+                    <div class="card-tag">Cultural Heritage</div>
+                    <h3 class="card-title-main">Văn<br>Hóa</h3>
+                    <p class="card-desc">
+                        Đắm chìm vào lễ hội Ok Om Bok, văn hóa Khmer, chùa Dơi và làng nổi Châu Đốc đầy màu sắc.
+                    </p>
+                    <a href="/tour3d/culture" class="card-cta">
+                        Khám phá ngay
+                        <div class="cta-arrow">
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
+    </section>
+
+    <div class="h-line"></div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-item reveal">
+            <div class="stat-num" data-target="360">0</div>
+            <div class="stat-unit">Độ</div>
+            <div class="stat-label">Góc nhìn toàn cảnh</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-1">
+            <div class="stat-num" data-target="4">0</div>
+            <div class="stat-unit">K Resolution</div>
+            <div class="stat-label">Chất lượng hình ảnh</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-2">
+            <div class="stat-num" data-target="12">0</div>
+            <div class="stat-unit">Địa Điểm</div>
+            <div class="stat-label">Danh thắng nổi tiếng</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-3">
+            <div class="stat-num" data-target="3">0</div>
+            <div class="stat-unit">Hành Trình</div>
+            <div class="stat-label">Trải nghiệm độc đáo</div>
+        </div>
     </div>
+
+    <div class="h-line"></div>
+
+    <!-- Features -->
+    <section class="features-section">
+        <div class="features-left reveal">
+            <div class="section-label">02 — Công Nghệ</div>
+            <h2 class="features-title">
+                Đỉnh cao<br>
+                <em>công nghệ</em><br>
+                trải nghiệm
+            </h2>
+            <p class="features-body">
+                Được xây dựng trên nền tảng WebVR tiên tiến, mỗi hành trình
+                đều mang lại cảm giác như đang thực sự đứng giữa thiên nhiên
+                hùng vĩ của vùng đất An Giang huyền bí.
+            </p>
+            <a href="/tour3d/tour" class="features-cta">
+                Bắt đầu ngay <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="features-right reveal reveal-delay-1">
+            <div class="feature-card">
+                <i class="bi bi-badge-vr feature-icon"></i>
+                <div class="feature-name">Công nghệ VR</div>
+                <p class="feature-desc">Trải nghiệm thực tế ảo 360° hoàn toàn sống động với mọi thiết bị</p>
+            </div>
+            <div class="feature-card">
+                <i class="bi bi-camera-reels feature-icon"></i>
+                <div class="feature-name">Hình ảnh 4K</div>
+                <p class="feature-desc">Siêu nét, màu sắc chân thực tái hiện vẻ đẹp nguyên sơ</p>
+            </div>
+            <div class="feature-card">
+                <i class="bi bi-soundwave feature-icon"></i>
+                <div class="feature-name">Âm thanh 3D</div>
+                <p class="feature-desc">Spatial audio đa chiều tái hiện không gian thực tế hoàn hảo</p>
+            </div>
+            <div class="feature-card">
+                <i class="bi bi-phone feature-icon"></i>
+                <div class="feature-name">Đa nền tảng</div>
+                <p class="feature-desc">Tương thích mọi thiết bị từ điện thoại đến máy tính bảng</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">AN GIANG</div>
+        <div class="footer-copy">© 2026 Tour 3D An Giang · Powered by Việt Lữ Travel</div>
+    </footer>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ─── Custom Cursor ───
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cursor.style.left = mx - 4 + 'px';
+        cursor.style.top = my - 4 + 'px';
+    });
+
+    (function animRing() {
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = rx - 16 + 'px';
+        ring.style.top = ry - 16 + 'px';
+        requestAnimationFrame(animRing);
+    })();
+
+    document.querySelectorAll('a, .tour-card').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.style.transform = 'scale(3)';
+            ring.style.transform = 'scale(1.5)';
+            ring.style.borderColor = 'rgba(201,168,76,1)';
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.style.transform = 'scale(1)';
+            ring.style.transform = 'scale(1)';
+            ring.style.borderColor = 'rgba(201,168,76,0.6)';
+        });
+    });
+
+    // ─── Canvas BG ───
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const particles = Array.from({length: 60}, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 1.5 + 0.3,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        opacity: Math.random() * 0.5 + 0.1
+    }));
+
+    function drawBg() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // gradient mesh
+        const grad = ctx.createRadialGradient(
+            canvas.width * 0.3, canvas.height * 0.4, 0,
+            canvas.width * 0.3, canvas.height * 0.4, canvas.width * 0.6
+        );
+        grad.addColorStop(0, 'rgba(102,126,234,0.08)');
+        grad.addColorStop(0.5, 'rgba(126,34,206,0.04)');
+        grad.addColorStop(1, 'rgba(5,8,15,0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const grad2 = ctx.createRadialGradient(
+            canvas.width * 0.8, canvas.height * 0.6, 0,
+            canvas.width * 0.8, canvas.height * 0.6, canvas.width * 0.5
+        );
+        grad2.addColorStop(0, 'rgba(201,168,76,0.06)');
+        grad2.addColorStop(1, 'rgba(5,8,15,0)');
+        ctx.fillStyle = grad2;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // particles + connections
+        particles.forEach((p, i) => {
+            p.x += p.vx; p.y += p.vy;
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(201,168,76,${p.opacity})`;
+            ctx.fill();
+
+            for (let j = i + 1; j < particles.length; j++) {
+                const q = particles[j];
+                const d = Math.hypot(p.x - q.x, p.y - q.y);
+                if (d < 120) {
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(q.x, q.y);
+                    ctx.strokeStyle = `rgba(201,168,76,${0.04 * (1 - d / 120)})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
+        });
+        requestAnimationFrame(drawBg);
+    }
+    drawBg();
+
+    // ─── Reveal on scroll ───
+    const revealEls = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); }
+        });
+    }, { threshold: 0.1 });
+    revealEls.forEach(el => io.observe(el));
+
+    // ─── Counter animation ───
+    function animCounter(el) {
+        const target = parseInt(el.dataset.target);
+        const duration = 1800;
+        const start = performance.now();
+        (function tick(now) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.floor(eased * target);
+            if (progress < 1) requestAnimationFrame(tick);
+            else el.textContent = target;
+        })(start);
+    }
+
+    const counterObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                animCounter(e.target);
+                counterObs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stat-num[data-target]').forEach(el => counterObs.observe(el));
+</script>
 </body>
 </html>

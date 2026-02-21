@@ -1,9 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="thymeleaf.org">
 <body>
+
 <footer th:fragment="adminFooter"
-        style="background:#0f172a;color:white;padding:10px;text-align:center">
-    © 2026 Admin System - Việt Lữ Travel
+        style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+               color: #cbd5e1;
+               padding: 2.5rem 1.5rem;
+               text-align: center;
+               font-size: 1rem;
+               font-weight: 500;
+               border-top: 1px solid rgba(102,126,234,0.25);
+               margin-top: 4rem;">  <!-- margin-top lớn để tạo khoảng cách với nội dung phía trên -->
+
+    <div style="max-width: 1400px; margin: 0 auto;">
+        © <span th:text="${#dates.year(#dates.createNow())}"></span>
+        <span style="background: linear-gradient(90deg, #a5b4fc, #c084fc);
+                     -webkit-background-clip: text;
+                     -webkit-text-fill-color: transparent;
+                     font-weight: 700;">Việt Lữ Travel</span>
+        Admin System
+        • Made with <span style="color: #f472b6; font-size: 1.15rem;">♥</span> in Việt Nam
+    </div>
+
 </footer>
+
 </body>
 </html>

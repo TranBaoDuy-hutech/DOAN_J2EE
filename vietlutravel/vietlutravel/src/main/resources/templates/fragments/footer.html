@@ -5,179 +5,490 @@
 </head>
 <body>
 
-<!-- ========== FOOTER FRAGMENT ========== -->
+<!-- ════════════════════════════════════════
+     FOOTER FRAGMENT
+════════════════════════════════════════ -->
 <footer class="main-footer" th:fragment="footer">
-    <div class="container py-5">
-        <div class="row g-4">
 
-            <!-- About -->
-            <div class="col-lg-4">
-                <h5 class="footer-title">
-                    <i class="bi bi-airplane-fill"></i> Việt Lữ Travel
-                </h5>
-                <p class="text-white-50">
-                    Chúng tôi mang đến những trải nghiệm du lịch tuyệt vời nhất,
-                    khám phá vùng đất An Giang miền Tây sông nước.
-                </p>
+    <!-- ── Main grid ── -->
+    <div class="footer-body">
+        <div class="container-fluid px-5">
+            <div class="row g-5">
 
-                <!-- Social Links -->
-                <div class="social-links mt-3">
-                    <a href="#" title="Facebook">
-                        <i class="bi bi-facebook"></i>
+                <!-- Brand col -->
+                <div class="col-lg-4">
+                    <a href="/" class="footer-brand">
+                        <div class="footer-brand-icon"><i class="bi bi-airplane-fill"></i></div>
+                        <div>
+                            <div class="footer-brand-name">Việt Lữ Travel</div>
+                            <div class="footer-brand-sub">An Giang · Miền Tây</div>
+                        </div>
                     </a>
-                    <a href="#" title="Instagram">
-                        <i class="bi bi-instagram"></i>
-                    </a>
-                    <a href="#" title="YouTube">
-                        <i class="bi bi-youtube"></i>
-                    </a>
-                    <a href="#" title="TikTok">
-                        <i class="bi bi-tiktok"></i>
-                    </a>
+
+                    <p class="footer-desc">
+                        Chúng tôi mang đến những hành trình đáng nhớ nhất — khám phá
+                        vùng đất An Giang, Miền Tây sông nước đầy thơ mộng cùng đội ngũ
+                        hướng dẫn viên chuyên nghiệp, tận tâm.
+                    </p>
+
+                    <!-- Social -->
+                    <div class="social-row">
+                        <a href="#" class="social-btn fb" title="Facebook" aria-label="Facebook">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="social-btn ig" title="Instagram" aria-label="Instagram">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="social-btn yt" title="YouTube" aria-label="YouTube">
+                            <i class="bi bi-youtube"></i>
+                        </a>
+                        <a href="#" class="social-btn tt" title="TikTok" aria-label="TikTok">
+                            <i class="bi bi-tiktok"></i>
+                        </a>
+                    </div>
+
+                    <!-- Rating strip -->
+                    <div class="rating-strip">
+                        <div class="rating-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <span class="rating-text">4.9 · 2.000+ đánh giá</span>
+                    </div>
                 </div>
+
+                <!-- Quick links -->
+                <div class="col-lg-2 col-md-4 col-6">
+                    <div class="footer-col-label">Khám phá</div>
+                    <nav class="footer-nav">
+                        <a href="/" class="footer-link">Trang chủ</a>
+                        <a href="/tours" class="footer-link">Tour du lịch</a>
+                        <a href="/tour3d" class="footer-link">Tour 3D & 360°</a>
+                        <a href="/about" class="footer-link">Giới thiệu</a>
+                        <a href="/contact" class="footer-link">Liên hệ</a>
+                    </nav>
+                </div>
+
+                <!-- Support -->
+                <div class="col-lg-2 col-md-4 col-6">
+                    <div class="footer-col-label">Hỗ trợ</div>
+                    <nav class="footer-nav">
+                        <a href="/faq" class="footer-link">Câu hỏi thường gặp</a>
+                        <a href="/terms" class="footer-link">Điều khoản dịch vụ</a>
+                        <a href="/privacy" class="footer-link">Chính sách riêng tư</a>
+                        <a href="/booking-history" class="footer-link">Tra cứu đặt chỗ</a>
+                        <a href="/chat" class="footer-link">Chat CSKH</a>
+                    </nav>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-lg-4 col-md-4">
+                    <div class="footer-col-label">Liên hệ</div>
+
+                    <div class="contact-cards">
+                        <div class="contact-card">
+                            <div class="cc-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                            <div class="cc-text">
+                                <div class="cc-label">Địa chỉ</div>
+                                <div class="cc-value">Khu CNC TP.HCM, Xa lộ Hà Nội,<br>P. Tăng Nhơn Phú, TP.HCM</div>
+                            </div>
+                        </div>
+                        <div class="contact-card">
+                            <div class="cc-icon"><i class="bi bi-telephone-fill"></i></div>
+                            <div class="cc-text">
+                                <div class="cc-label">Hotline</div>
+                                <a href="tel:0901234567" class="cc-value cc-link">090 123 4567</a>
+                            </div>
+                        </div>
+                        <div class="contact-card">
+                            <div class="cc-icon"><i class="bi bi-envelope-fill"></i></div>
+                            <div class="cc-text">
+                                <div class="cc-label">Email</div>
+                                <a href="mailto:vietlutravel@gmail.com" class="cc-value cc-link">vietlutravel@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-card">
+                            <div class="cc-icon"><i class="bi bi-clock-fill"></i></div>
+                            <div class="cc-text">
+                                <div class="cc-label">Giờ làm việc</div>
+                                <div class="cc-value">08:00 – 22:00 · Tất cả các ngày</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-
-            <!-- Quick Links -->
-            <div class="col-lg-3 col-md-6">
-                <h5 class="footer-title">Liên kết nhanh</h5>
-                <a href="/" class="footer-link">
-                    <i class="bi bi-chevron-right"></i> Trang chủ
-                </a>
-                <a href="/tours" class="footer-link">
-                    <i class="bi bi-chevron-right"></i> Tour du lịch
-                </a>
-                <a href="/about" class="footer-link">
-                    <i class="bi bi-chevron-right"></i> Giới thiệu
-                </a>
-                <a href="/contact" class="footer-link">
-                    <i class="bi bi-chevron-right"></i> Liên hệ
-                </a>
-                <a href="/terms" class="footer-link">
-                    <i class="bi bi-chevron-right"></i> Điều khoản
-                </a>
-            </div>
-
-            <!-- Contact -->
-            <div class="col-lg-3 col-md-6">
-                <h5 class="footer-title">Liên hệ</h5>
-
-                <div class="contact-info">
-                    <i class="bi bi-geo-alt-fill"></i>
-                    Khu Công nghệ cao TP.HCM, Xa lộ Hà Nội, Phường Tăng Nhơn Phú, TP.HCM
-                </div>
-
-                <div class="contact-info">
-                    <i class="bi bi-telephone-fill"></i>
-                    <a href="tel:0901234567" class="text-white text-decoration-none">
-                        090 123 4567
-                    </a>
-                </div>
-
-                <div class="contact-info">
-                    <i class="bi bi-envelope-fill"></i>
-                    <a href="mailto:info@vietlutravel.vn" class="text-white text-decoration-none">
-                        vietlutravel@gmail.com
-                    </a>
-                </div>
-
-                <div class="contact-info">
-                    <i class="bi bi-clock-fill"></i>
-                    8:00 - 22:00 (Tất cả các ngày)
-                </div>
-            </div>
-
         </div>
     </div>
 
-    <!-- Footer Bottom -->
+    <!-- ── Divider ── -->
+    <div class="footer-divider"></div>
+
+    <!-- ── Bottom bar ── -->
     <div class="footer-bottom">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0 text-white-50">
-                        &copy; 2026 Việt Lữ Travel. All rights reserved.
-                    </p>
+        <div class="container-fluid px-5">
+            <div class="footer-bottom-inner">
+                <p class="footer-copy">
+                    &copy; 2026 <strong>Việt Lữ Travel</strong>. All rights reserved.
+                </p>
+                <div class="footer-badges">
+                    <div class="footer-badge">
+                        <i class="bi bi-shield-check"></i> Bảo mật SSL
+                    </div>
+                    <div class="footer-badge">
+                        <i class="bi bi-award"></i> Được cấp phép
+                    </div>
+                    <div class="footer-badge">
+                        <i class="bi bi-patch-check"></i> Xác thực
+                    </div>
                 </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <p class="mb-0 text-white-50">
-                        Thiết kế bởi <span class="text-white">Việt Lữ Travel Team</span>
-                    </p>
-                </div>
+                <p class="footer-credit">
+                    Thiết kế bởi <span>Việt Lữ Travel Team</span>
+                </p>
             </div>
         </div>
     </div>
+
 </footer>
 
-<!-- ========== CSS STYLES FOR FOOTER ========== -->
+<!-- ════════════════════════════════════════
+     FOOTER CSS
+════════════════════════════════════════ -->
 <th:block th:fragment="footer-css">
     <style>
-        .main-footer {
-            background: linear-gradient(135deg, #164e63, var(--ocean-blue-dark));
-            color: white;
-            margin-top: auto;
+        /* ── tokens ── */
+        :root {
+            --sea:        #0369a1;
+            --sea-mid:    #0284c7;
+            --sea-light:  #38bdf8;
+            --ink:        #0c2340;
+            --sand:       #c8a96e;
+            --sand-light: #e8d5a3;
+            --white:      #ffffff;
+            --font-h:     'Cormorant Garamond', Georgia, serif;
+            --font-b:     'Outfit', system-ui, sans-serif;
         }
 
-        .footer-title {
-            font-size: 1.2rem;
-            font-weight: bold;
+        /* ── wrapper ── */
+        .main-footer {
+            background: var(--ink);
+            color: rgba(255,255,255,0.72);
+            font-family: var(--font-b);
+            margin-top: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background decorations */
+        .main-footer::before {
+            content: '';
+            position: absolute;
+            top: -120px; right: -80px;
+            width: 480px; height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .main-footer::after {
+            content: '';
+            position: absolute;
+            bottom: 40px; left: -60px;
+            width: 360px; height: 360px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(200,169,110,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .footer-body {
+            padding: 4rem 0 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Brand ── */
+        .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            margin-bottom: 1.4rem;
+        }
+
+        .footer-brand-icon {
+            width: 42px; height: 42px;
+            border-radius: 11px;
+            background: linear-gradient(135deg, var(--sand), #b8943c);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.15rem;
+            color: var(--ink);
+            box-shadow: 0 4px 14px rgba(200,169,110,0.35);
+            flex-shrink: 0;
+            transition: transform 0.3s;
+        }
+
+        .footer-brand:hover .footer-brand-icon { transform: rotate(-8deg) scale(1.08); }
+
+        .footer-brand-name {
+            font-family: var(--font-h);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .footer-brand-sub {
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--sand-light);
+            margin-top: 2px;
+        }
+
+        /* ── Description ── */
+        .footer-desc {
+            font-size: 0.875rem;
+            line-height: 1.75;
+            color: rgba(255,255,255,0.5);
+            font-weight: 300;
             margin-bottom: 1.5rem;
-            color: #e0f2fe;
+            max-width: 340px;
+        }
+
+        /* ── Social ── */
+        .social-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1.2rem;
+        }
+
+        .social-btn {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            color: rgba(255,255,255,0.65);
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            text-decoration: none;
+            transition: all 0.28s;
+        }
+
+        .social-btn:hover { transform: translateY(-3px); color: #fff; }
+        .social-btn.fb:hover { background: #1877f2; border-color: #1877f2; }
+        .social-btn.ig:hover { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); border-color: transparent; }
+        .social-btn.yt:hover { background: #ff0000; border-color: #ff0000; }
+        .social-btn.tt:hover { background: #010101; border-color: #69c9d0; }
+
+        /* ── Rating strip ── */
+        .rating-strip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50px;
+            padding: 6px 14px;
+        }
+
+        .rating-stars { display: flex; gap: 2px; }
+        .rating-stars i { font-size: 0.7rem; color: var(--sand); }
+        .rating-text { font-size: 0.75rem; color: rgba(255,255,255,0.6); font-weight: 500; }
+
+        /* ── Nav cols ── */
+        .footer-col-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--sand-light);
+            margin-bottom: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-col-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .footer-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
 
         .footer-link {
-            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 0;
+            font-size: 0.875rem;
+            color: rgba(255,255,255,0.55);
             text-decoration: none;
-            display: block;
-            padding: 0.4rem 0;
-            transition: all 0.3s;
+            padding: 5px 0;
+            transition: all 0.2s;
+            font-weight: 400;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .footer-link::before {
+            content: '';
+            display: inline-block;
+            width: 0;
+            height: 1px;
+            background: var(--sand);
+            margin-right: 0;
+            transition: all 0.25s;
+            vertical-align: middle;
         }
 
         .footer-link:hover {
-            color: white;
-            padding-left: 5px;
+            color: rgba(255,255,255,0.9);
+            padding-left: 8px;
         }
 
-        .footer-link i {
-            color: var(--ocean-blue-light);
-            margin-right: 0.5rem;
+        .footer-link:hover::before {
+            width: 14px;
+            margin-right: 8px;
         }
 
-        .social-links a {
+        /* ── Contact cards ── */
+        .contact-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .contact-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            padding: 10px 13px;
+            transition: all 0.22s;
+        }
+
+        .contact-card:hover {
+            background: rgba(255,255,255,0.07);
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .cc-icon {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            background: rgba(56,189,248,0.12);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.82rem;
+            color: var(--sea-light);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .cc-label {
+            font-size: 0.67rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 2px;
+        }
+
+        .cc-value {
+            font-size: 0.84rem;
+            color: rgba(255,255,255,0.72);
+            line-height: 1.45;
+            font-weight: 400;
+        }
+
+        .cc-link {
+            text-decoration: none;
+            color: rgba(255,255,255,0.72);
+            transition: color 0.2s;
+        }
+
+        .cc-link:hover { color: var(--sand-light); }
+
+        /* ── Divider ── */
+        .footer-divider {
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255,255,255,0.1) 20%,
+                rgba(200,169,110,0.2) 50%,
+                rgba(255,255,255,0.1) 80%,
+                transparent);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Bottom bar ── */
+        .footer-bottom {
+            padding: 1.3rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-bottom-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-copy {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.35);
+            margin: 0;
+        }
+
+        .footer-copy strong { color: rgba(255,255,255,0.55); font-weight: 600; }
+
+        .footer-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .footer-badge {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: white;
-            margin-right: 0.5rem;
-            transition: all 0.3s;
-            text-decoration: none;
+            gap: 5px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 50px;
+            padding: 4px 11px;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.42);
+            font-weight: 500;
         }
 
-        .social-links a:hover {
-            background: var(--ocean-blue-light);
-            transform: translateY(-3px);
+        .footer-badge i { font-size: 0.75rem; color: var(--sea-light); }
+
+        .footer-credit {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.3);
+            margin: 0;
         }
 
-        .footer-bottom {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1.5rem 0;
-            margin-top: 3rem;
-        }
+        .footer-credit span { color: rgba(255,255,255,0.55); font-weight: 600; }
 
-        .contact-info {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-        }
-
-        .contact-info i {
-            color: var(--ocean-blue-light);
-            font-size: 1.2rem;
-            margin-right: 0.8rem;
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .footer-body { padding: 2.5rem 0 2rem; }
+            .footer-bottom-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .footer-badges { display: none; }
+            .container-fluid { padding: 0 1.2rem !important; }
         }
     </style>
 </th:block>

@@ -1,8 +1,5 @@
 package com.travel3d.vietlutravel.controller.Admin;
 
-import com.travel3d.vietlutravel.model.Booking;
-import com.travel3d.vietlutravel.model.Customer;
-import com.travel3d.vietlutravel.model.Tours;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Controller;

@@ -24,12 +24,10 @@ public class Booking {
     private String status;
     private String specialRequests;
 
-    // ✅ MAP JPA TỚI CUSTOMER
     @ManyToOne
     @JoinColumn(name = "customerID", insertable = false, updatable = false)
     private Customer customer;
 
-    // ✅ MAP JPA TỚI TOUR
     @ManyToOne
     @JoinColumn(name = "tourID", insertable = false, updatable = false)
     private Tours tour;

@@ -3,319 +3,869 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Văn hóa 360° - An Giang</title>
+    <title>Văn Hóa 360° — An Giang</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@0.13/build/pannellum.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/pannellum@0.13/build/pannellum.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
+        :root {
+            --gold: #c9a84c;
+            --gold-glow: rgba(201,168,76,0.18);
+            --teal: #2a9d8f;
+            --teal-glow: rgba(42,157,143,0.2);
+            --deep: #04060d;
+            --dark1: #080b16;
+            --dark2: #0e1220;
+            --dark3: #141828;
+            --glass: rgba(255,255,255,0.035);
+            --glass-border: rgba(255,255,255,0.07);
+            --text: #f0ead8;
+            --text-dim: rgba(240,234,216,0.5);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
         body {
-            background: linear-gradient(to bottom, #f8f9fa, #e6f2ff);
-            color: #333;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 20px;
-            line-height: 1.6;
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--deep);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            cursor: none;
         }
 
-        h2, h3 {
-            text-align: center;
-            color: #c62828; /* Đỏ miền Tây */
-            margin: 30px 0 20px;
+        /* ─── CURSOR ─── */
+        #cur { position: fixed; width: 7px; height: 7px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.1s; mix-blend-mode: difference; }
+        #curR { position: fixed; width: 28px; height: 28px; border: 1px solid rgba(201,168,76,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transition: all 0.14s ease; }
+
+        /* ─── BG CANVAS ─── */
+        #bgc { position: fixed; inset: 0; z-index: 0; opacity: 0.55; pointer-events: none; }
+        body::after {
+            content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity: 0.025;
         }
 
-        h2 { font-size: 2.5rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
-        h3 { font-size: 1.8rem; }
+        .page { position: relative; z-index: 2; }
 
-        #panorama-container {
-            max-width: 1200px;
-            margin: 0 auto 40px;
-            border-radius: 16px;
+        /* ─── MARQUEE ─── */
+        .marquee {
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 14px 0;
+        }
+        .marquee-track {
+            display: flex; gap: 50px; width: max-content;
+            animation: marquee 30s linear infinite;
+        }
+        .marquee-item {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem; font-style: italic; font-weight: 300;
+            color: var(--text-dim); white-space: nowrap;
+            display: flex; align-items: center; gap: 24px;
+        }
+        .m-sep { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; flex-shrink: 0; }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* ─── HEADER ─── */
+        .header {
+            padding: 44px 70px 0;
+            display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+        }
+        .header-eyebrow {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem; letter-spacing: 5px; color: var(--gold);
+            text-transform: uppercase; display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+        }
+        .header-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--gold); opacity: 0.6; }
+        .header-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.8rem, 6vw, 5.5rem); font-weight: 300;
+            line-height: 0.95; letter-spacing: -1px;
+        }
+        .header-title em { font-style: italic; color: var(--gold); }
+        .header-title .outline { -webkit-text-stroke: 1px rgba(240,234,216,0.28); color: transparent; }
+
+        .header-right { text-align: right; flex-shrink: 0; }
+        .header-desc {
+            font-size: 0.95rem; line-height: 1.8; color: var(--text-dim);
+            font-weight: 300; max-width: 320px; margin-bottom: 20px;
+        }
+        .header-badges { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+        .hbadge {
+            display: inline-flex; align-items: center; gap: 8px;
+            border: 1px solid var(--glass-border); padding: 8px 16px;
+            font-family: 'Space Mono', monospace; font-size: 0.55rem;
+            letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase;
+        }
+        .dot-teal { width: 6px; height: 6px; background: var(--teal); border-radius: 50%; animation: blink 2s infinite; }
+        .dot-gold { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: blink 2s 0.5s infinite; }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+
+        .h-div {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--glass-border) 20%, var(--glass-border) 80%, transparent);
+            margin: 40px 70px 0;
         }
 
-        #panorama2 { width: 100%; height: 60vh; min-height: 500px; }
+        /* ─── PANORAMA SECTION ─── */
+        .pano-section {
+            padding: 50px 70px 0;
+            max-width: 1600px; margin: 0 auto;
+        }
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem; letter-spacing: 5px; color: var(--gold);
+            text-transform: uppercase; display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+        }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: var(--glass-border); }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 300; margin-bottom: 28px;
+        }
+        .section-title em { font-style: italic; color: var(--gold); }
+
+        .pano-wrap {
+            position: relative; border: 1px solid var(--glass-border); overflow: hidden;
+        }
+        /* scan line */
+        .pano-wrap::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 5;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px);
+        }
+
+        #panorama2 { width: 100%; height: 62vh; min-height: 460px; }
+
+        /* Pano HUD */
+        .pano-hud {
+            position: absolute; top: 20px; left: 20px; z-index: 10;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .phud-box {
+            background: rgba(4,6,13,0.85); backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); padding: 8px 16px;
+        }
+        .phud-label { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; }
+        .phud-val { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--gold); }
+
+        .pano-compass {
+            position: absolute; bottom: 28px; right: 28px; z-index: 10;
+            width: 64px; height: 64px;
+            border: 1px solid rgba(201,168,76,0.2); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            animation: spin360 35s linear infinite;
+        }
+        .pano-compass::before {
+            content: 'N'; position: absolute; top: 7px;
+            font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--gold);
+        }
+        .pano-compass i { color: rgba(201,168,76,0.35); font-size: 1.1rem; }
+        @keyframes spin360 { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+        /* ─── FILTER BAR ─── */
+        .filter-bar {
+            display: flex; align-items: center; gap: 0;
+            border-bottom: 1px solid var(--glass-border);
+            overflow-x: auto;
+        }
+        .filter-btn {
+            padding: 16px 22px; background: transparent; border: none;
+            border-bottom: 2px solid transparent; color: var(--text-dim); cursor: none;
+            font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 500;
+            letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s;
+            white-space: nowrap; margin-bottom: -1px;
+        }
+        .filter-btn:hover { color: var(--text); }
+        .filter-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+        /* ─── GALLERY SECTION ─── */
+        .gallery-section {
+            padding: 50px 70px 80px;
+            max-width: 1600px; margin: 0 auto;
+        }
 
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-            gap: 24px;
-            max-width: 1400px;
-            margin: 0 auto;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2px;
         }
 
+        /* ─── CARD ─── */
         .card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            transition: all 0.3s ease;
-            position: relative;
+            position: relative; background: var(--dark1);
+            overflow: hidden; cursor: none;
+            display: flex; flex-direction: column;
         }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent);
+            transform: scaleX(0); transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); z-index: 10;
         }
+        .card:hover::before { transform: scaleX(1); }
+        .card:hover { background: var(--dark2); }
 
+        /* Thumbnail container */
+        .thumb-wrap {
+            position: relative; overflow: hidden; height: 220px; flex-shrink: 0;
+        }
         .thumbnail {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            border-bottom: 4px solid #d32f2f;
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s;
+            filter: brightness(0.65) saturate(0.8);
+        }
+        .card:hover .thumbnail { transform: scale(1.07); filter: brightness(0.8) saturate(1.1); }
+
+        .thumb-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(4,6,13,0.9) 0%, transparent 55%);
         }
 
+        .card-num {
+            position: absolute; top: 16px; left: 18px;
+            font-family: 'Space Mono', monospace; font-size: 0.5rem;
+            letter-spacing: 2px; color: rgba(201,168,76,0.5); z-index: 5;
+            transition: color 0.3s;
+        }
+        .card:hover .card-num { color: var(--gold); }
+
+        .card-cat-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: rgba(4,6,13,0.85); backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border); padding: 5px 10px;
+            font-family: 'Space Mono', monospace; font-size: 0.48rem;
+            letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; z-index: 5;
+            opacity: 0; transform: translateY(-4px); transition: all 0.3s 0.1s;
+        }
+        .card:hover .card-cat-badge { opacity: 1; transform: translateY(0); }
+
+        /* Info */
         .info {
-            padding: 20px;
-            text-align: center;
+            padding: 22px 24px 18px;
+            border-top: 1px solid var(--glass-border);
         }
-
+        .info-tag {
+            font-family: 'Space Mono', monospace; font-size: 0.5rem;
+            letter-spacing: 3px; color: var(--teal); text-transform: uppercase;
+            margin-bottom: 8px; opacity: 0; transform: translateY(4px); transition: all 0.4s;
+        }
+        .card:hover .info-tag { opacity: 1; transform: translateY(0); }
         .info h4 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            color: #b71c1c;
+            font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;
+            font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.2;
+            transition: color 0.3s;
         }
-
+        .card:hover .info h4 { color: var(--gold); }
         .info p {
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 15px;
+            font-size: 0.88rem; color: var(--text-dim); font-weight: 300; line-height: 1.7;
+            max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s; opacity: 0;
         }
+        .card:hover .info p { max-height: 80px; opacity: 1; }
 
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
-            height: 0;
-            overflow: hidden;
+        /* Video wrapper */
+        .video-wrap {
+            position: relative; flex: 1;
+            border-top: 1px solid var(--glass-border);
+        }
+        .video-frame {
+            position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
             background: #000;
         }
-
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+        .video-frame iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border: none;
         }
 
-        @media (max-width: 768px) {
+        /* Video overlay click-to-play shield (removes on hover for better UX) */
+        .video-shield {
+            position: absolute; inset: 0; z-index: 5; cursor: none;
+            background: linear-gradient(to bottom, transparent 60%, rgba(4,6,13,0.7));
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.4s;
+        }
+        .play-btn {
+            width: 56px; height: 56px;
+            border: 1px solid rgba(201,168,76,0.6);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: var(--gold); font-size: 1.2rem; background: rgba(4,6,13,0.75);
+            backdrop-filter: blur(10px); transition: all 0.3s;
+            padding-left: 3px;
+        }
+        .video-shield:hover .play-btn { background: var(--gold); color: var(--deep); border-color: var(--gold); }
+        .video-shield.active { opacity: 0; pointer-events: none; }
+
+        /* ─── FOOTER ─── */
+        footer {
+            padding: 40px 70px;
+            border-top: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 300; letter-spacing: 4px; color: var(--gold); }
+        .footer-copy { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 2px; color: var(--text-dim); }
+
+        /* ─── REVEAL ─── */
+        .card { opacity: 0; transform: translateY(28px); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            .header { padding: 28px 24px 0; flex-direction: column; align-items: flex-start; gap: 24px; }
+            .header-right { text-align: left; }
+            .h-div { margin: 28px 24px 0; }
+            .pano-section { padding: 40px 24px 0; }
+            .gallery-section { padding: 32px 24px 60px; }
             .gallery { grid-template-columns: 1fr; }
-            #panorama2 { height: 50vh; }
+            footer { padding: 30px 24px; flex-direction: column; gap: 12px; text-align: center; }
+            .pano-hud { display: none; }
+        }
+        @media (max-width: 600px) {
+            #panorama2 { height: 50vh; min-height: 340px; }
+            .thumb-wrap { height: 180px; }
         }
     </style>
 </head>
 <body>
 
-<h2>Văn hóa & Lễ hội An Giang - Khám phá 360°</h2>
+<div id="cur"></div>
+<div id="curR"></div>
+<canvas id="bgc"></canvas>
 
-<div id="panorama-container">
-    <h3>Khám phá Văn hóa An Giang qua ảnh 360°</h3>
-    <div id="panorama2"></div>
-</div>
+<div class="page">
 
-<div class="gallery">
-
-    <!-- Các chủ đề bạn cung cấp -->
-    <div class="card">
-        <img src="/image/t1.jpg" alt="Lễ hội Vía Bà Chúa Xứ Núi Sam" class="thumbnail">
-        <div class="info">
-            <h4>Lễ hội Vía Bà Chúa Xứ Núi Sam</h4>
-            <p>Lễ hội tâm linh lớn nhất miền Tây, được UNESCO công nhận Di sản văn hóa phi vật thể (2025). Diễn ra 22-27/4 âm lịch, thu hút hàng triệu lượt hành hương.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/bQAE5eFkCJo" title="Lễ hội Vía Bà Chúa Xứ Núi Sam" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    <!-- Marquee -->
+    <div class="marquee">
+        <div class="marquee-track">
+            <span class="marquee-item">Lễ hội Vía Bà <span class="m-sep"></span></span>
+            <span class="marquee-item">Đua Bò Bảy Núi <span class="m-sep"></span></span>
+            <span class="marquee-item">Đờn Ca Tài Tử <span class="m-sep"></span></span>
+            <span class="marquee-item">Làng Chăm Châu Phong <span class="m-sep"></span></span>
+            <span class="marquee-item">Ok Om Bok <span class="m-sep"></span></span>
+            <span class="marquee-item">Chùa Khmer <span class="m-sep"></span></span>
+            <span class="marquee-item">Chợ Nổi Long Xuyên <span class="m-sep"></span></span>
+            <span class="marquee-item">Dệt Thổ Cẩm <span class="m-sep"></span></span>
+            <span class="marquee-item">Lễ hội Vía Bà <span class="m-sep"></span></span>
+            <span class="marquee-item">Đua Bò Bảy Núi <span class="m-sep"></span></span>
+            <span class="marquee-item">Đờn Ca Tài Tử <span class="m-sep"></span></span>
+            <span class="marquee-item">Làng Chăm Châu Phong <span class="m-sep"></span></span>
+            <span class="marquee-item">Ok Om Bok <span class="m-sep"></span></span>
+            <span class="marquee-item">Chùa Khmer <span class="m-sep"></span></span>
+            <span class="marquee-item">Chợ Nổi Long Xuyên <span class="m-sep"></span></span>
+            <span class="marquee-item">Dệt Thổ Cẩm <span class="m-sep"></span></span>
         </div>
     </div>
 
-    <div class="card">
-        <img src="/image/t2.jpg" alt="Lễ hội đua bò Bảy Núi" class="thumbnail">
-        <div class="info">
-            <h4>Lễ hội Đua bò Bảy Núi</h4>
-            <p>Nét văn hóa độc đáo của đồng bào Khmer, diễn ra dịp Sene Dolta (tháng 8-9 âm lịch), với những cuộc đua kịch tính trên đồng ruộng.</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-eyebrow">Văn hóa · Lễ hội · Di sản</div>
+            <h1 class="header-title">
+                Văn <em>Hóa</em><br>
+                <span class="outline">An Giang</span>
+            </h1>
         </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/sUqJd4rlLf0" title="Lễ hội đua bò Bảy Núi" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        <div class="header-right">
+            <p class="header-desc">
+                Khám phá kho tàng văn hóa đa dân tộc — Kinh, Khmer, Chăm, Hoa —
+                qua ảnh 360° và những thước phim tư liệu quý giá.
+            </p>
+            <div class="header-badges">
+                <div class="hbadge"><div class="dot-teal"></div>17 Chủ đề</div>
+                <div class="hbadge"><div class="dot-gold"></div>360° · Video</div>
+            </div>
         </div>
-    </div>
+    </header>
 
-    <div class="card">
-        <img src="/image/t3.jpg" alt="Văn hóa Thất Sơn (Bảy Núi)" class="thumbnail">
-        <div class="info">
-            <h4>Văn hóa Thất Sơn (Bảy Núi)</h4>
-            <p>Di sản thiên nhiên - văn hóa hùng vĩ, nơi giao thoa tín ngưỡng đa dân tộc.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/wuXPRtxie3E" title="Văn hóa Thất Sơn" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+    <div class="h-div"></div>
 
-    <div class="card">
-        <img src="/image/t4.jpg" alt="Văn hóa tín ngưỡng – tôn giáo" class="thumbnail">
-        <div class="info">
-            <h4>Văn hóa Tín ngưỡng – Tôn giáo</h4>
-            <p>Sự hòa quyện giữa Phật giáo, Công giáo, Hồi giáo và tín ngưỡng dân gian.</p>
+    <!-- Panorama -->
+    <section class="pano-section">
+        <div class="section-label">01 — Khám Phá 360°</div>
+        <h2 class="section-title">Toàn cảnh <em>văn hóa</em></h2>
+        <div class="pano-wrap">
+            <div class="pano-hud">
+                <div class="phud-box">
+                    <div class="phud-label">Chế độ xem</div>
+                    <div class="phud-val">360° Panorama</div>
+                </div>
+                <div class="phud-box">
+                    <div class="phud-label">Tỉnh</div>
+                    <div class="phud-val">An Giang</div>
+                </div>
+            </div>
+            <div id="panorama2"></div>
+            <div class="pano-compass">
+                <i class="bi bi-compass"></i>
+            </div>
         </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/wuXPRtxie3E" title="Văn hóa tín ngưỡng" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+    </section>
 
-    <div class="card">
-        <img src="/image/t5.png" alt="Văn hóa đa dân tộc" class="thumbnail">
-        <div class="info">
-            <h4>Văn hóa Đa dân tộc</h4>
-            <p>Đồng bào Kinh, Khmer, Chăm, Hoa sống hài hòa, tạo nên bức tranh văn hóa phong phú.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/jm_fmhtiSqU" title="Văn hóa đa dân tộc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <div class="section-label">02 — Văn Hóa & Lễ Hội</div>
+        <h2 class="section-title" style="margin-bottom:28px;">Khám phá từng <em>chủ đề</em></h2>
 
-    <div class="card">
-        <img src="/image/t6.jpg" alt="Văn hóa Nghệ thuật Dân gian" class="thumbnail">
-        <div class="info">
-            <h4>Văn hóa Nghệ thuật Dân gian</h4>
-            <p>Đờn ca tài tử, múa lăm vông, hát bội – hồn cốt Nam Bộ.</p>
+        <!-- Filter -->
+        <div class="filter-bar" style="margin-bottom: 32px;">
+            <button class="filter-btn active" data-filter="all">Tất cả</button>
+            <button class="filter-btn" data-filter="lehoi">Lễ hội</button>
+            <button class="filter-btn" data-filter="nghethuat">Nghệ thuật</button>
+            <button class="filter-btn" data-filter="langnghe">Làng nghề</button>
+            <button class="filter-btn" data-filter="sonnuoc">Sông nước</button>
+            <button class="filter-btn" data-filter="dantoc">Dân tộc</button>
         </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/FPOT4Kde--k" title="Nghệ thuật Dân gian" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
 
-    <div class="card">
-        <img src="/image/t7.jpg" alt="Nghề truyền thống tại An Giang" class="thumbnail">
-        <div class="info">
-            <h4>Nghề Truyền thống tại An Giang</h4>
-            <p>Dệt thổ cẩm, làm đường thốt nốt, nuôi cá bè – tinh hoa làng nghề.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/0jcjIhLbs5I" title="Nghề truyền thống" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+        <div class="gallery" id="gallery">
 
-    <div class="card">
-        <img src="/image/t8.jpg" alt="Nghề Nuôi Cá Bè trên Sông" class="thumbnail">
-        <div class="info">
-            <h4>Nghề Nuôi Cá Bè trên Sông</h4>
-            <p>Nếp sống sông nước đặc trưng miền Tây sông nước.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/QCt9ID-99VU" title="Nuôi Cá Bè" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+            <div class="card" data-cat="lehoi">
+                <div class="thumb-wrap">
+                    <img src="/image/t1.jpg" alt="Lễ hội Vía Bà Chúa Xứ Núi Sam" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">01</div>
+                    <div class="card-cat-badge">Lễ hội</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Di sản UNESCO · 2025</div>
+                    <h4>Lễ hội Vía Bà Chúa Xứ Núi Sam</h4>
+                    <p>Lễ hội tâm linh lớn nhất miền Tây, được UNESCO công nhận Di sản văn hóa phi vật thể (2025). Diễn ra 22-27/4 âm lịch.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/bQAE5eFkCJo" title="Lễ hội Vía Bà Chúa Xứ Núi Sam" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
 
-    <div class="card">
-        <img src="/image/t9.jpg" alt="Làng Chăm Châu Phong" class="thumbnail">
-        <div class="info">
-            <h4>Làng Chăm Châu Phong – Bản sắc Hồi giáo Nam Bộ</h4>
-            <p>Văn hóa Chăm với nhà sàn, thánh đường và nghề dệt thổ cẩm.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/l9B2CtnH6VQ" title="Làng Chăm Châu Phong" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+            <div class="card" data-cat="lehoi">
+                <div class="thumb-wrap">
+                    <img src="/image/t2.jpg" alt="Lễ hội Đua bò Bảy Núi" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">02</div>
+                    <div class="card-cat-badge">Lễ hội</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Văn hóa Khmer</div>
+                    <h4>Lễ hội Đua bò Bảy Núi</h4>
+                    <p>Nét văn hóa độc đáo của đồng bào Khmer, diễn ra dịp Sene Dolta tháng 8-9 âm lịch, kịch tính trên đồng ruộng.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/sUqJd4rlLf0" title="Lễ hội đua bò Bảy Núi" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
 
-    <div class="card">
-        <img src="/image/t10.jpg" alt="Kiến trúc chùa Khmer – Chùa Xvayton" class="thumbnail">
-        <div class="info">
-            <h4>Kiến trúc chùa Khmer – Chùa Xvayton</h4>
-            <p>Kiến trúc độc đáo, mái cong, họa tiết tinh xảo của người Khmer.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/v3iewdRKW6Y" title="Chùa Khmer Xvayton" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+            <div class="card" data-cat="dantoc">
+                <div class="thumb-wrap">
+                    <img src="/image/t3.jpg" alt="Văn hóa Thất Sơn" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">03</div>
+                    <div class="card-cat-badge">Di sản</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Thiên nhiên · Văn hóa</div>
+                    <h4>Văn hóa Thất Sơn (Bảy Núi)</h4>
+                    <p>Di sản thiên nhiên - văn hóa hùng vĩ, giao thoa tín ngưỡng đa dân tộc vùng Thất Sơn huyền bí.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/wuXPRtxie3E" title="Văn hóa Thất Sơn" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
 
-    <div class="card">
-        <img src="/image/t11.jpg" alt="Văn hóa ẩm thực – Bún cá Châu Đốc" class="thumbnail">
-        <div class="info">
-            <h4>Văn hóa Ẩm thực – Bún cá Châu Đốc</h4>
-            <p>Món đặc sản trứ danh, hương vị đậm đà sông nước.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/O8cw5pcKtt8" title="Bún cá Châu Đốc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+            <div class="card" data-cat="dantoc">
+                <div class="thumb-wrap">
+                    <img src="/image/t4.jpg" alt="Văn hóa Tín ngưỡng" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">04</div>
+                    <div class="card-cat-badge">Tín ngưỡng</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Đa tôn giáo</div>
+                    <h4>Văn hóa Tín ngưỡng – Tôn giáo</h4>
+                    <p>Sự hòa quyện giữa Phật giáo, Công giáo, Hồi giáo và tín ngưỡng dân gian độc đáo.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/wuXPRtxie3E" title="Văn hóa tín ngưỡng" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
 
-    <div class="card">
-        <img src="/image/t12.jpg" alt="Nghề dệt thổ cẩm Tân Châu" class="thumbnail">
-        <div class="info">
-            <h4>Nghề dệt thổ cẩm Tân Châu</h4>
-            <p>Tinh hoa làng nghề, họa tiết truyền thống của người Khmer.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/-Fek_Ctl18w" title="Dệt thổ cẩm Tân Châu" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+            <div class="card" data-cat="dantoc">
+                <div class="thumb-wrap">
+                    <img src="/image/t5.png" alt="Văn hóa Đa dân tộc" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">05</div>
+                    <div class="card-cat-badge">Dân tộc</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Kinh · Khmer · Chăm · Hoa</div>
+                    <h4>Văn hóa Đa dân tộc</h4>
+                    <p>Bốn dân tộc sống hài hòa tạo nên bức tranh văn hóa phong phú, đặc sắc của vùng đất An Giang.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/jm_fmhtiSqU" title="Văn hóa đa dân tộc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
 
-    <div class="card">
-        <img src="/image/t13.jpg" alt="Văn hóa chợ nổi Long Xuyên" class="thumbnail">
-        <div class="info">
-            <h4>Văn hóa Chợ nổi Long Xuyên</h4>
-            <p>Nếp sống sông nước miền Tây, mua bán trên sông tấp nập.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/RO7BbLnO92I" title="Chợ nổi Long Xuyên" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+            <div class="card" data-cat="nghethuat">
+                <div class="thumb-wrap">
+                    <img src="/image/t6.jpg" alt="Văn hóa Nghệ thuật Dân gian" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">06</div>
+                    <div class="card-cat-badge">Nghệ thuật</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Hồn Nam Bộ</div>
+                    <h4>Văn hóa Nghệ thuật Dân gian</h4>
+                    <p>Đờn ca tài tử, múa lăm vông, hát bội — tinh hoa văn hóa dân gian sống động của Nam Bộ.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/FPOT4Kde--k" title="Nghệ thuật Dân gian" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
 
-    <div class="card">
-        <img src="/image/t14.jpg" alt="Nghệ thuật Đờn ca tài tử" class="thumbnail">
-        <div class="info">
-            <h4>Nghệ thuật Đờn ca tài tử</h4>
-            <p>Hồn dân ca Nam Bộ, di sản UNESCO, sống động ở An Giang.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/uB6ye79H9C0" title="Đờn ca tài tử" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+            <div class="card" data-cat="langnghe">
+                <div class="thumb-wrap">
+                    <img src="/image/t7.jpg" alt="Nghề truyền thống" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">07</div>
+                    <div class="card-cat-badge">Làng nghề</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Tinh hoa làng nghề</div>
+                    <h4>Nghề Truyền thống tại An Giang</h4>
+                    <p>Dệt thổ cẩm, làm đường thốt nốt, nuôi cá bè — tinh hoa làng nghề truyền thống bao đời.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/0jcjIhLbs5I" title="Nghề truyền thống" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
 
-    <div class="card">
-        <img src="/image/t15.jpg" alt="Lễ hội đua ghe ngo" class="thumbnail">
-        <div class="info">
-            <h4>Lễ hội Đua ghe ngo</h4>
-            <p>Niềm tự hào của người Khmer, đua thuyền rồng trên sông nước.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/crZF3hghbgQ" title="Đua ghe ngo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+            <div class="card" data-cat="sonnuoc">
+                <div class="thumb-wrap">
+                    <img src="/image/t8.jpg" alt="Nghề Nuôi Cá Bè" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">08</div>
+                    <div class="card-cat-badge">Sông nước</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Miền Tây sông nước</div>
+                    <h4>Nghề Nuôi Cá Bè trên Sông</h4>
+                    <p>Nếp sống sông nước đặc trưng miền Tây, nghề nuôi cá bè gắn liền với dòng sông Hậu.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/QCt9ID-99VU" title="Nuôi Cá Bè" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
 
-    <!-- Thêm lễ hội nổi bật -->
-    <div class="card">
-        <img src="/image/t1.jpg" alt="Lễ hội Chol Chnam Thmay" class="thumbnail"> <!-- Dùng ảnh tương tự hoặc thay -->
-        <div class="info">
-            <h4>Lễ hội Chol Chnam Thmay (Tết Khmer)</h4>
-            <p>Tết cổ truyền lớn nhất của đồng bào Khmer, diễn ra tháng 4 dương lịch, với nghi thức tắm Phật, xông nhà, thả chim cá.</p>
-        </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/mBnyZhEc21I" title="Chol Chnam Thmay An Giang" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+            <div class="card" data-cat="dantoc">
+                <div class="thumb-wrap">
+                    <img src="/image/t9.jpg" alt="Làng Chăm Châu Phong" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">09</div>
+                    <div class="card-cat-badge">Dân tộc Chăm</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Hồi giáo Nam Bộ</div>
+                    <h4>Làng Chăm Châu Phong</h4>
+                    <p>Văn hóa Chăm với nhà sàn, thánh đường và nghề dệt thổ cẩm độc đáo bên dòng sông Hậu.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/l9B2CtnH6VQ" title="Làng Chăm Châu Phong" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
 
-    <div class="card">
-        <img src="/image/t2.jpg" alt="Lễ hội Ok Om Bok" class="thumbnail">
-        <div class="info">
-            <h4>Lễ hội Ok Om Bok (Cúng Trăng)</h4>
-            <p>Lễ cúng trăng rằm tháng 10 âm lịch, thả đèn nước, đua ghe ngo, tri ân thần Mặt Trăng bảo vệ mùa màng.</p>
+            <div class="card" data-cat="dantoc">
+                <div class="thumb-wrap">
+                    <img src="/image/t10.jpg" alt="Chùa Khmer Xvayton" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">10</div>
+                    <div class="card-cat-badge">Kiến trúc Khmer</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Phật giáo Khmer</div>
+                    <h4>Kiến trúc chùa Khmer – Xvayton</h4>
+                    <p>Mái cong, họa tiết tinh xảo — kiến trúc độc đáo của người Khmer An Giang trường tồn với thời gian.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/v3iewdRKW6Y" title="Chùa Khmer Xvayton" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
+
+            <div class="card" data-cat="sonnuoc">
+                <div class="thumb-wrap">
+                    <img src="/image/t11.jpg" alt="Bún cá Châu Đốc" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">11</div>
+                    <div class="card-cat-badge">Ẩm thực</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Đặc sản trứ danh</div>
+                    <h4>Văn hóa Ẩm thực – Bún cá Châu Đốc</h4>
+                    <p>Hương vị đậm đà sông nước, bún cá Châu Đốc là linh hồn ẩm thực vùng biên giới An Giang.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/O8cw5pcKtt8" title="Bún cá Châu Đốc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
+
+            <div class="card" data-cat="langnghe">
+                <div class="thumb-wrap">
+                    <img src="/image/t12.jpg" alt="Nghề dệt thổ cẩm Tân Châu" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">12</div>
+                    <div class="card-cat-badge">Làng nghề</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Tinh hoa thổ cẩm</div>
+                    <h4>Nghề dệt thổ cẩm Tân Châu</h4>
+                    <p>Họa tiết truyền thống của người Khmer được đôi bàn tay khéo léo dệt thành những tấm vải quý.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/-Fek_Ctl18w" title="Dệt thổ cẩm Tân Châu" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
+
+            <div class="card" data-cat="sonnuoc">
+                <div class="thumb-wrap">
+                    <img src="/image/t13.jpg" alt="Chợ nổi Long Xuyên" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">13</div>
+                    <div class="card-cat-badge">Sông nước</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Nếp sống miền Tây</div>
+                    <h4>Văn hóa Chợ nổi Long Xuyên</h4>
+                    <p>Mua bán trên sông tấp nập, chợ nổi Long Xuyên là nét văn hóa sông nước không thể quên.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/RO7BbLnO92I" title="Chợ nổi Long Xuyên" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
+
+            <div class="card" data-cat="nghethuat">
+                <div class="thumb-wrap">
+                    <img src="/image/t14.jpg" alt="Đờn ca tài tử" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">14</div>
+                    <div class="card-cat-badge">Di sản UNESCO</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Di sản UNESCO</div>
+                    <h4>Nghệ thuật Đờn ca tài tử</h4>
+                    <p>Hồn dân ca Nam Bộ được UNESCO công nhận, sống động và lan tỏa khắp vùng đồng bằng An Giang.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/uB6ye79H9C0" title="Đờn ca tài tử" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
+
+            <div class="card" data-cat="lehoi">
+                <div class="thumb-wrap">
+                    <img src="/image/t15.jpg" alt="Lễ hội Đua ghe ngo" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">15</div>
+                    <div class="card-cat-badge">Lễ hội</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Tự hào Khmer</div>
+                    <h4>Lễ hội Đua ghe ngo</h4>
+                    <p>Niềm tự hào của người Khmer, đua thuyền rồng rực rỡ trên dòng sông mùa nước lên.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/crZF3hghbgQ" title="Đua ghe ngo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
+
+            <div class="card" data-cat="lehoi">
+                <div class="thumb-wrap">
+                    <img src="/image/t1.jpg" alt="Lễ hội Chol Chnam Thmay" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">16</div>
+                    <div class="card-cat-badge">Tết Khmer</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Cổ truyền Khmer</div>
+                    <h4>Lễ hội Chol Chnam Thmay</h4>
+                    <p>Tết cổ truyền lớn nhất đồng bào Khmer tháng 4 dương lịch, nghi thức tắm Phật, xông nhà, thả chim cá.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/mBnyZhEc21I" title="Chol Chnam Thmay" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
+
+            <div class="card" data-cat="lehoi">
+                <div class="thumb-wrap">
+                    <img src="/image/t2.jpg" alt="Lễ hội Ok Om Bok" class="thumbnail">
+                    <div class="thumb-overlay"></div>
+                    <div class="card-num">17</div>
+                    <div class="card-cat-badge">Cúng trăng</div>
+                </div>
+                <div class="info">
+                    <div class="info-tag">Rằm tháng 10</div>
+                    <h4>Lễ hội Ok Om Bok (Cúng Trăng)</h4>
+                    <p>Lễ cúng trăng rằm tháng 10 âm lịch, thả đèn nước, đua ghe ngo, tri ân thần Mặt Trăng bảo vệ mùa màng.</p>
+                </div>
+                <div class="video-wrap">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube.com/embed/Vq-KN5ANW1I" title="Ok Om Bok" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-shield"><div class="play-btn"><i class="bi bi-play-fill"></i></div></div>
+                </div>
+            </div>
+
         </div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/Vq-KN5ANW1I" title="Ok Om Bok An Giang" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-    </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">AN GIANG</div>
+        <div class="footer-copy">© 2025 Văn Hóa 360° · An Giang Cultural Heritage</div>
+    </footer>
 
 </div>
 
 <script>
-    // Khởi tạo Pannellum 360°
+    // ─── Cursor ───
+    const cur = document.getElementById('cur');
+    const curR = document.getElementById('curR');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cur.style.left = (mx - 3.5) + 'px'; cur.style.top = (my - 3.5) + 'px';
+    });
+    (function loop() {
+        rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+        curR.style.left = (rx - 14) + 'px'; curR.style.top = (ry - 14) + 'px';
+        requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a, button, .card').forEach(el => {
+        el.addEventListener('mouseenter', () => { cur.style.transform = 'scale(3)'; curR.style.transform = 'scale(1.4)'; curR.style.borderColor = 'rgba(201,168,76,1)'; });
+        el.addEventListener('mouseleave', () => { cur.style.transform = 'scale(1)'; curR.style.transform = 'scale(1)'; curR.style.borderColor = 'rgba(201,168,76,0.5)'; });
+    });
+
+    // ─── BG Canvas ───
+    const c = document.getElementById('bgc');
+    const ctx = c.getContext('2d');
+    function rsz() { c.width = window.innerWidth; c.height = window.innerHeight; }
+    rsz(); window.addEventListener('resize', rsz);
+    const pts = Array.from({length: 40}, () => ({
+        x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+        r: Math.random() * 1.2 + 0.3, vx: (Math.random()-.5)*0.22, vy: (Math.random()-.5)*0.22, o: Math.random()*0.35+0.1
+    }));
+    function draw() {
+        ctx.clearRect(0,0,c.width,c.height);
+        const g1 = ctx.createRadialGradient(c.width*.15,c.height*.25,0,c.width*.15,c.height*.25,c.width*.5);
+        g1.addColorStop(0,'rgba(42,157,143,0.06)'); g1.addColorStop(1,'rgba(4,6,13,0)');
+        ctx.fillStyle=g1; ctx.fillRect(0,0,c.width,c.height);
+        const g2 = ctx.createRadialGradient(c.width*.85,c.height*.7,0,c.width*.85,c.height*.7,c.width*.5);
+        g2.addColorStop(0,'rgba(201,168,76,0.05)'); g2.addColorStop(1,'rgba(4,6,13,0)');
+        ctx.fillStyle=g2; ctx.fillRect(0,0,c.width,c.height);
+        pts.forEach((p,i)=>{
+            p.x+=p.vx; p.y+=p.vy;
+            if(p.x<0)p.x=c.width; if(p.x>c.width)p.x=0;
+            if(p.y<0)p.y=c.height; if(p.y>c.height)p.y=0;
+            ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+            ctx.fillStyle=`rgba(201,168,76,${p.o})`; ctx.fill();
+            for(let j=i+1;j<pts.length;j++){
+                const q=pts[j], d=Math.hypot(p.x-q.x,p.y-q.y);
+                if(d<100){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+                ctx.strokeStyle=`rgba(42,157,143,${0.03*(1-d/100)})`;ctx.lineWidth=0.5;ctx.stroke();}
+            }
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
+
+    // ─── Pannellum ───
     pannellum.viewer('panorama2', {
-        "type": "equirectangular",
-        "panorama": "/image/test.jpg",
-        "autoLoad": true,
-        "autoRotate": -1.5,
-        "autoRotateInactivityDelay": 3000,
-        "compass": true
+        type: "equirectangular",
+        panorama: "/image/test.jpg",
+        autoLoad: true,
+        autoRotate: -1.5,
+        autoRotateInactivityDelay: 3000,
+        showZoomCtrl: false,
+        compass: false
+    });
+
+    // ─── Filter ───
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const f = btn.dataset.filter;
+            document.querySelectorAll('.card').forEach(card => {
+                const show = f === 'all' || card.dataset.cat === f;
+                card.style.display = show ? 'flex' : 'none';
+            });
+        });
+    });
+
+    // ─── Video shield click ───
+    document.querySelectorAll('.video-shield').forEach(shield => {
+        shield.addEventListener('click', () => shield.classList.add('active'));
+    });
+
+    // ─── Reveal on scroll ───
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+                e.target.style.opacity = '1';
+                e.target.style.transform = 'translateY(0)';
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.06 });
+
+    document.querySelectorAll('.card').forEach((card, i) => {
+        card.style.transitionDelay = (i % 3) * 0.08 + 's';
+        io.observe(card);
     });
 </script>
-
 </body>
 </html>

@@ -39,7 +39,6 @@ public class AuthController {
                 throw new IllegalArgumentException("Mật khẩu phải có ít nhất 6 ký tự");
             }
 
-            // ✅ FIX QUAN TRỌNG Ở ĐÂY
             if (customer.getUserName() == null || customer.getUserName().trim().isEmpty()) {
                 throw new IllegalArgumentException("Họ tên không được để trống");
             }
@@ -81,7 +80,6 @@ public class AuthController {
                     "Vui lòng nhập đầy đủ email và mật khẩu");
             return "redirect:/login";
         }
-
         Customer customer = authService.login(email.trim(), password.trim());
 
         if (customer == null) {
@@ -89,13 +87,11 @@ public class AuthController {
                     "Email hoặc mật khẩu không đúng");
             return "redirect:/login";
         }
-
-        // ✅ Lưu session
         session.setAttribute("user", customer);
 
         String role = customer.getRole().toUpperCase();
 
-        // ✅ PHÂN QUYỀN ĐÚNG CHỖ NÀY
+        // PHÂN QUYỀN
         switch (role) {
             case "ADMIN":
                 redirectAttributes.addFlashAttribute("successMessage",

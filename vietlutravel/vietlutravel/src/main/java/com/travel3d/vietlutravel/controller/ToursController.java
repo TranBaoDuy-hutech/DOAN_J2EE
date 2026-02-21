@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 
 @Controller
@@ -16,15 +17,42 @@ public class ToursController {
     private EntityManager entityManager;
 
     @GetMapping("/tours")
-    public String toursPage(Model model) {
+    public String toursPage(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "date", required = false) String date,
+            Model model) {
 
-        List<Tours> tours = entityManager
-                .createQuery("FROM Tours", Tours.class)
-                .getResultList();
+        StringBuilder jpql = new StringBuilder("SELECT t FROM Tours t WHERE 1=1");
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            jpql.append(" AND (")
+                    .append("LOWER(t.tourName) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
+                    .append("OR LOWER(t.location) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
+                    .append("OR LOWER(t.departureLocation) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+                    .append(")");
+        }
+
+        if (date != null && !date.isEmpty()) {
+            jpql.append(" AND FUNCTION('DATE', t.startDate) = :date");
+        }
+
+        var query = entityManager.createQuery(jpql.toString(), Tours.class);
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            query.setParameter("keyword", keyword.trim());
+        }
+
+        if (date != null && !date.isEmpty()) {
+            query.setParameter("date", Date.valueOf(date));
+        }
+
+        List<Tours> tours = query.getResultList();
 
         model.addAttribute("tours", tours);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("date", date);
+        model.addAttribute("currentPage", "tours");
+
         return "tours";
     }
-
-
 }

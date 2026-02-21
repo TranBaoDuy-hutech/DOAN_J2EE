@@ -84,4 +84,30 @@ public class AuthService {
             return null;
         }
     }
+    @Transactional
+    public Customer processSocialLogin(String email, String name) {
+        if (email == null || email.trim().isEmpty()) {
+            return null;
+        }
+
+        try {
+            // Check if user exists
+            return entityManager.createQuery(
+                            "SELECT c FROM Customer c WHERE c.email = :email", Customer.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            // Create new user
+            Customer newCustomer = new Customer();
+            newCustomer.setEmail(email);
+            newCustomer.setUserName(name != null ? name : "Google User");
+            newCustomer.setPasswordHash("GOOGLE_AUTH_NO_PASS"); // Dummy password to satisfy DB NOT NULL constraint
+            newCustomer.setRole("USER");
+            newCustomer.setPhone("0000000000"); // Dummy phone
+            newCustomer.setAddress("N/A"); // Dummy address
+
+            entityManager.persist(newCustomer);
+            return newCustomer;
+        }
+    }
 }

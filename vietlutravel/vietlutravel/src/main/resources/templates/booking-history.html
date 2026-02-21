@@ -2,261 +2,456 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lịch sử đặt tour</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Lich su dat tour | Viet Lu Travel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --gold-dark: #9d7c2e;
+            --ink: #1a1a2e;
+            --cream: #fdf8f0;
+            --cream-dark: #f5ede0;
+            --slate: #6b7280;
+            --border: rgba(201, 168, 76, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: var(--cream);
             min-height: 100vh;
-            padding: 40px 0;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
         }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 10% 0%, rgba(201,168,76,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 90% 100%, rgba(26,26,46,0.06) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        h3 {
-            color: #667eea;
-            font-weight: 700;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(253,248,240,0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 64px;
         }
 
-        h3::before {
-            content: "\f5a0";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            font-size: 2rem;
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem; font-weight: 700;
+            color: var(--ink); letter-spacing: 0.03em;
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none;
         }
 
-        .table {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        .logo-dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; }
+
+        .breadcrumb-bar {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.8rem; color: var(--slate);
         }
 
-        .table thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .breadcrumb-bar a { color: var(--gold-dark); text-decoration: none; }
+
+        /* Page wrapper */
+        .page-wrapper {
+            position: relative; z-index: 1;
+            max-width: 1100px; margin: 0 auto;
+            padding: 3rem 2rem 5rem;
         }
 
-        .table thead th {
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 18px 15px;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
+        .page-header { margin-bottom: 2.5rem; animation: fadeUp 0.55s ease both; }
+
+        .eyebrow {
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 6px;
         }
 
-        .table tbody tr {
-            transition: all 0.3s ease;
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem; font-weight: 700; color: var(--ink);
         }
 
-        .table tbody tr:hover {
-            background-color: #f8f9ff;
-            transform: scale(1.01);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        .page-header .subtitle { margin-top: 8px; color: var(--slate); font-size: 0.92rem; }
+
+        .ornament {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 2rem; animation: fadeUp 0.55s 0.08s ease both;
         }
 
-        .table tbody td {
-            padding: 20px 15px;
-            vertical-align: middle;
-            border-color: #e9ecef;
+        .orn-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold-light)); }
+        .orn-line.r { background: linear-gradient(to left, transparent, var(--gold-light)); }
+        .orn-icon { color: var(--gold); font-size: 0.7rem; }
+
+        /* Summary cards */
+        .summary-row {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1rem; margin-bottom: 2rem;
+            animation: fadeUp 0.55s 0.12s ease both;
         }
+
+        .sum-card {
+            background: white; border: 1px solid var(--border);
+            border-radius: 16px; padding: 1.2rem 1.4rem;
+            display: flex; align-items: center; gap: 1rem;
+            box-shadow: 0 4px 14px rgba(26,26,46,0.04);
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .sum-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(26,26,46,0.09); }
+
+        .sum-icon {
+            width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(201,168,76,0.14), rgba(201,168,76,0.05));
+            border: 1px solid rgba(201,168,76,0.18);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .sum-icon i { color: var(--gold-dark); font-size: 0.95rem; }
+        .sum-label { font-size: 0.67rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--slate); margin-bottom: 2px; }
+        .sum-value { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--ink); }
+
+        /* Main card */
+        .main-card {
+            background: white; border: 1px solid var(--border);
+            border-radius: 20px; overflow: hidden;
+            box-shadow: 0 4px 16px rgba(26,26,46,0.05), 0 20px 50px rgba(26,26,46,0.04);
+            animation: fadeUp 0.55s 0.18s ease both;
+        }
+
+        .card-top {
+            background: var(--ink); padding: 1.2rem 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            position: relative; overflow: hidden;
+        }
+
+        .card-top::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 70% 100% at 90% 50%, rgba(201,168,76,0.16) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .card-top-title {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .card-top-title i { color: var(--gold); }
+
+        .card-top-title span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem; font-weight: 600; color: white;
+        }
+
+        .count-pill {
+            position: relative; z-index: 1;
+            background: rgba(201,168,76,0.14);
+            border: 1px solid rgba(201,168,76,0.28);
+            color: var(--gold-light);
+            font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.05em; text-transform: uppercase;
+            padding: 4px 12px; border-radius: 20px;
+        }
+
+        /* Table */
+        .table-wrap { overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        thead tr { border-bottom: 1px solid var(--cream-dark); }
+
+        thead th {
+            padding: 0.95rem 1.25rem;
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--slate); white-space: nowrap;
+            background: var(--cream);
+        }
+
+        thead th i { color: var(--gold); margin-right: 5px; font-size: 0.7rem; }
+
+        tbody tr { border-bottom: 1px solid rgba(0,0,0,0.04); transition: background 0.18s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--cream); }
+
+        tbody td { padding: 1.15rem 1.25rem; vertical-align: middle; font-size: 0.9rem; }
+
+        .tour-cell { display: flex; align-items: center; gap: 10px; }
+
+        .tour-ico {
+            width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .tour-ico i { color: white; font-size: 0.68rem; }
+        .tour-name { font-weight: 600; color: var(--ink); font-size: 0.94rem; }
+
+        .meta { display: flex; align-items: center; gap: 7px; color: var(--slate); font-size: 0.875rem; }
+        .meta i { color: var(--gold); font-size: 0.72rem; }
+
+        .price { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--ink); }
+        .price-unit { font-family: 'DM Sans', sans-serif; font-size: 0.7rem; color: var(--slate); margin-left: 2px; }
 
         /* Status badges */
-        .badge-status {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: inline-block;
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600;
+            white-space: nowrap; border: 1px solid;
         }
 
-        .status-pending {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
+        .badge .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
-        .status-confirmed {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
+        .badge-pending  { background: rgba(250,173,20,0.1);  color: #b07d10; border-color: rgba(201,168,76,0.35); }
+        .badge-pending .dot  { background: #b07d10; }
 
-        .status-cancelled {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            color: white;
-        }
+        .badge-confirmed { background: rgba(34,197,94,0.08); color: #15803d; border-color: rgba(34,197,94,0.25); }
+        .badge-confirmed .dot { background: #15803d; }
 
-        /* Price styling */
-        .price {
-            color: #667eea;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
+        .badge-cancelled { background: rgba(239,68,68,0.07); color: #b91c1c; border-color: rgba(239,68,68,0.2); }
+        .badge-cancelled .dot { background: #b91c1c; }
 
-        /* Button styling */
+        /* Action buttons */
         .btn-cancel {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border: none;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: white;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: transparent;
+            border: 1px solid rgba(185,28,28,0.25); color: #b91c1c;
+            padding: 7px 16px; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 600;
+            font-family: 'DM Sans', sans-serif; cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .btn-cancel:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
-            color: white;
+            background: rgba(239,68,68,0.07);
+            border-color: rgba(185,28,28,0.45);
+            transform: translateY(-1px);
         }
 
-        .text-muted-custom {
-            color: #9ca3af;
-            font-style: italic;
-            font-size: 0.9rem;
-        }
-
-        /* Tour name styling */
-        .tour-name {
-            font-weight: 600;
-            color: #1f2937;
-            font-size: 1rem;
-        }
-
-        /* Date icon */
-        .date-info, .people-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #6b7280;
+        .locked {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: #d1d5db; font-size: 0.78rem; font-weight: 500;
+            padding: 7px 12px; border-radius: 20px;
+            background: #f9fafb; border: 1px solid #f3f4f6;
         }
 
         /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #9ca3af;
+        .empty-state { text-align: center; padding: 80px 40px; }
+
+        .empty-icon {
+            width: 90px; height: 90px; border-radius: 50%;
+            background: var(--cream-dark); border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem;
         }
 
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            opacity: 0.3;
+        .empty-icon i { font-size: 2.2rem; color: var(--gold); opacity: 0.5; }
+        .empty-state h4 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--ink); margin-bottom: 8px; }
+        .empty-state p { color: var(--slate); font-size: 0.9rem; max-width: 300px; margin: 0 auto 2rem; line-height: 1.6; }
+
+        .btn-explore {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--ink); color: white;
+            padding: 11px 26px; border-radius: 50px;
+            font-size: 0.875rem; font-weight: 500;
+            font-family: 'DM Sans', sans-serif; text-decoration: none;
+            transition: all 0.25s ease; position: relative; overflow: hidden;
         }
 
-        /* Responsive */
+        .btn-explore::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            opacity: 0; transition: opacity 0.25s ease;
+        }
+
+        .btn-explore:hover::before { opacity: 1; }
+        .btn-explore:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,26,46,0.2); color: white; }
+        .btn-explore i, .btn-explore span { position: relative; z-index: 1; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
         @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
+            .page-wrapper { padding: 2rem 1rem 4rem; }
+            .page-header h1 { font-size: 1.8rem; }
+            .summary-row { grid-template-columns: 1fr 1fr; }
+            .card-top { padding: 1rem 1.25rem; }
+            thead th, tbody td { padding: 0.8rem 0.75rem; }
+        }
 
-            .table {
-                font-size: 0.85rem;
-            }
-
-            .table thead th,
-            .table tbody td {
-                padding: 12px 8px;
-            }
+        @media (max-width: 500px) {
+            .summary-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<div class="container mt-5">
-    <h3>Lịch sử đặt tour của bạn</h3>
+<nav class="topbar">
+    <a href="#" class="logo">
+        <span class="logo-dot"></span>
+        Viet Lu Travel
+    </a>
+    <div class="breadcrumb-bar">
+        <a href="#">Trang chu</a>
+        <i class="fas fa-chevron-right" style="font-size:0.55rem"></i>
+        <a href="#">Tai khoan</a>
+        <i class="fas fa-chevron-right" style="font-size:0.55rem"></i>
+        <span>Lich su dat tour</span>
+    </div>
+</nav>
 
-    <div th:if="${bookings != null and !bookings.empty}">
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th><i class="fas fa-map-marked-alt me-2"></i>Tour</th>
-                <th><i class="fas fa-calendar-alt me-2"></i>Ngày khởi hành</th>
-                <th><i class="fas fa-users me-2"></i>Số người</th>
-                <th><i class="fas fa-money-bill-wave me-2"></i>Tổng tiền</th>
-                <th><i class="fas fa-info-circle me-2"></i>Trạng thái</th>
-                <th><i class="fas fa-cog me-2"></i>Hành động</th>
-            </tr>
-            </thead>
-            <tbody>
+<div class="page-wrapper">
 
-            <tr th:each="b : ${bookings}">
-                <td>
-                    <span class="tour-name" th:text="${b.tour.tourName}"></span>
-                </td>
-                <td>
-                    <div class="date-info">
-                        <i class="far fa-calendar"></i>
-                        <span th:text="${b.tour.startDate}"></span>
-                    </div>
-                </td>
-                <td>
-                    <div class="people-info">
-                        <i class="fas fa-user-friends"></i>
-                        <span th:text="${b.numberOfPeople}"></span>
-                    </div>
-                </td>
-                <td>
-                    <span class="price" th:text="${#numbers.formatDecimal(b.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
-                </td>
+    <div class="page-header">
+        <p class="eyebrow"><i class="fas fa-route" style="margin-right:6px"></i>Hanh trinh cua ban</p>
+        <h1>Lich su dat tour</h1>
+        <p class="subtitle">Theo doi va quan ly tat ca cac chuyen di cua ban</p>
+    </div>
 
-                <!-- STATUS -->
-                <td>
-                    <span class="badge-status"
-                          th:classappend="${b.status == 'Pending' ? 'status-pending' :
-                                           (b.status == 'Confirmed' ? 'status-confirmed' :
-                                           'status-cancelled')}"
-                          th:text="${b.status == 'Pending' ? 'Chờ xác nhận' :
-                                     (b.status == 'Confirmed' ? 'Đã xác nhận' :
-                                     'Đã hủy')}">
-                    </span>
-                </td>
+    <div class="ornament">
+        <div class="orn-line"></div>
+        <span class="orn-icon"><i class="fas fa-diamond"></i></span>
+        <div class="orn-line r"></div>
+    </div>
 
-                <!-- ACTION -->
-                <td>
-                    <!-- Được hủy khi còn >= 7 ngày -->
-                    <form th:if="${b.status == 'Pending' and
-                                  T(java.time.temporal.ChronoUnit).DAYS.between(today, b.tour.startDate) >= 7}"
-                          th:action="@{/booking/cancel/{id}(id=${b.bookingID})}"
-                          method="post"
-                          onsubmit="return confirm('Bạn có chắc chắn muốn hủy tour này?');">
+    <!-- Summary (only when bookings exist) -->
+    <div class="summary-row" th:if="${bookings != null and !bookings.empty}">
+        <div class="sum-card">
+            <div class="sum-icon"><i class="fas fa-suitcase-rolling"></i></div>
+            <div>
+                <div class="sum-label">Tong dat tour</div>
+                <div class="sum-value" th:text="${bookings.size()}">0</div>
+            </div>
+        </div>
+        <div class="sum-card">
+            <div class="sum-icon"><i class="fas fa-check-circle"></i></div>
+            <div>
+                <div class="sum-label">Da xac nhan</div>
+                <div class="sum-value" th:text="${#lists.size(bookings.?[status == 'Confirmed'])}">0</div>
+            </div>
+        </div>
+        <div class="sum-card">
+            <div class="sum-icon"><i class="fas fa-clock"></i></div>
+            <div>
+                <div class="sum-label">Cho xac nhan</div>
+                <div class="sum-value" th:text="${#lists.size(bookings.?[status == 'Pending'])}">0</div>
+            </div>
+        </div>
+    </div>
 
-                        <button class="btn btn-cancel">
-                            <i class="fas fa-times-circle me-2"></i>Hủy tour
-                        </button>
-                    </form>
+    <!-- Booking table -->
+    <div class="main-card" th:if="${bookings != null and !bookings.empty}">
+        <div class="card-top">
+            <div class="card-top-title">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>Danh sach dat tour</span>
+            </div>
+            <span class="count-pill" th:text="${bookings.size()} + ' chuyen di'">0 chuyen di</span>
+        </div>
 
-                    <!-- Không thể hủy -->
-                    <span th:if="${b.status != 'Pending' or
-                                   T(java.time.temporal.ChronoUnit).DAYS.between(today, b.tour.startDate) < 7}"
-                          class="text-muted-custom">
-                        <i class="fas fa-lock me-1"></i>Không thể hủy
-                    </span>
-                </td>
-            </tr>
-
-            </tbody>
-        </table>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th><i class="fas fa-compass"></i>Ten tour</th>
+                    <th><i class="fas fa-calendar-alt"></i>Ngay khoi hanh</th>
+                    <th><i class="fas fa-users"></i>So nguoi</th>
+                    <th><i class="fas fa-coins"></i>Tong tien</th>
+                    <th><i class="fas fa-circle-dot"></i>Trang thai</th>
+                    <th><i class="fas fa-sliders"></i>Hanh dong</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="b : ${bookings}">
+                    <td>
+                        <div class="tour-cell">
+                            <div class="tour-ico"><i class="fas fa-mountain"></i></div>
+                            <span class="tour-name" th:text="${b.tour.tourName}">Tour name</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="meta">
+                            <i class="far fa-calendar"></i>
+                            <span th:text="${b.tour.startDate}">01/01/2025</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="meta">
+                            <i class="fas fa-user-friends"></i>
+                            <span th:text="${b.numberOfPeople}">2</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="price" th:text="${#numbers.formatDecimal(b.totalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                        <span class="price-unit">d</span>
+                    </td>
+                    <td>
+                            <span th:if="${b.status == 'Pending'}" class="badge badge-pending">
+                                <span class="dot"></span>Cho xac nhan
+                            </span>
+                        <span th:if="${b.status == 'Confirmed'}" class="badge badge-confirmed">
+                                <span class="dot"></span>Da xac nhan
+                            </span>
+                        <span th:if="${b.status != 'Pending' and b.status != 'Confirmed'}" class="badge badge-cancelled">
+                                <span class="dot"></span>Da huy
+                            </span>
+                    </td>
+                    <td>
+                        <form th:if="${b.status == 'Pending' and T(java.time.temporal.ChronoUnit).DAYS.between(today, b.tour.startDate) >= 7}"
+                              th:action="@{/booking/cancel/{id}(id=${b.bookingID})}"
+                              method="post"
+                              onsubmit="return confirm('Ban co chac chan muon huy tour nay?');"
+                              style="margin:0">
+                            <button type="submit" class="btn-cancel">
+                                <i class="fas fa-times-circle"></i>Huy tour
+                            </button>
+                        </form>
+                        <span th:if="${b.status != 'Pending' or T(java.time.temporal.ChronoUnit).DAYS.between(today, b.tour.startDate) < 7}"
+                              class="locked">
+                                <i class="fas fa-lock"></i>Khong the huy
+                            </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Empty state -->
-    <div th:if="${bookings == null or bookings.empty}" class="empty-state">
-        <i class="fas fa-suitcase-rolling"></i>
-        <h5>Chưa có lịch sử đặt tour</h5>
-        <p>Hãy khám phá và đặt tour đầu tiên của bạn!</p>
+    <div class="main-card" th:if="${bookings == null or bookings.empty}">
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-suitcase-rolling"></i></div>
+            <h4>Chua co chuyen di nao</h4>
+            <p>Hay kham pha va dat tour dau tien cua ban cung Viet Lu Travel!</p>
+            <a href="#" class="btn-explore">
+                <i class="fas fa-compass"></i>
+                <span>Kham pha tour ngay</span>
+            </a>
+        </div>
     </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,208 +1,709 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${tour.tourName}">Chi tiết Tour</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${tour.tourName} + ' | Việt Lữ Travel'">Chi tiết Tour</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Include Header CSS -->
     <th:block th:replace="~{fragments/header :: header-css}"></th:block>
-
-    <!-- Include Footer CSS -->
     <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
 
     <style>
+        /* ════════════════════════════════════════
+           TOKENS
+        ════════════════════════════════════════ */
         :root {
-            --ocean-blue: #0891b2;
-            --ocean-blue-dark: #0e7490;
-            --ocean-blue-light: #06b6d4;
+            --sea:        #0369a1;
+            --sea-mid:    #0284c7;
+            --sea-light:  #38bdf8;
+            --sea-pale:   #e0f2fe;
+            --ink:        #0c2340;
+            --ink-soft:   #1e3a5f;
+            --sand:       #c8a96e;
+            --sand-light: #e8d5a3;
+            --sand-pale:  #fdf8f0;
+            --white:      #ffffff;
+            --gray-1:     #f8fafc;
+            --gray-2:     #f1f5f9;
+            --gray-3:     #e2e8f0;
+            --muted:      #64748b;
+            --success:    #059669;
+            --r-sm:       10px;
+            --r-md:       16px;
+            --r-lg:       22px;
+            --r-xl:       30px;
+            --font-h:     'Cormorant Garamond', Georgia, serif;
+            --font-b:     'Outfit', system-ui, sans-serif;
+            --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+            --shadow-sm:  0 4px 16px rgba(12,35,64,0.08);
+            --shadow-md:  0 12px 36px rgba(12,35,64,0.12);
+            --shadow-lg:  0 24px 64px rgba(12,35,64,0.16);
         }
 
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background: #f0f9ff;
+            font-family: var(--font-b);
+            background: var(--gray-1);
+            color: var(--ink);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        .main-content {
+        .main-content { flex: 1; }
+
+        /* ════════════════════════════════════════
+           HERO IMAGE BANNER
+        ════════════════════════════════════════ */
+        .tour-hero {
+            position: relative;
+            height: 480px;
+            overflow: hidden;
+            background: var(--ink);
+        }
+
+        .tour-hero-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.78;
+            transform: scale(1.04);
+            animation: heroZoom 12s ease forwards;
+        }
+
+        @keyframes heroZoom {
+            to { transform: scale(1); }
+        }
+
+        .tour-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(to right, rgba(12,35,64,0.75) 0%, rgba(12,35,64,0.2) 55%, transparent 100%),
+                linear-gradient(to top, rgba(12,35,64,0.65) 0%, transparent 45%);
+        }
+
+        .tour-hero-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 3rem 5%;
+            z-index: 2;
+        }
+
+        .tour-hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(200,169,110,0.22);
+            border: 1px solid rgba(200,169,110,0.45);
+            color: var(--sand-light);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 50px;
+            margin-bottom: 0.9rem;
+            backdrop-filter: blur(8px);
+            width: fit-content;
+            animation: fadeUp 0.7s ease 0.1s both;
+        }
+
+        .tour-hero-title {
+            font-family: var(--font-h);
+            font-size: clamp(2rem, 5vw, 3.6rem);
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.1;
+            max-width: 700px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            animation: fadeUp 0.7s ease 0.25s both;
+        }
+
+        .tour-hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 1.1rem;
+            flex-wrap: wrap;
+            animation: fadeUp 0.7s ease 0.4s both;
+        }
+
+        .tour-hero-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255,255,255,0.82);
+            font-size: 0.88rem;
+            font-weight: 400;
+        }
+
+        .tour-hero-meta-item i { color: var(--sand-light); font-size: 0.95rem; }
+
+        /* Breadcrumb on hero */
+        .tour-hero-breadcrumb {
+            position: absolute;
+            top: 24px;
+            left: 5%;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            animation: fadeDown 0.6s ease both;
+        }
+
+        .tour-hero-breadcrumb a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .tour-hero-breadcrumb a:hover { color: var(--sand-light); }
+        .tour-hero-breadcrumb i { font-size: 0.65rem; }
+
+        /* ════════════════════════════════════════
+           LAYOUT BODY
+        ════════════════════════════════════════ */
+        .tour-body {
+            padding: 3rem 5% 5rem;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 32px;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ════════════════════════════════════════
+           LEFT COLUMN
+        ════════════════════════════════════════ */
+        .tour-left { display: flex; flex-direction: column; gap: 28px; }
+
+        /* Info chips row */
+        .info-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .info-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--white);
+            border: 1px solid var(--gray-3);
+            border-radius: var(--r-md);
+            padding: 0.9rem 1.25rem;
+            box-shadow: var(--shadow-sm);
+            min-width: 160px;
             flex: 1;
+            transition: all 0.3s;
+            animation: fadeUp 0.5s ease both;
         }
 
-        .info-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(8, 145, 178, 0.1);
-            border: 1px solid #e0f2fe;
+        .info-chip:nth-child(2) { animation-delay: 0.08s; }
+        .info-chip:nth-child(3) { animation-delay: 0.16s; }
+        .info-chip:nth-child(4) { animation-delay: 0.24s; }
+
+        .info-chip:hover {
+            border-color: var(--sea-light);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
         }
 
-        .tour-image {
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(8, 145, 178, 0.15);
-        }
-
-        .info-item {
-            padding: 0.8rem;
-            background: #f0f9ff;
+        .chip-icon {
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
-            margin-bottom: 0.8rem;
-            border-left: 4px solid var(--ocean-blue);
+            background: var(--sea-pale);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--sea);
+            flex-shrink: 0;
         }
 
-        .info-item i {
-            color: var(--ocean-blue);
-            font-size: 1.2rem;
-            margin-right: 0.5rem;
+        .chip-text { display: flex; flex-direction: column; }
+        .chip-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+        .chip-value { font-size: 0.92rem; font-weight: 600; color: var(--ink); margin-top: 1px; }
+
+        /* Section card base */
+        .detail-card {
+            background: var(--white);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--gray-3);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            animation: fadeUp 0.6s ease 0.2s both;
         }
 
-        .price-box {
-            background: linear-gradient(135deg, #ecfeff, #e0f2fe);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 2px solid var(--ocean-blue-light);
-            text-align: center;
-            margin: 1.5rem 0;
+        .detail-card-header {
+            padding: 1.4rem 1.8rem;
+            border-bottom: 1px solid var(--gray-3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .price-text {
-            color: var(--ocean-blue-dark);
-            font-size: 2rem;
-            font-weight: bold;
+        .detail-card-header h4 {
+            font-family: var(--font-h);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--ink);
             margin: 0;
         }
 
-        .btn-book {
-            background: var(--ocean-blue);
-            border: none;
-            padding: 1rem 3rem;
-            font-size: 1.2rem;
+        .detail-card-header-icon {
+            width: 36px;
+            height: 36px;
             border-radius: 10px;
-            transition: all 0.3s;
+            background: linear-gradient(135deg, var(--sea-mid), var(--sea));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .detail-card-body { padding: 1.8rem; }
+
+        /* Itinerary */
+        .itinerary-text {
+            font-size: 0.95rem;
+            color: #374151;
+            line-height: 1.9;
+            white-space: pre-line;
+            font-weight: 300;
+        }
+
+        /* Day blocks inside itinerary */
+        .itinerary-days { display: flex; flex-direction: column; gap: 0; }
+
+        .day-row {
+            display: flex;
+            gap: 20px;
+            padding: 1.4rem 0;
+            border-bottom: 1px solid var(--gray-2);
+            position: relative;
+        }
+
+        .day-row:last-child { border-bottom: none; }
+
+        .day-num {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sea-mid), var(--sea));
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            box-shadow: 0 4px 12px rgba(2,132,199,0.3);
+        }
+
+        .day-content { flex: 1; }
+        .day-title { font-weight: 700; font-size: 0.95rem; color: var(--ink); margin-bottom: 4px; }
+        .day-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+
+        /* ════════════════════════════════════════
+           RIGHT COLUMN — BOOKING CARD
+        ════════════════════════════════════════ */
+        .booking-card {
+            background: var(--white);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--gray-3);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            position: sticky;
+            top: 24px;
+            animation: fadeUp 0.6s ease 0.1s both;
+        }
+
+        /* Top accent stripe */
+        .booking-card::before {
+            content: '';
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, var(--sand), var(--sea-light), var(--sand));
+        }
+
+        .booking-card-inner { padding: 1.8rem 1.8rem 2rem; }
+
+        .booking-price-section { margin-bottom: 1.6rem; }
+
+        .booking-price-from {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .booking-price {
+            font-family: var(--font-h);
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .booking-price-unit {
+            font-family: var(--font-b);
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        /* Included items */
+        .booking-includes {
+            background: var(--gray-1);
+            border-radius: var(--r-md);
+            padding: 1.1rem 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .booking-include-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 0.85rem;
+            color: #374151;
+        }
+
+        .booking-include-item i {
+            color: var(--success);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        /* Book button */
+        .btn-book {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--sand), #b8943c);
+            color: var(--ink);
+            font-family: var(--font-b);
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 1rem;
+            border-radius: 50px;
+            border: none;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.35s var(--ease-spring);
+            box-shadow: 0 8px 24px rgba(200,169,110,0.38);
+            margin-bottom: 12px;
         }
 
         .btn-book:hover {
-            background: var(--ocean-blue-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(8, 145, 178, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 14px 36px rgba(200,169,110,0.5);
+            color: var(--ink);
         }
 
-        .itinerary-section {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(8, 145, 178, 0.1);
-            border: 1px solid #e0f2fe;
+        .btn-inquire {
+            display: block;
+            width: 100%;
+            background: transparent;
+            color: var(--sea);
+            font-family: var(--font-b);
+            font-weight: 600;
+            font-size: 0.92rem;
+            padding: 0.8rem;
+            border-radius: 50px;
+            border: 1.5px solid var(--sea-light);
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            margin-bottom: 1.4rem;
         }
 
-        .itinerary-section h4 {
-            color: var(--ocean-blue-dark);
-            border-bottom: 3px solid var(--ocean-blue);
-            padding-bottom: 0.8rem;
+        .btn-inquire:hover {
+            background: var(--sea-pale);
+            border-color: var(--sea);
+            color: var(--sea);
+        }
+
+        /* Trust badges */
+        .trust-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-3);
+        }
+
+        .trust-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-align: center;
+            flex: 1;
+        }
+
+        .trust-item i { font-size: 1.2rem; color: var(--sea); }
+
+        /* Share / save row */
+        .booking-actions {
+            display: flex;
+            gap: 10px;
             margin-bottom: 1.5rem;
         }
 
-        .tour-title {
-            color: var(--ocean-blue-dark);
-            margin-bottom: 1.5rem;
+        .action-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--gray-1);
+            border: 1px solid var(--gray-3);
+            border-radius: 50px;
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-b);
+            text-decoration: none;
         }
 
-        .location-badge {
-            background: var(--ocean-blue);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 1rem;
+        .action-pill:hover {
+            background: var(--sea-pale);
+            border-color: var(--sea-light);
+            color: var(--sea);
+        }
+
+        /* ════════════════════════════════════════
+           ANIMATIONS
+        ════════════════════════════════════════ */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* ════════════════════════════════════════
+           RESPONSIVE
+        ════════════════════════════════════════ */
+        @media (max-width: 960px) {
+            .tour-hero { height: 360px; }
+            .tour-body {
+                grid-template-columns: 1fr;
+                padding: 2rem 4% 4rem;
+            }
+            .booking-card { position: static; }
+            .tour-right { order: -1; }
+        }
+
+        @media (max-width: 576px) {
+            .tour-hero { height: 280px; }
+            .tour-hero-title { font-size: 1.7rem; }
+            .info-chips { flex-direction: column; }
+            .info-chip { min-width: unset; }
+            .booking-price { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-<!-- ========== INCLUDE HEADER ========== -->
 <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-<!-- ========== MAIN CONTENT ========== -->
 <main class="main-content">
 
-    <div class="container mt-5 mb-5">
+    <!-- ════ HERO ════ -->
+    <div class="tour-hero">
+        <img th:src="${tour.imageUrl}" th:alt="${tour.tourName}" class="tour-hero-img">
+        <div class="tour-hero-overlay"></div>
 
-        <div class="row g-4">
-            <!-- Hình ảnh -->
-            <div class="col-md-6">
-                <img th:src="${tour.imageUrl}" class="img-fluid tour-image w-100">
+        <!-- Breadcrumb -->
+        <div class="tour-hero-breadcrumb">
+            <a href="/"><i class="bi bi-house-fill"></i> Trang chủ</a>
+            <i class="bi bi-chevron-right"></i>
+            <a href="/tours">Danh sách tour</a>
+            <i class="bi bi-chevron-right"></i>
+            <span style="color:rgba(255,255,255,0.9);" th:text="${tour.tourName}">Tên tour</span>
+        </div>
+
+        <!-- Hero text -->
+        <div class="tour-hero-content">
+            <div class="tour-hero-eyebrow">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span th:text="${tour.location}">Địa điểm</span>
+            </div>
+            <h1 class="tour-hero-title" th:text="${tour.tourName}">Tên Tour</h1>
+            <div class="tour-hero-meta">
+                <div class="tour-hero-meta-item">
+                    <i class="bi bi-calendar3"></i>
+                    <span th:text="${tour.durationDays} + ' ngày'">N ngày</span>
+                </div>
+                <div class="tour-hero-meta-item">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>Khởi hành: <span th:text="${tour.departureLocation}"></span></span>
+                </div>
+                <div class="tour-hero-meta-item">
+                    <i class="bi bi-building"></i>
+                    <span th:text="${tour.hotelName}">Khách sạn</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ BODY ════ -->
+    <div class="tour-body">
+
+        <!-- ── LEFT ── -->
+        <div class="tour-left">
+
+            <!-- Info chips -->
+            <div class="info-chips">
+                <div class="info-chip">
+                    <div class="chip-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                    <div class="chip-text">
+                        <span class="chip-label">Khởi hành</span>
+                        <span class="chip-value" th:text="${tour.departureLocation}">—</span>
+                    </div>
+                </div>
+                <div class="info-chip">
+                    <div class="chip-icon"><i class="bi bi-building"></i></div>
+                    <div class="chip-text">
+                        <span class="chip-label">Khách sạn</span>
+                        <span class="chip-value" th:text="${tour.hotelName}">—</span>
+                    </div>
+                </div>
+                <div class="info-chip">
+                    <div class="chip-icon"><i class="bi bi-bus-front-fill"></i></div>
+                    <div class="chip-text">
+                        <span class="chip-label">Phương tiện</span>
+                        <span class="chip-value" th:text="${tour.transportation}">—</span>
+                    </div>
+                </div>
+                <div class="info-chip">
+                    <div class="chip-icon"><i class="bi bi-clock-fill"></i></div>
+                    <div class="chip-text">
+                        <span class="chip-label">Thời gian</span>
+                        <span class="chip-value" th:text="${tour.durationDays} + ' ngày'">—</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Thông tin chính -->
-            <div class="col-md-6">
-                <div class="info-card">
-                    <h2 class="tour-title fw-bold" th:text="${tour.tourName}"></h2>
+            <!-- Itinerary -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <div class="detail-card-header-icon">
+                        <i class="bi bi-map-fill"></i>
+                    </div>
+                    <h4>Lịch trình tour</h4>
+                </div>
+                <div class="detail-card-body">
+                    <p class="itinerary-text" th:text="${tour.itinerary}"></p>
+                </div>
+            </div>
 
-                    <div class="location-badge">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span th:text="${tour.location}"></span>
+        </div>
+
+        <!-- ── RIGHT — BOOKING ── -->
+        <div class="tour-right">
+            <div class="booking-card">
+                <div class="booking-card-inner">
+
+                    <!-- Price -->
+                    <div class="booking-price-section">
+                        <div class="booking-price-from">Giá chỉ từ</div>
+                        <div class="booking-price"
+                             th:text="${#numbers.formatDecimal(tour.price,0,'COMMA',0,'POINT')} + '₫'">
+                        </div>
+                        <div class="booking-price-unit">/ người lớn</div>
                     </div>
 
-                    <div class="info-item">
-                        <i class="bi bi-geo-alt"></i>
-                        <strong>Khởi hành:</strong>
-                        <span th:text="${tour.departureLocation}"></span>
-                    </div>
-
-                    <div class="info-item">
-                        <i class="bi bi-building"></i>
-                        <strong>Khách sạn:</strong>
-                        <span th:text="${tour.hotelName}"></span>
-                    </div>
-
-                    <div class="info-item">
-                        <i class="bi bi-bus-front"></i>
-                        <strong>Phương tiện:</strong>
-                        <span th:text="${tour.transportation}"></span>
-                    </div>
-
-                    <div class="info-item">
-                        <i class="bi bi-calendar-check"></i>
-                        <strong>Số ngày:</strong>
-                        <span th:text="${tour.durationDays}"></span> ngày
-                    </div>
-
-                    <div class="price-box">
-                        <small class="text-muted d-block mb-1">Giá chỉ từ</small>
-                        <p class="price-text"
-                           th:text="${#numbers.formatDecimal(tour.price,0,'COMMA',0,'POINT')} + ' đ'">
-                        </p>
-                    </div>
-
-                    <div class="d-grid">
-                        <a th:href="@{/book/{id}(id=${tour.tourID})}" class="btn btn-danger">
-                            Đặt tour ngay
+                    <!-- Share / Save -->
+                    <div class="booking-actions">
+                        <a href="#" class="action-pill">
+                            <i class="bi bi-heart"></i> Lưu tour
+                        </a>
+                        <a href="#" class="action-pill">
+                            <i class="bi bi-share"></i> Chia sẻ
                         </a>
                     </div>
+
+                    <!-- Included -->
+                    <div class="booking-includes">
+                        <div class="booking-include-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            Xe đưa đón chuyên nghiệp
+                        </div>
+                        <div class="booking-include-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            Khách sạn tiêu chuẩn
+                        </div>
+                        <div class="booking-include-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            Hướng dẫn viên kinh nghiệm
+                        </div>
+                        <div class="booking-include-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            Bảo hiểm du lịch
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <a th:href="@{/book/{id}(id=${tour.tourID})}" class="btn-book">
+                        <i class="bi bi-calendar-check-fill me-2"></i> Đặt tour ngay
+                    </a>
+                    <a href="/chat" class="btn-inquire">
+                        <i class="bi bi-chat-dots me-2"></i> Tư vấn miễn phí
+                    </a>
+
+                    <!-- Trust -->
+                    <div class="trust-row">
+                        <div class="trust-item">
+                            <i class="bi bi-shield-check"></i>
+                            <span>An toàn<br>100%</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            <span>Hoàn tiền<br>dễ dàng</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="bi bi-headset"></i>
+                            <span>Hỗ trợ<br>24/7</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
 
-        <!-- Lịch trình -->
-        <div class="mt-5">
-            <div class="itinerary-section">
-                <h4 class="fw-bold">
-                    <i class="bi bi-map"></i> Lịch trình tour
-                </h4>
-                <p class="text-secondary" style="white-space: pre-line; line-height: 1.8;" th:text="${tour.itinerary}"></p>
-            </div>
-        </div>
-
-
-
-
     </div>
-
 </main>
 
-<!-- ========== INCLUDE FOOTER ========== -->
 <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -103,14 +103,8 @@
             gap: 15px;
         }
 
-        #chatBox::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #chatBox::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
+        #chatBox::-webkit-scrollbar { width: 6px; }
+        #chatBox::-webkit-scrollbar-track { background: transparent; }
         #chatBox::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 10px;
@@ -123,23 +117,12 @@
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .msg-wrapper.me {
-            justify-content: flex-end;
-        }
-
-        .msg-wrapper.staff {
-            justify-content: flex-start;
-        }
+        .msg-wrapper.me    { justify-content: flex-end; }
+        .msg-wrapper.staff { justify-content: flex-start; }
 
         .msg {
             max-width: 70%;
@@ -175,9 +158,7 @@
             text-align: right;
         }
 
-        .msg.staff .msg-time {
-            text-align: left;
-        }
+        .msg.staff .msg-time { text-align: left; }
 
         /* Typing Indicator */
         .typing-indicator {
@@ -191,9 +172,7 @@
             animation: slideIn 0.3s ease-out;
         }
 
-        .typing-indicator.active {
-            display: block;
-        }
+        .typing-indicator.active { display: block; }
 
         .typing-dot {
             display: inline-block;
@@ -205,30 +184,18 @@
             animation: typing 1.4s infinite;
         }
 
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-                opacity: 0.7;
-            }
-            30% {
-                transform: translateY(-10px);
-                opacity: 1;
-            }
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
+            30%            { transform: translateY(-10px); opacity: 1; }
         }
 
         /* Date Divider */
         .date-divider {
             text-align: center;
             margin: 20px 0;
-            position: relative;
         }
 
         .date-divider span {
@@ -267,6 +234,7 @@
             outline: none;
             font-size: 15px;
             transition: all 0.3s ease;
+            font-family: inherit;
         }
 
         #msg:focus {
@@ -285,11 +253,10 @@
             cursor: pointer;
             opacity: 0.6;
             transition: opacity 0.3s;
+            line-height: 1;
         }
 
-        .emoji-btn:hover {
-            opacity: 1;
-        }
+        .emoji-btn:hover { opacity: 1; }
 
         .send-btn {
             width: 50px;
@@ -305,6 +272,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            flex-shrink: 0;
         }
 
         .send-btn:hover {
@@ -312,9 +280,7 @@
             box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
         }
 
-        .send-btn:active {
-            transform: scale(0.95);
-        }
+        .send-btn:active  { transform: scale(0.95); }
 
         .send-btn:disabled {
             opacity: 0.5;
@@ -322,7 +288,7 @@
             transform: scale(1);
         }
 
-        /* Connection Status */
+        /* Connection Status Toast */
         .connection-status {
             position: fixed;
             top: 20px;
@@ -337,6 +303,7 @@
             align-items: center;
             gap: 8px;
             z-index: 1000;
+            transition: opacity 0.3s;
         }
 
         .connection-status.show {
@@ -345,23 +312,13 @@
         }
 
         @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(20px); }
+            to   { opacity: 1; transform: translateX(0); }
         }
 
-        .connection-status.connected {
-            color: #16a34a;
-        }
-
-        .connection-status.disconnected {
-            color: #dc2626;
-        }
+        .connection-status.connected    { color: #16a34a; }
+        .connection-status.disconnected { color: #dc2626; }
+        .connection-status.connecting   { color: #d97706; }
 
         /* Welcome Message */
         .welcome-msg {
@@ -383,23 +340,15 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .chat-container {
-                height: 100vh;
-                margin: 0;
-            }
-
-            .chat-card {
-                border-radius: 0;
-            }
-
-            .msg {
-                max-width: 85%;
-            }
+            .chat-container { height: 100vh; margin: 0; }
+            .chat-card      { border-radius: 0; }
+            .msg            { max-width: 85%; }
         }
     </style>
 </head>
 <body>
-<!-- Connection Status -->
+
+<!-- Connection Status Toast -->
 <div id="connectionStatus" class="connection-status">
     <i class="fas fa-circle"></i>
     <span id="statusText">Đang kết nối...</span>
@@ -407,10 +356,11 @@
 
 <div class="container-fluid chat-container">
     <div class="chat-card">
+
         <!-- Header -->
         <div class="chat-header">
             <div class="chat-header-avatar">
-                <i class="fas fa-headset"></i>
+                <i class="fas fa-headset" style="color:#667eea"></i>
             </div>
             <div class="chat-header-info">
                 <h5>Hỗ Trợ Khách Hàng</h5>
@@ -430,7 +380,7 @@
             </div>
         </div>
 
-        <!-- Typing Indicator -->
+        <!-- Typing Indicator (inside chatBox flow) -->
         <div id="typingIndicator" class="typing-indicator" style="margin: 0 25px 15px;">
             <span class="typing-dot"></span>
             <span class="typing-dot"></span>
@@ -442,246 +392,297 @@
             <div class="input-wrapper">
                 <div class="input-container">
                     <input id="msg"
-                           class="form-control"
+                           type="text"
                            placeholder="Nhập tin nhắn của bạn..."
-                           onkeypress="handleKey(event)"
-                           autocomplete="off">
-                    <button class="emoji-btn" onclick="insertEmoji()">😊</button>
+                           autocomplete="off"
+                           maxlength="1000">
+                    <button class="emoji-btn" type="button" onclick="insertEmoji()" title="Chèn emoji">😊</button>
                 </div>
-                <button class="send-btn" onclick="send()" id="sendBtn">
+                <button class="send-btn" id="sendBtn" type="button" onclick="send()" title="Gửi tin nhắn" disabled>
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
         </div>
+
     </div>
 </div>
 
 <script th:inline="javascript">
-    let myId = [[${myId}]];
-    let staffId = 2;
-    let socket, stomp;
-    let isConnected = false;
-    let lastDate = null;
+    (function () {
+        'use strict';
 
-    // Initialize connection
-    function initConnection() {
-        showConnectionStatus('Đang kết nối...', 'connecting');
+        /* ── Config ── */
+        var myId   = [[${myId}]];
+        var staffId = 2;
+        var RECONNECT_DELAY = 3000;
+        var EMOJIS = ['😊','👍','❤️','😂','🎉','👋','🙏','✨'];
 
-        socket = new SockJS('/chat');
-        stomp = Stomp.over(socket);
+        /* ── State ── */
+        var socket, stomp;
+        var isConnected  = false;
+        var isBotTyping  = false;
+        var lastDate     = null;
+        var historyLoaded = false;
+        var hideTimer    = null;
 
-        // Disable console logs
-        stomp.debug = null;
+        /* ── DOM refs ── */
+        var chatBox    = document.getElementById('chatBox');
+        var msgInput   = document.getElementById('msg');
+        var sendBtn    = document.getElementById('sendBtn');
+        var connStatus = document.getElementById('connectionStatus');
+        var statusText = document.getElementById('statusText');
+        var typingEl   = document.getElementById('typingIndicator');
 
-        stomp.connect({}, function () {
+        /* ════════════════════════════════════
+           CONNECTION
+        ════════════════════════════════════ */
+        function initConnection() {
+            showConnectionStatus('Đang kết nối...', 'connecting');
+
+            socket = new SockJS('/chat');
+            stomp  = Stomp.over(socket);
+            stomp.debug = null; // tắt log console
+
+            stomp.connect({}, onConnected, onError);
+        }
+
+        function onConnected() {
             isConnected = true;
+            updateSendBtn();
             showConnectionStatus('Đã kết nối', 'connected');
             hideConnectionStatusAfter(3000);
 
-            // Subscribe to messages
-            stomp.subscribe('/queue/user-' + myId, function (res) {
-                let m = JSON.parse(res.body);
-                let isMe = !m.isFromAdmin;
+            /* Chỉ nhận tin nhắn từ STAFF gửi xuống.
+               Tin của chính mình đã được render ngay khi gửi → không cần nhận lại. */
+            stomp.subscribe('/queue/user-' + myId, function (frame) {
+                var m = JSON.parse(frame.body);
 
-                // Hide typing indicator
+                /* ✅ FIX: Bỏ qua nếu server vô tình echo lại tin của chính mình */
+                if (m.isFromAdmin === false) return;
+
                 hideTypingIndicator();
-
-                // Show message
-                show(m.content, isMe, m.timestamp);
+                appendMessage(m.content, false, m.timestamp);
             });
 
-            loadHistory();
-        }, function(error) {
+            if (!historyLoaded) loadHistory();
+        }
+
+        function onError(err) {
             isConnected = false;
-            showConnectionStatus('Mất kết nối', 'disconnected');
-            console.error('Connection error:', error);
+            updateSendBtn();
+            showConnectionStatus('Mất kết nối – đang thử lại...', 'disconnected');
+            console.error('STOMP error:', err);
+            setTimeout(initConnection, RECONNECT_DELAY);
+        }
 
-            // Retry after 3 seconds
-            setTimeout(initConnection, 3000);
-        });
-    }
-
-    // Load chat history
-    function loadHistory() {
-        fetch('/chat/history')
-            .then(res => res.json())
-            .then(data => {
-                // Clear welcome message
-                let welcomeMsg = document.querySelector('.welcome-msg');
-                if (welcomeMsg) welcomeMsg.remove();
-
-                data.forEach(m => {
-                    let isMe = !m.isFromAdmin;
-                    show(m.content, isMe, m.timestamp, false);
+        /* ════════════════════════════════════
+           LOAD HISTORY
+        ════════════════════════════════════ */
+        function loadHistory() {
+            fetch('/chat/history')
+                .then(function (res) {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
+                .then(function (data) {
+                    historyLoaded = true;
+                    removeWelcomeMsg();
+                    if (data && data.length > 0) {
+                        data.forEach(function (m) {
+                            appendMessage(m.content, !m.isFromAdmin, m.timestamp, false);
+                        });
+                    }
+                })
+                .catch(function (err) {
+                    console.error('Lỗi tải lịch sử chat:', err);
                 });
-            })
-            .catch(err => console.error('Error loading history:', err));
-    }
-
-    // Send message
-    function send() {
-        if (!isConnected) {
-            alert('Chưa kết nối đến server. Vui lòng đợi...');
-            return;
         }
 
-        let input = document.getElementById("msg");
-        let text = input.value.trim();
+        /* ════════════════════════════════════
+           SEND MESSAGE  ← BUG FIX CHÍNH
+        ════════════════════════════════════ */
+        function send() {
+            if (!isConnected) {
+                showConnectionStatus('Chưa kết nối – vui lòng đợi...', 'disconnected');
+                return;
+            }
 
-        if (!text) return;
+            var text = msgInput.value.trim();
+            if (!text) return;
 
-        // Disable send button
-        let sendBtn = document.getElementById("sendBtn");
-        sendBtn.disabled = true;
+            var now = new Date().toISOString();
 
-        // Show typing indicator for staff
-        showTypingIndicator();
+            /* Gửi lên server */
+            stomp.send('/app/private-message', {}, JSON.stringify({
+                customerID:  myId,
+                userID:      staffId,
+                content:     text,
+                isFromAdmin: false,
+                timestamp:   now
+            }));
 
-        stomp.send("/app/private-message", {}, JSON.stringify({
-            customerID: myId,
-            userID: staffId,
-            content: text,
-            isFromAdmin: false,
-            timestamp: new Date().toISOString()
-        }));
+            /* ✅ FIX: Hiển thị tin nhắn ngay lập tức – không chờ server echo */
+            appendMessage(text, true, now);
 
-        input.value = "";
+            /* Reset input */
+            msgInput.value = '';
+            msgInput.style.height = 'auto';
+            updateSendBtn();
 
-        // Re-enable send button
-        setTimeout(() => {
-            sendBtn.disabled = false;
-            input.focus();
-        }, 300);
-    }
+            /* Hiện typing indicator chờ staff phản hồi */
+            showTypingIndicator();
 
-    // Display message
-    function show(text, isMe, timestamp = null, animate = true) {
-        let box = document.getElementById("chatBox");
-
-        // Remove welcome message if exists
-        let welcomeMsg = document.querySelector('.welcome-msg');
-        if (welcomeMsg) welcomeMsg.remove();
-
-        // Add date divider if needed
-        let msgDate = timestamp ? new Date(timestamp) : new Date();
-        let dateStr = formatDate(msgDate);
-
-        if (dateStr !== lastDate) {
-            let dateDivider = document.createElement("div");
-            dateDivider.className = "date-divider";
-            dateDivider.innerHTML = `<span>${dateStr}</span>`;
-            box.appendChild(dateDivider);
-            lastDate = dateStr;
+            msgInput.focus();
         }
 
-        // Create message wrapper
-        let wrapper = document.createElement("div");
-        wrapper.className = "msg-wrapper " + (isMe ? "me" : "staff");
+        /* ════════════════════════════════════
+           RENDER MESSAGE
+        ════════════════════════════════════ */
+        function appendMessage(text, isMe, timestamp, animate) {
+            if (animate === undefined) animate = true;
 
-        // Create message
-        let div = document.createElement("div");
-        div.className = "msg " + (isMe ? "me" : "staff");
+            removeWelcomeMsg();
 
-        let content = document.createElement("div");
-        content.className = "msg-content";
-        content.innerText = text;
+            var msgDate  = timestamp ? new Date(timestamp) : new Date();
+            var dateStr  = formatDate(msgDate);
 
-        let time = document.createElement("div");
-        time.className = "msg-time";
-        time.innerText = formatTime(msgDate);
+            /* Date divider */
+            if (dateStr !== lastDate) {
+                var divider = document.createElement('div');
+                divider.className = 'date-divider';
+                divider.innerHTML = '<span>' + escapeHtml(dateStr) + '</span>';
+                chatBox.appendChild(divider);
+                lastDate = dateStr;
+            }
 
-        div.appendChild(content);
-        div.appendChild(time);
-        wrapper.appendChild(div);
+            /* Wrapper */
+            var wrapper = document.createElement('div');
+            wrapper.className = 'msg-wrapper ' + (isMe ? 'me' : 'staff');
+            if (!animate) wrapper.style.animation = 'none';
 
-        box.appendChild(wrapper);
+            /* Bubble */
+            var bubble = document.createElement('div');
+            bubble.className = 'msg ' + (isMe ? 'me' : 'staff');
 
-        // Smooth scroll to bottom
-        smoothScrollToBottom();
-    }
+            var content = document.createElement('div');
+            content.className = 'msg-content';
+            content.textContent = text; /* ✅ textContent ngăn XSS */
 
-    // Typing indicator
-    function showTypingIndicator() {
-        let indicator = document.getElementById("typingIndicator");
-        indicator.classList.add("active");
-        smoothScrollToBottom();
-    }
+            var time = document.createElement('div');
+            time.className = 'msg-time';
+            time.textContent = formatTime(msgDate);
 
-    function hideTypingIndicator() {
-        let indicator = document.getElementById("typingIndicator");
-        indicator.classList.remove("active");
-    }
+            bubble.appendChild(content);
+            bubble.appendChild(time);
+            wrapper.appendChild(bubble);
+            chatBox.appendChild(wrapper);
 
-    // Connection status
-    function showConnectionStatus(text, status) {
-        let statusEl = document.getElementById("connectionStatus");
-        let textEl = document.getElementById("statusText");
+            scrollToBottom();
+        }
 
-        textEl.innerText = text;
-        statusEl.className = "connection-status show " + status;
-    }
+        /* ════════════════════════════════════
+           TYPING INDICATOR
+        ════════════════════════════════════ */
+        function showTypingIndicator() {
+            if (isBotTyping) return;
+            isBotTyping = true;
+            typingEl.classList.add('active');
+            scrollToBottom();
+        }
 
-    function hideConnectionStatusAfter(delay) {
-        setTimeout(() => {
-            let statusEl = document.getElementById("connectionStatus");
-            statusEl.classList.remove("show");
-        }, delay);
-    }
+        function hideTypingIndicator() {
+            isBotTyping = false;
+            typingEl.classList.remove('active');
+        }
 
-    // Utilities
-    function formatDate(date) {
-        let today = new Date();
-        let yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
+        /* ════════════════════════════════════
+           CONNECTION STATUS TOAST
+        ════════════════════════════════════ */
+        function showConnectionStatus(text, state) {
+            clearTimeout(hideTimer);
+            statusText.textContent = text;
+            connStatus.className   = 'connection-status show ' + state;
+        }
 
-        if (date.toDateString() === today.toDateString()) {
-            return "Hôm nay";
-        } else if (date.toDateString() === yesterday.toDateString()) {
-            return "Hôm qua";
-        } else {
-            return date.toLocaleDateString('vi-VN', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
+        function hideConnectionStatusAfter(delay) {
+            hideTimer = setTimeout(function () {
+                connStatus.classList.remove('show');
+            }, delay);
+        }
+
+        /* ════════════════════════════════════
+           UTILITIES
+        ════════════════════════════════════ */
+        function removeWelcomeMsg() {
+            var el = chatBox.querySelector('.welcome-msg');
+            if (el) el.remove();
+        }
+
+        function updateSendBtn() {
+            sendBtn.disabled = !isConnected || msgInput.value.trim() === '';
+        }
+
+        function scrollToBottom() {
+            requestAnimationFrame(function () {
+                chatBox.scrollTop = chatBox.scrollHeight;
             });
         }
-    }
 
-    function formatTime(date) {
-        return date.toLocaleTimeString('vi-VN', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
+        function formatDate(date) {
+            var today     = new Date();
+            var yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
 
-    function smoothScrollToBottom() {
-        let box = document.getElementById("chatBox");
-        box.scrollTo({
-            top: box.scrollHeight,
-            behavior: 'smooth'
-        });
-    }
-
-    function handleKey(e) {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            send();
+            if (date.toDateString() === today.toDateString())     return 'Hôm nay';
+            if (date.toDateString() === yesterday.toDateString()) return 'Hôm qua';
+            return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
-    }
 
-    function insertEmoji() {
-        let input = document.getElementById("msg");
-        let emojis = ['😊', '👍', '❤️', '😂', '🎉', '👋', '🙏', '✨'];
-        let emoji = emojis[Math.floor(Math.random() * emojis.length)];
-        input.value += emoji;
-        input.focus();
-    }
+        function formatTime(date) {
+            return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        }
 
-    // Initialize on page load
-    window.onload = function() {
-        initConnection();
-        document.getElementById("msg").focus();
-    };
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        /* ════════════════════════════════════
+           EVENT LISTENERS
+        ════════════════════════════════════ */
+        msgInput.addEventListener('input', updateSendBtn);
+
+        msgInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!sendBtn.disabled) send();
+            }
+        });
+
+        /* ════════════════════════════════════
+           PUBLIC (onclick từ HTML)
+        ════════════════════════════════════ */
+        window.send = send;
+
+        window.insertEmoji = function () {
+            var emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+            var pos   = msgInput.selectionStart || msgInput.value.length;
+            msgInput.value = msgInput.value.slice(0, pos) + emoji + msgInput.value.slice(pos);
+            msgInput.setSelectionRange(pos + emoji.length, pos + emoji.length);
+            msgInput.focus();
+            updateSendBtn();
+        };
+
+        /* ════════════════════════════════════
+           BOOT
+        ════════════════════════════════════ */
+        window.addEventListener('load', function () {
+            initConnection();
+            msgInput.focus();
+        });
+
+    })();
 </script>
 </body>
 </html>

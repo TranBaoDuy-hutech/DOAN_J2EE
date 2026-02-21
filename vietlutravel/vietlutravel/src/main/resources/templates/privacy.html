@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chính sách bảo mật - Việt Lữ Travel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Include Header & Footer fragments -->
+    <th:block th:replace="~{fragments/header :: header-css}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
+</head>
+
+<body>
+
+<!-- Header -->
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+<!-- Page Title Section -->
+<div class="container-fluid py-5" style="background: linear-gradient(135deg, #2c7a8e 0%, #1e5a6d 100%);">
+    <div class="container">
+        <h1 class="text-center text-white fw-bold mb-0">CHÍNH SÁCH BẢO MẬT</h1>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+
+            <!-- Giới thiệu -->
+            <section class="mb-5">
+                <h4 class="fw-bold mb-3" style="color: #2c7a8e;">1. Giới thiệu</h4>
+                <p class="text-secondary lh-lg">
+                    Việt Lữ Travel cam kết bảo vệ quyền riêng tư và thông tin cá nhân của quý khách theo quy định của pháp luật Việt Nam, bao gồm Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân và các quy định liên quan.
+                </p>
+                <p class="text-secondary lh-lg">
+                    Chính sách này giải thích cách chúng tôi thu thập, sử dụng, lưu trữ, bảo vệ và chia sẻ thông tin khi quý khách truy cập website, đặt tour, liên hệ hoặc sử dụng dịch vụ của Việt Lữ Travel.
+                </p>
+                <p class="text-secondary lh-lg mb-0">
+                    Bằng việc sử dụng website hoặc dịch vụ của chúng tôi, quý khách đồng ý với các điều khoản trong Chính sách bảo mật này.
+                </p>
+            </section>
+
+            <!-- Thu thập thông tin -->
+            <section class="mb-5">
+                <h4 class="fw-bold mb-3" style="color: #2c7a8e;">2. Thông tin chúng tôi thu thập</h4>
+                <div class="ps-3">
+                    <p class="mb-2"><strong style="color: #1e5a6d;">Thông tin quý khách cung cấp trực tiếp:</strong></p>
+                    <ul class="text-secondary lh-lg mb-4">
+                        <li>Họ và tên, số điện thoại, email, địa chỉ, ngày sinh, giới tính</li>
+                        <li>Thông tin giấy tờ tùy thân (CMND/CCCD, hộ chiếu) khi đặt tour và mua bảo hiểm</li>
+                        <li>Thông tin thanh toán (số tài khoản, thông tin ví điện tử – chỉ lưu tạm thời qua cổng thanh toán)</li>
+                        <li>Yêu cầu đặc biệt, thông tin sức khỏe liên quan (nếu cần cho tour mạo hiểm)</li>
+                    </ul>
+
+                    <p class="mb-2"><strong style="color: #1e5a6d;">Thông tin thu thập tự động:</strong></p>
+                    <ul class="text-secondary lh-lg mb-4">
+                        <li>Địa chỉ IP, loại trình duyệt, thiết bị, hệ điều hành</li>
+                        <li>Thời gian truy cập, trang xem, liên kết click</li>
+                        <li>Cookies và công nghệ theo dõi tương tự (quý khách có thể tắt trong trình duyệt)</li>
+                    </ul>
+
+                    <p class="mb-2"><strong style="color: #1e5a6d;">Thông tin từ bên thứ ba:</strong></p>
+                    <p class="text-secondary lh-lg mb-0">
+                        Khi quý khách đăng nhập qua Google/Facebook hoặc thanh toán qua cổng bên thứ ba, chúng tôi nhận thông tin cơ bản theo sự cho phép của quý khách.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Mục đích sử dụng -->
+            <section class="mb-5">
+                <h4 class="fw-bold mb-3" style="color: #2c7a8e;">3. Mục đích sử dụng thông tin</h4>
+                <ul class="text-secondary lh-lg">
+                    <li class="mb-2">Xử lý đặt tour, xác nhận đặt chỗ, thanh toán và cung cấp dịch vụ</li>
+                    <li class="mb-2">Mua bảo hiểm du lịch, liên hệ khẩn cấp trong chuyến đi</li>
+                    <li class="mb-2">Gửi thông tin xác nhận, cập nhật lịch trình, khuyến mãi (nếu quý khách đồng ý)</li>
+                    <li class="mb-2">Cải thiện website, phân tích hành vi sử dụng (dạng ẩn danh)</li>
+                    <li class="mb-2">Tuân thủ pháp luật, xử lý tranh chấp (nếu có)</li>
+                </ul>
+            </section>
+
+            <!-- Chia sẻ thông tin -->
+            <section class="mb-5">
+                <h4 class="fw-bold mb-3" style="color: #2c7a8e;">4. Chia sẻ và tiết lộ thông tin</h4>
+                <p class="text-secondary lh-lg mb-3">
+                    Chúng tôi không bán, trao đổi hoặc cho thuê thông tin cá nhân của quý khách. Thông tin chỉ được chia sẻ trong các trường hợp:
+                </p>
+                <ul class="text-secondary lh-lg">
+                    <li class="mb-2">Với đối tác cung cấp dịch vụ (khách sạn, vận chuyển, hướng dẫn viên, công ty bảo hiểm) – chỉ phần cần thiết</li>
+                    <li class="mb-2">Cổng thanh toán, ngân hàng để xử lý giao dịch</li>
+                    <li class="mb-2">Cơ quan nhà nước khi có yêu cầu pháp lý</li>
+                    <li class="mb-2">Trong trường hợp sáp nhập, chuyển nhượng doanh nghiệp (thông báo trước cho quý khách)</li>
+                </ul>
+            </section>
+
+            <!-- Bảo mật và lưu trữ -->
+            <section class="mb-5">
+                <h4 class="fw-bold mb-3" style="color: #2c7a8e;">5. Bảo mật và lưu trữ thông tin</h4>
+                <p class="text-secondary lh-lg">
+                    Chúng tôi áp dụng các biện pháp kỹ thuật và tổ chức phù hợp (mã hóa SSL/TLS, firewall, kiểm soát truy cập) để bảo vệ thông tin.
+                    Thông tin được lưu trữ tại máy chủ an toàn tại Việt Nam, thời gian lưu giữ không quá cần thiết cho mục đích đã nêu (thường tối đa 5 năm sau khi kết thúc tour hoặc theo quy định pháp luật).
+                </p>
+            </section>
+
+            <!-- Quyền của khách hàng -->
+            <section class="mb-5">
+                <h4 class="fw-bold mb-3" style="color: #2c7a8e;">6. Quyền của quý khách đối với dữ liệu cá nhân</h4>
+                <p class="text-secondary lh-lg mb-3">
+                    Theo quy định pháp luật, quý khách có quyền:
+                </p>
+                <ul class="text-secondary lh-lg">
+                    <li class="mb-2">Truy cập, xem, chỉnh sửa thông tin cá nhân</li>
+                    <li class="mb-2">Yêu cầu xóa hoặc hạn chế xử lý dữ liệu</li>
+                    <li class="mb-2">Rút lại sự đồng ý (nếu dựa trên đồng ý)</li>
+                    <li class="mb-2">Khiếu nại với cơ quan nhà nước nếu quyền bị xâm phạm</li>
+                </ul>
+                <p class="text-secondary lh-lg mt-3">
+                    Để thực hiện các quyền trên, vui lòng liên hệ: <strong>info@vietlutral.com</strong> hoặc hotline <strong>090x xxx xxx</strong>.
+                </p>
+            </section>
+
+            <!-- Cookies -->
+            <section class="mb-5">
+                <h4 class="fw-bold mb-3" style="color: #2c7a8e;">7. Cookies và công nghệ theo dõi</h4>
+                <p class="text-secondary lh-lg mb-0">
+                    Website sử dụng cookies để nâng cao trải nghiệm (giữ phiên đăng nhập, phân tích thống kê). Quý khách có thể quản lý cookies trong trình duyệt. Tắt cookies có thể ảnh hưởng một số chức năng.
+                </p>
+            </section>
+
+            <!-- Cập nhật chính sách -->
+            <section class="mb-5">
+                <h4 class="fw-bold mb-3" style="color: #2c7a8e;">8. Cập nhật chính sách</h4>
+                <p class="text-secondary lh-lg mb-0">
+                    Chúng tôi có thể cập nhật Chính sách bảo mật này. Mọi thay đổi sẽ được đăng tải trên website và thông báo nếu thay đổi lớn. Vui lòng kiểm tra định kỳ.
+                </p>
+            </section>
+
+            <!-- Update Info & Call to action -->
+            <div class="text-center mt-5 pt-4 border-top">
+                <p class="text-muted mb-3">
+                    <i class="bi bi-calendar-check me-2"></i>
+                    <em>Cập nhật lần cuối: 20/02/2026</em>
+                </p>
+                <h5 class="fw-bold mb-3" style="color: #2c7a8e;">Cần hỗ trợ thêm về bảo mật thông tin?</h5>
+                <a href="mailto:info@vietlutral.com" class="btn btn-lg btn-primary">
+                    <i class="bi bi-envelope-fill me-2"></i> Liên hệ ngay
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

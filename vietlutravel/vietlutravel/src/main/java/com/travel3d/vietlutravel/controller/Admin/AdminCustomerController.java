@@ -12,66 +12,78 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/customers")
 public class AdminCustomerController {
 
     @Autowired
     private CustomerService customerService;
 
-    // Kiểm tra quyền admin
+    // =============================
+    // Kiểm tra admin
+    // =============================
     private boolean isAdmin(HttpSession session) {
         Customer user = (Customer) session.getAttribute("user");
         return user != null && "ADMIN".equalsIgnoreCase(user.getRole());
     }
 
-    // Danh sách tất cả khách hàng
-    @GetMapping("/customers")
+    // =============================
+    // Danh sách khách hàng
+    // =============================
+    @GetMapping
     public String listCustomers(Model model, HttpSession session) {
+
         if (!isAdmin(session)) {
             return "redirect:/login";
         }
 
-        List<Customer> allCustomers = customerService.getAllCustomers();
+        List<Customer> customers = customerService.getAllCustomers();
 
-        // Lọc bỏ ADMIN – chỉ giữ USER và STAFF
-        List<Customer> filteredCustomers = allCustomers.stream()
-                .filter(c -> c.getRole() != null && !"ADMIN".equalsIgnoreCase(c.getRole()))
-                .toList();
-
-        model.addAttribute("customers", filteredCustomers);
-        model.addAttribute("pageTitle", "Quản lý Người dùng");
+        model.addAttribute("customers", customers);
+        model.addAttribute("pageTitle", "Quản lý người dùng");
 
         return "admin/customers";
     }
 
-    // Xem chi tiết khách hàng
-    @GetMapping("/customers/{id}")
-    public String viewCustomerDetail(
-            @PathVariable int id,
-            Model model,
-            HttpSession session) {
+    // =============================
+    // Form thêm
+    // =============================
+    @GetMapping("/create")
+    public String createForm(Model model, HttpSession session) {
+
+        if (!isAdmin(session)) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("customer", new Customer());
+        return "admin/customer-form";
+    }
+
+    // =============================
+    // Form sửa
+    // =============================
+    @GetMapping("/edit/{id}")
+    public String editCustomer(@PathVariable int id, Model model, HttpSession session) {
 
         if (!isAdmin(session)) {
             return "redirect:/login";
         }
 
         Customer customer = customerService.getCustomerById(id);
+
         if (customer == null) {
-            model.addAttribute("errorMessage", "Không tìm thấy người dùng với ID: " + id);
             return "redirect:/admin/customers";
         }
 
         model.addAttribute("customer", customer);
-        model.addAttribute("pageTitle", "Chi tiết Người dùng #" + id);
-
-        return "admin/customer-detail";
+        return "admin/customer-form";
     }
 
-    // Cập nhật role (USER / STAFF / ADMIN)
-    @PostMapping("/customers/{id}/update-role")
-    public String updateRole(
-            @PathVariable int id,
-            @RequestParam String role,
+    // =============================
+    // SAVE (Thêm + Sửa)
+    // =============================
+    @PostMapping("/save")
+    public String saveCustomer(
+            @ModelAttribute Customer customer,
             RedirectAttributes ra,
             HttpSession session) {
 
@@ -79,43 +91,29 @@ public class AdminCustomerController {
             return "redirect:/login";
         }
 
-        Customer currentUser = (Customer) session.getAttribute("user");
-
         try {
-            // Chỉ cho phép các role hợp lệ
-            if (!List.of("USER", "STAFF", "ADMIN").contains(role)) {
-                throw new IllegalArgumentException("Vai trò không hợp lệ");
+
+            boolean isNew = customer.getCustomerID() == 0;
+
+            customerService.saveCustomer(customer);
+
+            if (isNew) {
+                ra.addFlashAttribute("successMessage", "Thêm người dùng thành công!");
+            } else {
+                ra.addFlashAttribute("successMessage", "Cập nhật thành công!");
             }
 
-            Customer targetCustomer = customerService.getCustomerById(id);
-            if (targetCustomer == null) {
-                throw new IllegalArgumentException("Người dùng không tồn tại");
-            }
-
-            // Bảo vệ 1: Không cho thay đổi role của chính mình
-            if (targetCustomer.getCustomerID() == currentUser.getCustomerID()) {
-                throw new IllegalArgumentException("Bạn không thể thay đổi vai trò của chính mình!");
-            }
-
-            // Bảo vệ 2: Không cho thay đổi role của bất kỳ tài khoản ADMIN nào
-            if ("ADMIN".equalsIgnoreCase(targetCustomer.getRole())) {
-                throw new IllegalArgumentException("Không thể thay đổi vai trò của tài khoản Admin!");
-            }
-
-            customerService.updateCustomerRole(id, role);
-            ra.addFlashAttribute("successMessage", "Cập nhật vai trò thành công!");
-
-        } catch (IllegalArgumentException e) {
-            ra.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            ra.addFlashAttribute("errorMessage", "Lỗi cập nhật vai trò: " + e.getMessage());
+            ra.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }
 
         return "redirect:/admin/customers";
     }
 
-    // Xóa khách hàng
-    @PostMapping("/customers/{id}/delete")
+    // =============================
+    // Xóa
+    // =============================
+    @PostMapping("/delete/{id}")
     public String deleteCustomer(
             @PathVariable int id,
             RedirectAttributes ra,
@@ -125,31 +123,12 @@ public class AdminCustomerController {
             return "redirect:/login";
         }
 
-        Customer currentUser = (Customer) session.getAttribute("user");
-
         try {
-            Customer targetCustomer = customerService.getCustomerById(id);
-            if (targetCustomer == null) {
-                throw new IllegalArgumentException("Người dùng không tồn tại");
-            }
-
-            // Bảo vệ 1: Không cho xóa chính mình
-            if (targetCustomer.getCustomerID() == currentUser.getCustomerID()) {
-                throw new IllegalArgumentException("Bạn không thể xóa tài khoản của chính mình!");
-            }
-
-            // Bảo vệ 2: Không cho xóa bất kỳ tài khoản ADMIN nào
-            if ("ADMIN".equalsIgnoreCase(targetCustomer.getRole())) {
-                throw new IllegalArgumentException("Không thể xóa tài khoản Admin!");
-            }
-
             customerService.deleteCustomer(id);
-            ra.addFlashAttribute("successMessage", "Xóa người dùng thành công!");
+            ra.addFlashAttribute("successMessage", "Xóa thành công!");
 
-        } catch (IllegalArgumentException e) {
-            ra.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            ra.addFlashAttribute("errorMessage", "Lỗi xóa người dùng: " + e.getMessage());
+            ra.addFlashAttribute("errorMessage", e.getMessage());
         }
 
         return "redirect:/admin/customers";

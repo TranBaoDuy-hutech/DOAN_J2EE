@@ -3,208 +3,686 @@
 <head>
     <meta charset="UTF-8">
     <title>Thông tin cá nhân | Việt Lữ Travel</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --gold-dark: #9d7c2e;
+            --ink: #1a1a2e;
+            --ink-soft: #2d2d44;
+            --cream: #fdf8f0;
+            --cream-dark: #f5ede0;
+            --slate: #6b7280;
+            --border: rgba(201, 168, 76, 0.2);
         }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
-            max-width: 800px;
-        }
-
-        h3 {
-            color: #667eea;
-            font-weight: 700;
-            margin-bottom: 35px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        h3::before {
-            content: "\f007";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            font-size: 2.2rem;
-        }
-
-        .profile-card {
-            border: none;
-            border-radius: 16px;
-            background: #ffffff;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-        }
-
-        .profile-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.75rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .profile-header h4 {
+        * {
             margin: 0;
-            font-weight: 600;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .profile-body {
-            padding: 2rem 2.5rem;
+        body {
+            background-color: var(--cream);
+            min-height: 100vh;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
+            overflow-x: hidden;
         }
 
-        .info-row {
+        /* ── Background decoration ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 10% 0%, rgba(201,168,76,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 90% 100%, rgba(26,26,46,0.06) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Topbar ── */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(253, 248, 240, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
             display: flex;
-            margin-bottom: 1.4rem;
-            padding-bottom: 1.2rem;
-            border-bottom: 1px solid #e9ecef;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
         }
 
-        .info-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 0.03em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .info-label {
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .breadcrumb-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--slate);
+            font-weight: 400;
+        }
+
+        .breadcrumb-bar a {
+            color: var(--gold-dark);
+            text-decoration: none;
+        }
+
+        .breadcrumb-bar i {
+            font-size: 0.6rem;
+        }
+
+        /* ── Page layout ── */
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem 5rem;
+        }
+
+        /* ── Page header ── */
+        .page-header {
+            margin-bottom: 2.5rem;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .page-header .eyebrow {
+            font-size: 0.7rem;
             font-weight: 600;
-            color: #4b5563;
-            min-width: 140px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.15;
+        }
+
+        .page-header .subtitle {
+            margin-top: 8px;
+            color: var(--slate);
+            font-size: 0.92rem;
+            font-weight: 400;
+        }
+
+        /* ── Decorative divider ── */
+        .ornament {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2.5rem;
+            animation: fadeUp 0.6s 0.1s ease both;
+        }
+
+        .ornament-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold-light));
+        }
+
+        .ornament-line.right {
+            background: linear-gradient(to left, transparent, var(--gold-light));
+        }
+
+        .ornament-icon {
+            color: var(--gold);
+            font-size: 0.75rem;
+        }
+
+        /* ── Main card ── */
+        .profile-card {
+            background: #fff;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow:
+                0 2px 4px rgba(0,0,0,0.02),
+                0 8px 20px rgba(26,26,46,0.06),
+                0 30px 60px rgba(26,26,46,0.04);
+            overflow: hidden;
+            animation: fadeUp 0.6s 0.2s ease both;
+        }
+
+        /* ── Card hero ── */
+        .card-hero {
+            position: relative;
+            background: var(--ink);
+            padding: 2.5rem 2.5rem 5rem;
+            overflow: hidden;
+        }
+
+        .card-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 100% 80% at 80% 50%, rgba(201,168,76,0.18) 0%, transparent 60%),
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 30px,
+                    rgba(255,255,255,0.012) 30px,
+                    rgba(255,255,255,0.012) 31px
+                );
+            pointer-events: none;
+        }
+
+        .card-hero .hero-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .avatar-ring {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
+            box-shadow: 0 0 0 4px rgba(201,168,76,0.25), 0 4px 20px rgba(201,168,76,0.3);
         }
 
-        .info-value {
-            color: #1f2937;
+        .avatar-ring i {
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .hero-text h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .hero-text .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(201,168,76,0.15);
+            border: 1px solid rgba(201,168,76,0.3);
+            color: var(--gold-light);
+            font-size: 0.72rem;
             font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
         }
 
-        .icon-label {
-            color: #667eea;
+        /* ── Floating avatar overlap ── */
+        .card-divider {
+            position: relative;
+            height: 0;
+        }
+
+        .card-divider::before {
+            content: '';
+            position: absolute;
+            left: 2.5rem;
+            right: 2.5rem;
+            top: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+        }
+
+        /* ── Card body ── */
+        .card-body {
+            padding: 2rem 2.5rem 2.5rem;
+        }
+
+        .section-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── Info grid ── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .info-item {
+            padding: 1.1rem 1.25rem;
+            border-radius: 12px;
+            position: relative;
+            transition: background 0.2s ease;
+        }
+
+        .info-item:hover {
+            background: var(--cream);
+        }
+
+        .info-item .item-icon {
             width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.06));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            border: 1px solid rgba(201,168,76,0.15);
+        }
+
+        .info-item .item-icon i {
+            font-size: 0.78rem;
+            color: var(--gold-dark);
+        }
+
+        .info-item .item-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--slate);
+            margin-bottom: 3px;
+        }
+
+        .info-item .item-value {
+            font-size: 0.97rem;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .info-item .item-value.muted {
+            color: #b0b0be;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        /* Full-width items */
+        .info-item.full {
+            grid-column: 1 / -1;
+        }
+
+        /* ── Dividers between grid rows ── */
+        .grid-divider {
+            grid-column: 1 / -1;
+            height: 1px;
+            background: var(--cream-dark);
+            margin: 0.25rem 1.25rem;
+        }
+
+        /* ── Actions ── */
+        .card-actions {
+            padding: 0 2.5rem 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--ink);
+            color: white;
+            border: none;
+            padding: 11px 26px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            letter-spacing: 0.01em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+
+        .btn-primary span, .btn-primary i {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(26,26,46,0.25);
+            color: white;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            color: var(--slate);
+            border: 1px solid var(--border);
+            padding: 11px 22px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold-dark);
+            background: rgba(201,168,76,0.04);
+        }
+
+        /* ── Stats row ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--cream-dark);
+            margin: 0 2.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 1.1rem 1rem;
             text-align: center;
         }
 
-        .btn-edit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            padding: 10px 28px;
-            border-radius: 25px;
-            font-weight: 600;
-            color: white;
-            transition: all 0.3s ease;
+        .stat-item .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1;
+            margin-bottom: 4px;
         }
 
-        .btn-edit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-            color: white;
+        .stat-item .stat-label {
+            font-size: 0.68rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--slate);
         }
 
+        /* ── Empty state ── */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: #9ca3af;
+            padding: 80px 40px;
+            animation: fadeUp 0.6s ease both;
         }
 
-        .empty-state i {
-            font-size: 4.5rem;
-            margin-bottom: 20px;
-            opacity: 0.3;
+        .empty-icon-wrap {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: var(--cream-dark);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 25px;
-                margin: 0 15px;
-            }
+        .empty-icon-wrap i {
+            font-size: 2.2rem;
+            color: var(--gold);
+            opacity: 0.6;
+        }
 
-            .profile-body {
-                padding: 1.5rem;
-            }
+        .empty-state h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
 
-            .info-label {
-                min-width: 110px;
-            }
+        .empty-state p {
+            color: var(--slate);
+            font-size: 0.9rem;
+            max-width: 320px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ── Animations ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .page-wrapper { padding: 2rem 1rem 4rem; }
+            .page-header h1 { font-size: 1.8rem; }
+            .card-hero, .card-body, .card-actions { padding-left: 1.5rem; padding-right: 1.5rem; }
+            .info-grid { grid-template-columns: 1fr; }
+            .info-item.full { grid-column: 1; }
+            .stats-row { grid-template-columns: repeat(3, 1fr); margin: 0 1.5rem 1.5rem; }
+            .stat-item .stat-number { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
 
-<div class="container mt-4">
-    <h3>Thông tin cá nhân</h3>
+<!-- Topbar -->
+<nav class="topbar">
+    <div class="logo">
+        <span class="logo-dot"></span>
+        Việt Lữ Travel
+    </div>
+    <div class="breadcrumb-bar">
+        <a href="#">Trang chủ</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>Tài khoản</span>
+        <i class="fas fa-chevron-right"></i>
+        <span>Thông tin cá nhân</span>
+    </div>
+</nav>
 
+<div class="page-wrapper">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <p class="eyebrow"><i class="fas fa-fingerprint" style="margin-right:6px"></i>Tài khoản của bạn</p>
+        <h1>Thông tin cá nhân</h1>
+        <p class="subtitle">Quản lý và cập nhật hồ sơ cá nhân của bạn</p>
+    </div>
+
+    <div class="ornament">
+        <div class="ornament-line"></div>
+        <span class="ornament-icon"><i class="fas fa-diamond"></i></span>
+        <div class="ornament-line right"></div>
+    </div>
+
+    <!-- PROFILE CARD (customer exists) -->
     <div th:if="${customer != null}" class="profile-card">
-        <div class="profile-header">
-            <i class="fas fa-user-circle fa-2x"></i>
-            <h4>Thông tin tài khoản</h4>
+
+        <!-- Hero -->
+        <div class="card-hero">
+            <div class="hero-content">
+                <div class="avatar-ring">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="hero-text">
+                    <h2 th:text="${customer.userName}">Nguyễn Văn A</h2>
+                    <span class="tag">
+                        <i class="fas fa-circle" style="font-size:0.45rem"></i>
+                        Thành viên
+                    </span>
+                </div>
+            </div>
         </div>
 
-        <div class="profile-body">
-            <div class="info-row">
-                <div class="icon-label"><i class="fas fa-user"></i></div>
-                <div class="info-label">Họ tên:</div>
-                <div class="info-value" th:text="${customer.userName}"></div>
+        <!-- Stats -->
+        <div class="stats-row" style="margin-top: -1px;">
+            <div class="stat-item">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Chuyến đi</div>
             </div>
-
-            <div class="info-row">
-                <div class="icon-label"><i class="fas fa-envelope"></i></div>
-                <div class="info-label">Email:</div>
-                <div class="info-value" th:text="${customer.email}"></div>
+            <div class="stat-item">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Đặt chỗ</div>
             </div>
-
-            <div class="info-row">
-                <div class="icon-label"><i class="fas fa-phone-alt"></i></div>
-                <div class="info-label">Số điện thoại:</div>
-                <div class="info-value" th:text="${customer.phone}"></div>
+            <div class="stat-item">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Đánh giá</div>
             </div>
+        </div>
 
-            <div class="info-row">
-                <div class="icon-label"><i class="fas fa-map-marker-alt"></i></div>
-                <div class="info-label">Địa chỉ:</div>
-                <div class="info-value" th:text="${customer.address} ?: 'Chưa cập nhật'"></div>
+        <!-- Body -->
+        <div class="card-body">
+            <div class="section-label">Thông tin liên lạc</div>
+
+            <div class="info-grid">
+                <!-- Họ tên -->
+                <div class="info-item">
+                    <div class="item-icon"><i class="fas fa-user"></i></div>
+                    <div class="item-label">Họ &amp; Tên</div>
+                    <div class="item-value" th:text="${customer.userName}">Nguyễn Văn A</div>
+                </div>
+
+                <!-- Email -->
+                <div class="info-item">
+                    <div class="item-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="item-label">Email</div>
+                    <div class="item-value" th:text="${customer.email}">example@mail.com</div>
+                </div>
+
+                <div class="grid-divider"></div>
+
+                <!-- Điện thoại -->
+                <div class="info-item">
+                    <div class="item-icon"><i class="fas fa-phone-alt"></i></div>
+                    <div class="item-label">Số điện thoại</div>
+                    <div class="item-value" th:text="${customer.phone}">0912 345 678</div>
+                </div>
+
+                <!-- Giới tính -->
+                <div class="info-item">
+                    <div class="item-icon"><i class="fas fa-venus-mars"></i></div>
+                    <div class="item-label">Giới tính</div>
+                    <div class="item-value" th:classappend="${customer.gender == null} ? 'muted' : ''"
+                         th:text="${customer.gender} ?: 'Chưa cập nhật'">Nam</div>
+                </div>
+
+                <div class="grid-divider"></div>
+
+                <!-- Ngày sinh -->
+                <div class="info-item">
+                    <div class="item-icon"><i class="fas fa-birthday-cake"></i></div>
+                    <div class="item-label">Ngày sinh</div>
+                    <div class="item-value" th:classappend="${customer.dateOfBirth == null} ? 'muted' : ''"
+                         th:text="${customer.dateOfBirth} ?: 'Chưa cập nhật'">01/01/1990</div>
+                </div>
+
+                <!-- Địa chỉ -->
+                <div class="info-item">
+                    <div class="item-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="item-label">Địa chỉ</div>
+                    <div class="item-value" th:classappend="${customer.address == null} ? 'muted' : ''"
+                         th:text="${customer.address} ?: 'Chưa cập nhật'">Hà Nội</div>
+                </div>
             </div>
+        </div>
 
-            <div class="info-row">
-                <div class="icon-label"><i class="fas fa-birthday-cake"></i></div>
-                <div class="info-label">Ngày sinh:</div>
-                <div class="info-value" th:text="${customer.dateOfBirth} ?: 'Chưa cập nhật'"></div>
+        <!-- Actions -->
+        <div class="card-actions">
+            <a href="#" class="btn-primary">
+                <i class="fas fa-pen"></i>
+                <span>Chỉnh sửa thông tin</span>
+            </a>
+            <a href="#" class="btn-secondary">
+                <i class="fas fa-shield-alt"></i>
+                Bảo mật
+            </a>
+        </div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div th:if="${customer == null}" class="profile-card">
+        <div class="empty-state">
+            <div class="empty-icon-wrap">
+                <i class="fas fa-user-slash"></i>
             </div>
-
-            <div class="info-row">
-                <div class="icon-label"><i class="fas fa-venus-mars"></i></div>
-                <div class="info-label">Giới tính:</div>
-                <div class="info-value" th:text="${customer.gender} ?: 'Chưa cập nhật'"></div>
-            </div>
-
-            <!-- Nút chỉnh sửa (có thể thêm link sau) -->
-            <div class="mt-4 text-center">
-                <a href="#" class="btn btn-edit">
-                    <i class="fas fa-edit me-2"></i>Chỉnh sửa thông tin
+            <h4>Chưa có thông tin</h4>
+            <p>Vui lòng đăng nhập hoặc cập nhật thông tin để xem chi tiết hồ sơ của bạn.</p>
+            <div style="margin-top: 2rem; display:flex; gap:0.75rem; justify-content:center;">
+                <a href="#" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Đăng nhập</span>
+                </a>
+                <a href="#" class="btn-secondary">
+                    <i class="fas fa-user-plus"></i>
+                    Đăng ký
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Trường hợp không có thông tin -->
-    <div th:if="${customer == null}" class="empty-state">
-        <i class="fas fa-user-slash"></i>
-        <h5>Chưa có thông tin cá nhân</h5>
-        <p>Vui lòng đăng nhập hoặc cập nhật thông tin để xem chi tiết</p>
-    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

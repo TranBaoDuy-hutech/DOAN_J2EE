@@ -5,159 +5,566 @@
 </head>
 <body>
 
-<!-- ========== HEADER FRAGMENT ========== -->
+<!-- ════════════════════════════════════════
+     HEADER FRAGMENT
+════════════════════════════════════════ -->
 <header class="main-header" th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <!-- Logo & Brand -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-5">
+
+            <!-- ── Brand ── -->
             <a class="navbar-brand" href="/">
-                <i class="bi bi-airplane-fill"></i>
-                Việt Lữ Travel
+                <div class="brand-icon"><i class="bi bi-airplane-fill"></i></div>
+                <div class="brand-text">
+                    <span class="brand-name">Việt Lữ</span>
+                    <span class="brand-sub">Travel</span>
+                </div>
             </a>
 
-            <!-- Toggle button for mobile -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-                <span class="navbar-toggler-icon"></span>
+            <!-- ── Mobile toggle ── -->
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                    aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list"></i>
             </button>
 
-            <!-- Nav items -->
+            <!-- ── Nav ── -->
             <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav ms-auto me-3">
+                <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/" th:classappend="${#strings.equals(currentPage, 'home')} ? 'active' : ''">
-                            <i class="bi bi-house-fill"></i> Trang chủ
+                        <a class="nav-link" href="/"
+                           th:classappend="${#strings.equals(currentPage,'home')} ? ' active' : ''">
+                            <i class="bi bi-house-door"></i> Trang chủ
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/tours" th:classappend="${#strings.equals(currentPage, 'tours')} ? 'active' : ''">
+                        <a class="nav-link" href="/tours"
+                           th:classappend="${#strings.equals(currentPage,'tours')} ? ' active' : ''">
                             <i class="bi bi-map"></i> Tour du lịch
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about" th:classappend="${#strings.equals(currentPage, 'about')} ? 'active' : ''">
+                        <a class="nav-link" href="/tour3d"
+                           th:classappend="${#strings.equals(currentPage,'tour3d')} ? ' active' : ''">
+                            <i class="bi bi-vr"></i> Tour 3D & 360°
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about"
+                           th:classappend="${#strings.equals(currentPage,'about')} ? ' active' : ''">
                             <i class="bi bi-info-circle"></i> Giới thiệu
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/contact" th:classappend="${#strings.equals(currentPage, 'contact')} ? 'active' : ''">
+                        <a class="nav-link" href="/contact"
+                           th:classappend="${#strings.equals(currentPage,'contact')} ? ' active' : ''">
                             <i class="bi bi-telephone"></i> Liên hệ
                         </a>
                     </li>
                 </ul>
 
-                <!-- Header buttons -->
-                <div class="header-buttons d-flex gap-2 align-items-center">
+                <!-- ── Auth area ── -->
+                <div class="auth-area d-flex align-items-center gap-2">
 
-                    <!-- CHƯA LOGIN -->
+                    <!-- Chat shortcut -->
+                    <a href="/chat" class="nav-icon-btn" title="Chat CSKH">
+                        <i class="bi bi-chat-dots"></i>
+                        <span class="nav-icon-dot"></span>
+                    </a>
+
+                    <!-- Chưa login -->
                     <div th:if="${session.user == null}" class="d-flex gap-2">
-                        <a href="/login" class="btn btn-outline-light">
+                        <a href="/login" class="btn-nav-ghost">
                             <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
                         </a>
-                        <a href="/register" class="btn btn-light">
+                        <a href="/register" class="btn-nav-solid">
                             <i class="bi bi-person-plus"></i> Đăng ký
                         </a>
                     </div>
 
-                    <!-- ĐÃ LOGIN -->
+                    <!-- Đã login -->
                     <div th:if="${session.user != null}" class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
-                            <span th:text="${session.user.userName}"></span>
+                        <button class="user-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar">
+                                <span th:text="${#strings.substring(session.user.userName,0,1).toUpperCase()}">U</span>
+                            </div>
+                            <span class="user-name" th:text="${session.user.userName}">Tên</span>
+                            <i class="bi bi-chevron-down user-chevron"></i>
                         </button>
 
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        <ul class="dropdown-menu dropdown-menu-end user-dropdown">
+                            <li class="dropdown-user-header">
+                                <div class="duh-avatar">
+                                    <span th:text="${#strings.substring(session.user.userName,0,1).toUpperCase()}">U</span>
+                                </div>
+                                <div>
+                                    <div class="duh-name" th:text="${session.user.userName}">Tên</div>
+                                    <div class="duh-role">Thành viên</div>
+                                </div>
+                            </li>
+                            <li><div class="dropdown-divider-custom"></div></li>
                             <li>
-                                <a class="dropdown-item" href="/profile">
-                                    <i class="bi bi-person"></i> Hồ sơ cá nhân
+                                <a class="dropdown-item-custom" href="/profile">
+                                    <div class="di-icon"><i class="bi bi-person"></i></div>
+                                    Hồ sơ cá nhân
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="/booking-history">
-                                    <i class="bi bi-ticket"></i> Tour đã đặt
+                                <a class="dropdown-item-custom" href="/booking-history">
+                                    <div class="di-icon"><i class="bi bi-ticket-detailed"></i></div>
+                                    Tour đã đặt
                                 </a>
                             </li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li><div class="dropdown-divider-custom"></div></li>
                             <li>
-                                <a class="dropdown-item text-danger" href="/logout">
-                                    <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                                <a class="dropdown-item-custom danger" href="/logout">
+                                    <div class="di-icon danger"><i class="bi bi-box-arrow-right"></i></div>
+                                    Đăng xuất
                                 </a>
                             </li>
                         </ul>
                     </div>
 
                 </div>
-
             </div>
         </div>
     </nav>
 </header>
 
-<!-- ========== CSS STYLES FOR HEADER ========== -->
+<!-- ════════════════════════════════════════
+     HEADER CSS
+════════════════════════════════════════ -->
 <th:block th:fragment="header-css">
     <style>
+        /* ── Tokens (sync with pages) ── */
         :root {
-            --ocean-blue: #0891b2;
-            --ocean-blue-dark: #0e7490;
-            --ocean-blue-light: #06b6d4;
+            --sea:        #0369a1;
+            --sea-mid:    #0284c7;
+            --sea-light:  #38bdf8;
+            --sea-pale:   #e0f2fe;
+            --ink:        #0c2340;
+            --sand:       #c8a96e;
+            --sand-light: #e8d5a3;
+            --white:      #ffffff;
+            --gray-3:     #e2e8f0;
+            --muted:      #64748b;
+            --font-h:     'Cormorant Garamond', Georgia, serif;
+            --font-b:     'Outfit', system-ui, sans-serif;
         }
 
+        /* ── Base navbar ── */
         .main-header {
-            background: linear-gradient(135deg, var(--ocean-blue-dark), var(--ocean-blue));
-            box-shadow: 0 4px 15px rgba(8, 145, 178, 0.2);
+            background: rgba(12, 35, 64, 0.97);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            font-family: var(--font-b);
         }
 
+        /* Subtle top accent line */
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--sand) 30%,
+                var(--sea-light) 60%,
+                transparent 100%);
+            opacity: 0.7;
+        }
+
+        .navbar {
+            padding: 0.7rem 0;
+            position: relative;
+        }
+
+        /* ── Brand ── */
         .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            flex-shrink: 0;
         }
 
-        .navbar-brand:hover {
-            color: #e0f2fe !important;
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--sand), #b8943c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--ink);
+            box-shadow: 0 4px 12px rgba(200,169,110,0.35);
+            transition: transform 0.3s;
+            flex-shrink: 0;
         }
+
+        .navbar-brand:hover .brand-icon {
+            transform: rotate(-8deg) scale(1.08);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .brand-name {
+            font-family: var(--font-h);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-sub {
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--sand-light);
+            margin-top: 1px;
+        }
+
+        /* ── Nav links ── */
+        .navbar-nav { gap: 2px; }
 
         .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
+            font-family: var(--font-b);
+            font-size: 0.875rem;
             font-weight: 500;
-            padding: 0.5rem 1rem !important;
-            transition: all 0.3s;
+            color: rgba(255,255,255,0.72) !important;
+            padding: 0.5rem 0.9rem !important;
             border-radius: 8px;
+            transition: all 0.22s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
         }
+
+        .nav-link i { font-size: 0.9rem; opacity: 0.8; transition: opacity 0.2s; }
 
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: white !important;
+            color: #fff !important;
+            background: rgba(255,255,255,0.09);
         }
+
+        .nav-link:hover i { opacity: 1; }
 
         .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: white !important;
+            color: #fff !important;
+            background: rgba(255,255,255,0.12);
+            position: relative;
         }
 
-        .header-buttons .btn {
-            border-radius: 20px;
-            padding: 0.5rem 1.5rem;
+        /* Active underline dot */
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--sand);
+        }
+
+        /* ── Auth area ── */
+        .auth-area { gap: 8px !important; }
+
+        /* Chat icon button */
+        .nav-icon-btn {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.22s;
+        }
+
+        .nav-icon-btn:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.2);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* Online dot */
+        .nav-icon-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            border: 1.5px solid rgba(12,35,64,0.97);
+        }
+
+        /* Ghost button */
+        .btn-nav-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-b);
+            font-size: 0.85rem;
             font-weight: 500;
+            color: rgba(255,255,255,0.82);
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.22);
+            border-radius: 50px;
+            padding: 0.48rem 1.1rem;
+            text-decoration: none;
+            transition: all 0.22s;
+            white-space: nowrap;
         }
 
-        .btn-outline-light {
-            border: 2px solid white;
+        .btn-nav-ghost:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.38);
+            color: #fff;
         }
 
-        .btn-outline-light:hover {
-            background: white;
-            color: var(--ocean-blue);
-        }
-
-        .btn-light {
-            background: white;
-            color: var(--ocean-blue);
+        /* Solid button */
+        .btn-nav-solid {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-b);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ink);
+            background: linear-gradient(135deg, var(--sand), #b8943c);
             border: none;
+            border-radius: 50px;
+            padding: 0.48rem 1.2rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 14px rgba(200,169,110,0.35);
+            white-space: nowrap;
         }
 
-        .btn-light:hover {
-            background: #e0f2fe;
-            color: var(--ocean-blue-dark);
+        .btn-nav-solid:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(200,169,110,0.5);
+            color: var(--ink);
+        }
+
+        /* ── User dropdown trigger ── */
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 50px;
+            padding: 5px 12px 5px 5px;
+            cursor: pointer;
+            transition: all 0.22s;
+            white-space: nowrap;
+        }
+
+        .user-menu-btn:hover {
+            background: rgba(255,255,255,0.14);
+            border-color: rgba(255,255,255,0.25);
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sea-light), var(--sea-mid));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.88);
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-chevron {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.5);
+            transition: transform 0.25s;
+        }
+
+        .user-menu-btn[aria-expanded="true"] .user-chevron {
+            transform: rotate(180deg);
+        }
+
+        /* ── User dropdown menu ── */
+        .user-dropdown {
+            background: var(--white);
+            border: 1px solid var(--gray-3);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(12,35,64,0.15), 0 4px 12px rgba(0,0,0,0.06);
+            padding: 6px;
+            min-width: 220px;
+            margin-top: 8px !important;
+            animation: dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both;
+        }
+
+        @keyframes dropIn {
+            from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* Header inside dropdown */
+        .dropdown-user-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 10px 8px;
+        }
+
+        .duh-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sea-light), var(--sea-mid));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .duh-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+
+        .duh-role {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-top: 1px;
+        }
+
+        .dropdown-divider-custom {
+            height: 1px;
+            background: var(--gray-3);
+            margin: 4px 0;
+        }
+
+        .dropdown-item-custom {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            text-decoration: none;
+            transition: all 0.18s;
+            cursor: pointer;
+            font-family: var(--font-b);
+        }
+
+        .dropdown-item-custom:hover {
+            background: var(--sea-pale);
+            color: var(--sea);
+        }
+
+        .dropdown-item-custom.danger { color: #dc2626; }
+        .dropdown-item-custom.danger:hover { background: #fff1f2; color: #dc2626; }
+
+        .di-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: var(--sea);
+            flex-shrink: 0;
+            transition: background 0.18s;
+        }
+
+        .dropdown-item-custom:hover .di-icon { background: var(--sea-pale); }
+        .di-icon.danger { color: #dc2626; }
+        .dropdown-item-custom.danger:hover .di-icon { background: #fff1f2; }
+
+        /* ── Mobile toggler ── */
+        .navbar-toggler {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #fff;
+            padding: 0;
+            transition: background 0.2s;
+        }
+
+        .navbar-toggler:hover { background: rgba(255,255,255,0.18); }
+        .navbar-toggler:focus { box-shadow: none; }
+
+        /* Mobile collapse styles */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: rgba(12,35,64,0.98);
+                backdrop-filter: blur(12px);
+                border-radius: 16px;
+                margin-top: 10px;
+                padding: 12px;
+                border: 1px solid rgba(255,255,255,0.08);
+            }
+
+            .navbar-nav { gap: 2px; margin-bottom: 10px; }
+
+            .auth-area {
+                flex-wrap: wrap;
+                padding-top: 10px;
+                border-top: 1px solid rgba(255,255,255,0.08);
+            }
+
+            .user-dropdown {
+                position: static !important;
+                transform: none !important;
+                box-shadow: none;
+                border: 1px solid var(--gray-3);
+                margin-top: 4px !important;
+            }
+
+            .container-fluid { padding: 0 1.2rem !important; }
         }
     </style>
 </th:block>

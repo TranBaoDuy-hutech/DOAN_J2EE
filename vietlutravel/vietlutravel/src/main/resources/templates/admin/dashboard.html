@@ -1,292 +1,370 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #8b5cf6;
-            --accent: #a78bfa;
-            --danger: #ec4899;
-            --glass: rgba(255, 255, 255, 0.09);
-            --glass-border: rgba(255, 255, 255, 0.18);
-            --shadow-sm: 0 8px 32px rgba(31, 38, 135, 0.25);
-            --shadow-lg: 0 20px 60px rgba(31, 38, 135, 0.35);
+            --ink: #0f1117;
+            --ink-mid: #4a4f63;
+            --ink-light: #9399b0;
+            --bg: #f0f2f8;
+            --surface: #ffffff;
+            --accent: #3b5bdb;
+            --border: #e2e5f0;
+            --shadow: 0 2px 24px rgba(15,17,23,0.07);
         }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            /* Hình nền từ thư mục static/images/ */
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            padding: 2rem 1.5rem 3rem;
+            position: relative;
+            overflow-x: hidden;
             background-image:
-                linear-gradient(rgba(102, 126, 234, 0.55), rgba(118, 75, 162, 0.75)),  /* overlay tím để giữ tone và dễ đọc chữ */
-                url('/image/nen.png');   /* ← Đổi tên file nếu khác, ví dụ: tour-bg.jpg, admin-bg.jpg */
-
+                linear-gradient(135deg, rgba(15,17,35,0.75) 0%, rgba(59,41,120,0.68) 100%),
+                url('/image/nen.png');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             background-attachment: fixed;
-            min-height: 100vh;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            color: white;
         }
 
-        /* Lớp blur nền (tùy chọn - làm nền mờ nhẹ, đẹp hơn) */
+        /* Dot grid overlay */
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none; z-index: 0;
+        }
+
         body::before {
             content: '';
-            position: fixed;
-            inset: 0;
-            background: inherit;
-            filter: blur(5px);          /* 4-6px là đẹp nhất, đừng quá mờ kẻo chữ khó đọc */
-            z-index: -2;
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 10% 0%, rgba(99,102,241,0.2) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 55% at 90% 100%, rgba(139,92,246,0.15) 0%, transparent 55%);
+            pointer-events: none; z-index: 0;
         }
 
-        .dashboard-container {
-            padding: 60px 0;
-            position: relative;
-            z-index: 1;  /* Đảm bảo nội dung nổi lên trên lớp blur */
-        }
+        .page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
 
-        .dashboard-title {
-            color: transparent;
-            background: linear-gradient(90deg, #a78bfa, #c084fc, #f472b6, #ec4899);
-            -webkit-background-clip: text;
-            background-clip: text;
-            font-weight: 800;
-            margin-bottom: 50px;
+        /* Hero section */
+        .hero {
             text-align: center;
-            font-size: 3rem;
-            letter-spacing: -1px;
-            text-shadow: 0 4px 20px rgba(167, 139, 250, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 18px;
+            padding: 2.5rem 1rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: #a5b4fc; background: rgba(165,180,252,0.12);
+            border: 1px solid rgba(165,180,252,0.25);
+            padding: 0.35rem 1rem; border-radius: 99px;
+            margin-bottom: 1.2rem;
+        }
+        .hero h1 {
+            font-family: 'Sora', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800; color: white; line-height: 1.1;
+            letter-spacing: -0.03em; margin-bottom: 0.75rem;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+        }
+        .hero h1 span {
+            background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 0.95rem; color: rgba(255,255,255,0.6); max-width: 420px; margin: 0 auto;
         }
 
-        .header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
+        /* Time chip */
+        .time-chip {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            margin-top: 1.2rem; padding: 0.45rem 1rem;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 99px; font-size: 0.8rem; color: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+        }
+        .time-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: blink 2s infinite; }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+        /* Stats grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
         }
 
-        .welcome-text {
-            color: rgba(255,255,255,0.95);
-            font-size: 1.4rem;
-            font-weight: 500;
-            margin: 0;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
-        }
-
+        /* Stat card */
         .stat-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            border-radius: 28px;
-            padding: 40px 30px;
-            box-shadow: var(--shadow-lg);
-            transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.75rem 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex; flex-direction: column;
+            gap: 1rem;
             position: relative;
             overflow: hidden;
-            margin-bottom: 30px;
-            min-height: 420px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            text-align: center;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            text-decoration: none;
+            color: inherit;
         }
-
         .stat-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 30px 70px rgba(99, 102, 241, 0.45);
+            transform: translateY(-5px);
+            box-shadow: 0 16px 40px rgba(15,17,23,0.12);
+            color: inherit;
         }
 
+        /* Subtle top accent line */
         .stat-card::before {
             content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08));
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            z-index: -1;
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 3px; border-radius: 20px 20px 0 0;
+        }
+        .stat-card.tours::before    { background: linear-gradient(90deg, #3b5bdb, #4263eb); }
+        .stat-card.bookings::before { background: linear-gradient(90deg, #e64980, #f06595); }
+        .stat-card.customers::before{ background: linear-gradient(90deg, #1c7ed6, #339af0); }
+        .stat-card.messages::before { background: linear-gradient(90deg, #e67700, #f59f00); }
+
+        /* Glow blob in corner */
+        .stat-card::after {
+            content: '';
+            position: absolute; bottom: -30px; right: -30px;
+            width: 100px; height: 100px; border-radius: 50%;
+            opacity: 0.06; transition: opacity 0.3s;
+        }
+        .stat-card:hover::after { opacity: 0.1; }
+        .stat-card.tours::after    { background: #3b5bdb; }
+        .stat-card.bookings::after { background: #e64980; }
+        .stat-card.customers::after{ background: #1c7ed6; }
+        .stat-card.messages::after { background: #e67700; }
+
+        .card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+
+        .card-icon {
+            width: 48px; height: 48px; border-radius: 13px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; color: white; flex-shrink: 0;
+        }
+        .stat-card.tours .card-icon     { background: linear-gradient(135deg, #3b5bdb, #4263eb); box-shadow: 0 6px 16px rgba(59,91,219,0.35); }
+        .stat-card.bookings .card-icon  { background: linear-gradient(135deg, #e64980, #f06595); box-shadow: 0 6px 16px rgba(230,73,128,0.35); }
+        .stat-card.customers .card-icon { background: linear-gradient(135deg, #1c7ed6, #339af0); box-shadow: 0 6px 16px rgba(28,126,214,0.35); }
+        .stat-card.messages .card-icon  { background: linear-gradient(135deg, #e67700, #f59f00); box-shadow: 0 6px 16px rgba(230,119,0,0.35); }
+
+        .card-arrow {
+            width: 30px; height: 30px; border-radius: 8px;
+            background: var(--bg); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; color: var(--ink-light);
+            transition: all 0.2s;
+        }
+        .stat-card:hover .card-arrow {
+            background: var(--accent); border-color: var(--accent);
+            color: white; transform: translate(2px, -2px);
         }
 
-        .stat-card:hover::before { opacity: 1; }
-
-        .stat-icon {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 30px;
-            font-size: 38px;
-            color: white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-            transition: all 0.4s ease;
+        .card-label {
+            font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-light);
         }
 
-        .stat-card:hover .stat-icon {
-            transform: scale(1.12) rotate(5deg);
+        .card-number {
+            font-family: 'Sora', sans-serif; font-size: 3rem; font-weight: 800;
+            color: var(--ink); line-height: 1; letter-spacing: -0.03em;
         }
 
-        .tours-icon { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .bookings-icon { background: linear-gradient(135deg, #ec4899, #f472b6); }
-        .customers-icon { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
-        .messages-icon { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .card-footer-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding-top: 0.85rem; border-top: 1px solid var(--border);
+            font-size: 0.78rem; color: var(--ink-light);
+        }
+        .card-link {
+            font-family: 'Sora', sans-serif; font-size: 0.75rem; font-weight: 600;
+            color: var(--accent); display: flex; align-items: center; gap: 0.25rem;
+            transition: gap 0.2s;
+        }
+        .stat-card:hover .card-link { gap: 0.5rem; }
 
-        .stat-title {
-            color: rgba(255,255,255,0.85);
-            font-size: 1.15rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+        /* Quick actions */
+        .section-label {
+            font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5);
+            margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem;
+        }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.12); }
+
+        .quick-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;
+        }
+        .quick-btn {
+            background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.12);
+            border-radius: 12px; padding: 1rem;
+            display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+            text-decoration: none; color: rgba(255,255,255,0.7);
+            font-family: 'Sora', sans-serif; font-size: 0.78rem; font-weight: 500;
+            transition: all 0.2s ease;
+            text-align: center; backdrop-filter: blur(8px);
+        }
+        .quick-btn i { font-size: 1.2rem; }
+        .quick-btn:hover {
+            background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.25);
+            color: white; transform: translateY(-2px);
         }
 
-        .stat-number {
-            color: white;
-            font-size: 3.8rem;
-            font-weight: 800;
-            margin: 20px 0 30px;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            background: linear-gradient(90deg, white, rgba(255,255,255,0.8));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @media (max-width: 900px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .quick-grid  { grid-template-columns: repeat(2, 1fr); }
         }
-
-        .stat-btn {
-            border-radius: 50px;
-            padding: 14px 36px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            border: none;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            margin-top: auto;
-        }
-
-        .btn-tours { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .btn-bookings { background: linear-gradient(135deg, #ec4899, #f472b6); color: white; }
-        .btn-customers { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
-        .btn-messages { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; }
-
-        .stat-btn:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-logout {
-            background: linear-gradient(135deg, #ec4899, #db2777);
-            color: white;
-            padding: 12px 32px;
-            border-radius: 50px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.4s ease;
-            box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
-        }
-
-        .btn-logout:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 40px rgba(236, 72, 153, 0.5);
-            background: linear-gradient(135deg, #db2777, #ec4899);
-        }
-
-        @media (max-width: 992px) {
-            .dashboard-title { font-size: 2.4rem; }
-            .stat-number { font-size: 3rem; }
-            .stat-icon { width: 80px; height: 80px; font-size: 32px; }
-            .stat-card { min-height: 380px; }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .quick-grid  { grid-template-columns: repeat(2, 1fr); }
+            body { padding: 1rem; }
         }
     </style>
 </head>
 <body>
-<!-- Header admin -->
+
 <div th:replace="fragments/admin-header :: adminHeader"></div>
 
-<div class="container dashboard-container">
-    <div class="header-row">
-        <h1 class="dashboard-title">
-            <i class="fas fa-chart-line"></i> Admin Dashboard
-        </h1>
+<div class="page">
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-eyebrow">
+            <i class="bi bi-shield-fill-check"></i>
+            Admin Control Panel
+        </div>
+        <h1>Xin chào, <span>Admin</span> 👋</h1>
+        <p>Tổng quan hoạt động hệ thống trong thời gian thực</p>
+        <div class="time-chip">
+            <span class="dot"></span>
+            <span id="liveClock">--:--:--</span>
+            <span style="color:#e2e5f0;">·</span>
+            <span id="liveDate">--/--/----</span>
+        </div>
     </div>
 
-    <p class="welcome-text">Chào mừng đến với trang quản trị</p>
-
-    <div class="row mt-5">
+    <!-- Stats grid -->
+    <div class="stats-grid">
 
         <!-- Tours -->
-        <div class="col-md-4">
-            <div class="stat-card text-center">
-                <div class="stat-icon tours-icon">
-                    <i class="fas fa-map-marked-alt"></i>
-                </div>
-                <h4 class="stat-title">Tours</h4>
-                <h2 class="stat-number" th:text="${tourCount}">0</h2>
-                <a th:href="@{/admin/tours}" class="stat-btn btn-tours">
-                    <i class="fas fa-cog me-2"></i> Quản lý
-                </a>
+        <a th:href="@{/admin/tours}" href="#" class="stat-card tours">
+            <div class="card-top">
+                <div class="card-icon"><i class="bi bi-globe2"></i></div>
+                <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
             </div>
-        </div>
+            <div>
+                <div class="card-label">Tours</div>
+                <div class="card-number" th:text="${tourCount}">0</div>
+            </div>
+            <div class="card-footer-row">
+                <span>Tour du lịch</span>
+                <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
 
         <!-- Bookings -->
-        <div class="col-md-4">
-            <div class="stat-card text-center">
-                <div class="stat-icon bookings-icon">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
-                <h4 class="stat-title">Bookings</h4>
-                <h2 class="stat-number" th:text="${bookingCount}">0</h2>
-                <a th:href="@{/admin/bookings}" class="stat-btn btn-bookings">
-                    <i class="fas fa-cog me-2"></i> Quản lý
-                </a>
+        <a th:href="@{/admin/bookings}" href="#" class="stat-card bookings">
+            <div class="card-top">
+                <div class="card-icon"><i class="bi bi-calendar2-check-fill"></i></div>
+                <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
             </div>
-        </div>
+            <div>
+                <div class="card-label">Bookings</div>
+                <div class="card-number" th:text="${bookingCount}">0</div>
+            </div>
+            <div class="card-footer-row">
+                <span>Đặt tour</span>
+                <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
 
         <!-- Customers -->
-        <div class="col-md-4">
-            <div class="stat-card text-center">
-                <div class="stat-icon customers-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h4 class="stat-title">Customers</h4>
-                <h2 class="stat-number" th:text="${customerCount}">0</h2>
-                <a th:href="@{/admin/customers}" class="stat-btn btn-customers">
-                    <i class="fas fa-cog me-2"></i> Quản lý
-                </a>
+        <a th:href="@{/admin/customers}" href="#" class="stat-card customers">
+            <div class="card-top">
+                <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+                <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
             </div>
-        </div>
+            <div>
+                <div class="card-label">Customers</div>
+                <div class="card-number" th:text="${customerCount}">0</div>
+            </div>
+            <div class="card-footer-row">
+                <span>Người dùng</span>
+                <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
 
-        <!-- Nhận liên hệ -->
-        <div class="col-md-4">
-            <div class="stat-card text-center">
-                <div class="stat-icon messages-icon">
-                    <i class="fas fa-envelope-open-text"></i>
-                </div>
-                <h4 class="stat-title">Nhận Liên Hệ</h4>
-                <h2 class="stat-number" th:text="${messageCount}">0</h2>
-                <a th:href="@{/admin/contacts}" class="stat-btn btn-messages">
-                    <i class="fas fa-cog me-2"></i> Quản lý
-                </a>
+        <!-- Messages -->
+        <a th:href="@{/admin/contacts}" href="#" class="stat-card messages">
+            <div class="card-top">
+                <div class="card-icon"><i class="bi bi-envelope-fill"></i></div>
+                <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
             </div>
-        </div>
+            <div>
+                <div class="card-label">Liên hệ</div>
+                <div class="card-number" th:text="${messageCount}">0</div>
+            </div>
+            <div class="card-footer-row">
+                <span>Tin nhắn</span>
+                <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
 
     </div>
+
+    <!-- Quick actions -->
+    <div class="section-label">
+        <i class="bi bi-lightning-fill" style="color:var(--accent);font-size:0.85rem;"></i>
+        Thao tác nhanh
+    </div>
+
+    <div class="quick-grid">
+        <a href="/admin/tours/create" class="quick-btn">
+            <i class="bi bi-plus-circle" style="color:#3b5bdb;"></i>
+            Thêm tour mới
+        </a>
+        <a th:href="@{/admin/customers/create}" href="#" class="quick-btn">
+            <i class="bi bi-person-plus" style="color:#1c7ed6;"></i>
+            Thêm người dùng
+        </a>
+        <a th:href="@{/admin/bookings}" href="#" class="quick-btn">
+            <i class="bi bi-clock-history" style="color:#e64980;"></i>
+            Xem booking mới
+        </a>
+        <a th:href="@{/admin/contacts}" href="#" class="quick-btn">
+            <i class="bi bi-chat-dots" style="color:#e67700;"></i>
+            Xem tin nhắn
+        </a>
+    </div>
+
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Footer admin -->
 <div th:replace="fragments/admin-footer :: adminFooter"></div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2,'0');
+        const m = String(now.getMinutes()).padStart(2,'0');
+        const s = String(now.getSeconds()).padStart(2,'0');
+        document.getElementById('liveClock').textContent = `${h}:${m}:${s}`;
+        document.getElementById('liveDate').textContent =
+            now.toLocaleDateString('vi-VN', {weekday:'short', day:'2-digit', month:'2-digit', year:'numeric'});
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+</script>
+
 </body>
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Đăng nhập | Việt Lữ Travel</title>
@@ -308,6 +309,7 @@
         }
     </style>
 </head>
+
 <body>
 
 <!-- ========== INCLUDE HEADER ========== -->
@@ -351,12 +353,8 @@
                             <i class="bi bi-envelope-fill"></i> Email
                         </label>
                         <i class="input-icon bi bi-envelope"></i>
-                        <input name="email"
-                               type="email"
-                               class="form-control"
-                               placeholder="Nhập email của bạn"
-                               required
-                               autofocus>
+                        <input name="email" type="email" class="form-control" placeholder="Nhập email của bạn"
+                               required autofocus>
                     </div>
 
                     <!-- Password -->
@@ -365,12 +363,8 @@
                             <i class="bi bi-lock-fill"></i> Mật khẩu
                         </label>
                         <i class="input-icon bi bi-lock"></i>
-                        <input name="password"
-                               type="password"
-                               id="password"
-                               class="form-control"
-                               placeholder="Nhập mật khẩu"
-                               required>
+                        <input name="password" type="password" id="password" class="form-control"
+                               placeholder="Nhập mật khẩu" required>
                         <i class="password-toggle bi bi-eye" id="togglePassword"></i>
                     </div>
 
@@ -401,12 +395,14 @@
 
                 <!-- Social Login Buttons -->
                 <div class="social-login">
-                    <button class="social-btn">
+                    <a href="/oauth2/authorization/google"
+                       class="social-btn text-decoration-none d-flex justify-content-center align-items-center">
                         <i class="bi bi-google"></i> Google
-                    </button>
-                    <button class="social-btn">
+                    </a>
+                    <a href="/oauth2/authorization/facebook"
+                       class="social-btn text-decoration-none d-flex justify-content-center align-items-center">
                         <i class="bi bi-facebook"></i> Facebook
-                    </button>
+                    </a>
                 </div>
 
                 <!-- Register Link -->
@@ -420,7 +416,8 @@
                 <!-- Quick Access -->
                 <div class="quick-access">
                     <i class="bi bi-lightning-fill"></i>
-                    <small>Hoặc tiếp tục với vai trò <a href="/" style="color: var(--ocean-blue); font-weight: 600;">Khách</a></small>
+                    <small>Hoặc tiếp tục với vai trò <a href="/"
+                                                        style="color: var(--ocean-blue); font-weight: 600;">Khách</a></small>
                 </div>
 
             </div>
@@ -450,7 +447,7 @@
     const password = document.getElementById('password');
 
     if (togglePassword && password) {
-        togglePassword.addEventListener('click', function() {
+        togglePassword.addEventListener('click', function () {
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
 
@@ -462,4 +459,5 @@
 </script>
 
 </body>
+
 </html>

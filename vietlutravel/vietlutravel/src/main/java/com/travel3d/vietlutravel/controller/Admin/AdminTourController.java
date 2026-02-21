@@ -25,14 +25,14 @@ public class AdminTourController {
                 .getResultList();
 
         model.addAttribute("tours", tours);
-        return "admin/tours/index";   // ✅ ĐÚNG
+        return "admin/tours/index";
     }
 
     // ===== Form thêm =====
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("tour", new Tours());
-        return "admin/tours/form";   // ✅ ĐÚNG
+        return "admin/tours/form";
     }
 
     // ===== Form sửa =====
@@ -40,7 +40,7 @@ public class AdminTourController {
     public String edit(@PathVariable int id, Model model) {
         Tours tour = entityManager.find(Tours.class, id);
         model.addAttribute("tour", tour);
-        return "admin/tours/form";   // dùng chung form
+        return "admin/tours/form";
     }
 
     // ===== Lưu (thêm + sửa) =====

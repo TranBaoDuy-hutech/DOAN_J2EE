@@ -2,23 +2,525 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liên hệ | Việt Lữ Travel</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <th:block th:replace="~{fragments/header :: header-css}"></th:block>
     <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
 
     <style>
-        body { background:#f0f9ff; }
-        .hero {
-            background: linear-gradient(135deg,#0891b2,#0e7490);
-            color:white; padding:70px 20px; text-align:center;
+        :root {
+            --sea:         #0369a1;
+            --sea-mid:     #0284c7;
+            --sea-light:   #38bdf8;
+            --sea-pale:    #e0f2fe;
+            --ink:         #0c2340;
+            --sand:        #c8a96e;
+            --sand-light:  #e8d5a3;
+            --white:       #ffffff;
+            --gray-1:      #f8fafc;
+            --gray-2:      #f1f5f9;
+            --gray-3:      #e2e8f0;
+            --muted:       #64748b;
+            --success:     #059669;
+            --font-h:      'Cormorant Garamond', Georgia, serif;
+            --font-b:      'Outfit', system-ui, sans-serif;
+            --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+            --shadow-sm:   0 4px 16px rgba(12,35,64,0.07);
+            --shadow-md:   0 12px 36px rgba(12,35,64,0.11);
+            --shadow-lg:   0 24px 64px rgba(12,35,64,0.16);
         }
-        .contact-card {
-            border:none; border-radius:18px;
-            box-shadow:0 10px 35px rgba(8,145,178,.15);
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-b);
+            background: var(--gray-1);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main { flex: 1; }
+
+        /* ════════════════════════════════════════
+           HERO BANNER
+        ════════════════════════════════════════ */
+        .hero {
+            background: var(--ink);
+            padding: 4rem 0 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 65% 90% at 90% 40%, rgba(56,189,248,0.1) 0%, transparent 60%),
+                radial-gradient(ellipse 45% 70% at 5% 90%, rgba(200,169,110,0.09) 0%, transparent 60%);
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(200,169,110,0.18);
+            border: 1px solid rgba(200,169,110,0.35);
+            color: var(--sand-light);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 5px 16px;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+            animation: fadeUp 0.6s ease 0.1s both;
+        }
+
+        .hero-title {
+            font-family: var(--font-h);
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.12;
+            margin-bottom: 0.7rem;
+            animation: fadeUp 0.6s ease 0.2s both;
+        }
+
+        .hero-title em { font-style: italic; color: var(--sand-light); }
+
+        .hero-sub {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.5);
+            font-weight: 300;
+            animation: fadeUp 0.6s ease 0.3s both;
+        }
+
+        /* ════════════════════════════════════════
+           CONTENT AREA
+        ════════════════════════════════════════ */
+        .content-area {
+            margin-top: -52px;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 5rem;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* ════════════════════════════════════════
+           INFO SIDEBAR
+        ════════════════════════════════════════ */
+        .info-card {
+            background: var(--white);
+            border-radius: 22px;
+            border: 1px solid var(--gray-3);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            animation: fadeUp 0.6s ease 0.15s both;
+            position: sticky;
+            top: 24px;
+        }
+
+        /* Card top accent */
+        .info-card::before {
+            content: '';
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, var(--sand), var(--sea-light), var(--sand));
+        }
+
+        .info-card-header {
+            padding: 1.6rem 1.8rem 1rem;
+            border-bottom: 1px solid var(--gray-2);
+        }
+
+        .info-card-title {
+            font-family: var(--font-h);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .info-card-sub {
+            font-size: 0.82rem;
+            color: var(--muted);
+            font-weight: 300;
+            margin-top: 3px;
+        }
+
+        /* Contact items */
+        .contact-items {
+            padding: 1.2rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 0.9rem 1rem;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            transition: all 0.25s;
+            cursor: default;
+        }
+
+        .contact-item:hover {
+            background: var(--gray-1);
+            border-color: var(--gray-3);
+            transform: translateX(4px);
+        }
+
+        .ci-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            background: var(--sea-pale);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            color: var(--sea);
+            flex-shrink: 0;
+            transition: all 0.25s;
+        }
+
+        .contact-item:hover .ci-icon {
+            background: linear-gradient(135deg, var(--sea-mid), var(--sea));
+            color: #fff;
+            transform: rotate(-6deg) scale(1.08);
+        }
+
+        .ci-body { flex: 1; }
+
+        .ci-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 2px;
+        }
+
+        .ci-value {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--ink);
+            line-height: 1.45;
+        }
+
+        .ci-link {
+            text-decoration: none;
+            color: var(--ink);
+            transition: color 0.2s;
+        }
+
+        .ci-link:hover { color: var(--sea); }
+
+        /* Divider */
+        .info-divider {
+            height: 1px;
+            background: var(--gray-2);
+            margin: 0 1.4rem;
+        }
+
+        /* Social row */
+        .info-social {
+            padding: 1.2rem 1.8rem 1.6rem;
+        }
+
+        .social-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .social-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .social-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--gray-1);
+            border: 1px solid var(--gray-3);
+            border-radius: 50px;
+            padding: 6px 13px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--muted);
+            text-decoration: none;
+            transition: all 0.25s;
+        }
+
+        .social-pill i { font-size: 0.9rem; }
+
+        .social-pill:hover { transform: translateY(-2px); color: #fff; }
+        .social-pill.fb:hover  { background: #1877f2; border-color: #1877f2; }
+        .social-pill.ig:hover  { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366); border-color: transparent; }
+        .social-pill.yt:hover  { background: #ff0000; border-color: #ff0000; }
+        .social-pill.tt:hover  { background: #010101; border-color: #69c9d0; }
+
+        /* ════════════════════════════════════════
+           FORM CARD
+        ════════════════════════════════════════ */
+        .form-card {
+            background: var(--white);
+            border-radius: 22px;
+            border: 1px solid var(--gray-3);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            animation: fadeUp 0.6s ease 0.25s both;
+        }
+
+        .form-card-header {
+            padding: 1.8rem 2rem 1.2rem;
+            border-bottom: 1px solid var(--gray-2);
+        }
+
+        .form-card-title {
+            font-family: var(--font-h);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 3px;
+        }
+
+        .form-card-sub {
+            font-size: 0.82rem;
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        .form-body { padding: 1.8rem 2rem 2.2rem; }
+
+        /* Fields */
+        .field-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        .field-item { display: flex; flex-direction: column; gap: 5px; }
+
+        .field-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .req { color: #dc2626; }
+
+        .field-wrap { position: relative; }
+
+        .field-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--sea-light);
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+
+        .field-wrap.ta-wrap .field-icon {
+            top: 0.85rem;
+            transform: none;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 0.78rem 1rem 0.78rem 2.6rem;
+            border: 1.5px solid var(--gray-3);
+            border-radius: 11px;
+            font-family: var(--font-b);
+            font-size: 0.9rem;
+            color: var(--ink);
+            background: var(--gray-1);
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+        }
+
+        .field-input:focus {
+            border-color: var(--sea);
+            box-shadow: 0 0 0 3px rgba(2,132,199,0.1);
+            background: var(--white);
+        }
+
+        .field-input::placeholder { color: #94a3b8; }
+
+        textarea.field-input {
+            resize: vertical;
+            min-height: 120px;
+            padding-top: 0.78rem;
+        }
+
+        /* Success alert */
+        .alert-success-custom {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(5,150,105,0.08);
+            border: 1px solid rgba(5,150,105,0.25);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1.4rem;
+            color: var(--success);
+            font-size: 0.875rem;
+            font-weight: 500;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .alert-success-custom i { font-size: 1.1rem; flex-shrink: 0; }
+
+        /* Submit */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--sand), #b8943c);
+            color: var(--ink);
+            font-family: var(--font-b);
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.9rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 22px rgba(200,169,110,0.35);
+            transition: all 0.35s var(--ease-spring);
+            margin-top: 1.4rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 14px 34px rgba(200,169,110,0.5);
+        }
+
+        .btn-submit:active { transform: translateY(0) scale(0.99); }
+
+        .form-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.76rem;
+            color: var(--muted);
+            margin-top: 10px;
+        }
+
+        .form-note i { color: var(--success); }
+
+        /* Field groups gap */
+        .fields-stack { display: flex; flex-direction: column; gap: 16px; }
+
+        /* ════════════════════════════════════════
+           MAP STRIP
+        ════════════════════════════════════════ */
+        .map-section { padding: 0 0 5rem; }
+
+        .map-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--sand);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .map-label::after {
+            content: ''; flex: 1; max-width: 32px;
+            height: 1px; background: var(--sand); opacity: 0.5;
+        }
+
+        .map-title {
+            font-family: var(--font-h);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 1.4rem;
+        }
+
+        .map-title em { font-style: italic; color: var(--sea-mid); }
+
+        .map-frame {
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--gray-3);
+            box-shadow: var(--shadow-md);
+            height: 360px;
+        }
+
+        .map-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* ════════════════════════════════════════
+           ANIMATIONS
+        ════════════════════════════════════════ */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* ════════════════════════════════════════
+           RESPONSIVE
+        ════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .info-card { position: static; }
+            .field-row-2 { grid-template-columns: 1fr; }
+            .hero { padding: 3rem 0 5rem; }
+        }
+
+        @media (max-width: 576px) {
+            .content-area { margin-top: -32px; }
+            .form-body { padding: 1.4rem 1.4rem 1.8rem; }
         }
     </style>
 </head>
@@ -26,64 +528,210 @@
 
 <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-<div class="hero">
-    <h2 class="fw-bold">Liên hệ với Việt Lữ Travel</h2>
-    <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
-</div>
+<main>
 
-<div class="container py-5">
-    <div class="row g-5">
-
-        <!-- Thông tin -->
-        <div class="col-md-5">
-            <div class="p-4 bg-white rounded-4 shadow-sm h-100">
-                <h4 class="text-primary fw-bold mb-4">Thông tin liên hệ</h4>
-                <p><i class="bi bi-geo-alt-fill"></i> Khu Công nghệ cao TP.HCM, Xa lộ Hà Nội, Phường Tăng Nhơn Phú, TP.HCM</p>
-                <p><i class="bi bi-telephone-fill"></i> 090 123 4567</p>
-                <p><i class="bi bi-envelope-fill"></i> vietlutravel@gmail.com</p>
-                <p><i class="bi bi-clock-fill"></i> 8:00 - 20:00 hằng ngày</p>
+    <!-- ════ HERO ════ -->
+    <div class="hero">
+        <div class="container hero-inner">
+            <div class="hero-eyebrow">
+                <i class="bi bi-telephone-fill"></i> Liên hệ
             </div>
+            <h1 class="hero-title">Kết nối <em>cùng chúng tôi</em></h1>
+            <p class="hero-sub">Đội ngũ hỗ trợ của Việt Lữ Travel luôn sẵn sàng 24/7</p>
         </div>
-        <!-- Form -->
-        <div class="col-md-7">
-            <div class="card contact-card p-4">
-                <h4 class="fw-bold text-primary mb-3">Gửi tin nhắn cho chúng tôi</h4>
+    </div>
 
-                <div th:if="${param.success}" class="alert alert-success">
-                    Gửi liên hệ thành công! Chúng tôi sẽ phản hồi sớm.
+    <!-- ════ CONTENT ════ -->
+    <div class="content-area">
+        <div class="container">
+            <div class="content-grid">
+
+                <!-- ── Info sidebar ── -->
+                <div class="info-sidebar">
+                    <div class="info-card">
+
+                        <div class="info-card-header">
+                            <div class="info-card-title">Thông tin liên hệ</div>
+                            <div class="info-card-sub">Chúng tôi luôn sẵn sàng lắng nghe bạn</div>
+                        </div>
+
+                        <div class="contact-items">
+                            <div class="contact-item">
+                                <div class="ci-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                                <div class="ci-body">
+                                    <div class="ci-label">Địa chỉ</div>
+                                    <div class="ci-value">Khu CNC TP.HCM, Xa lộ Hà Nội,<br>P. Tăng Nhơn Phú, TP.HCM</div>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="ci-icon"><i class="bi bi-telephone-fill"></i></div>
+                                <div class="ci-body">
+                                    <div class="ci-label">Hotline</div>
+                                    <div class="ci-value">
+                                        <a href="tel:0901234567" class="ci-link">090 123 4567</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="ci-icon"><i class="bi bi-envelope-fill"></i></div>
+                                <div class="ci-body">
+                                    <div class="ci-label">Email</div>
+                                    <div class="ci-value">
+                                        <a href="mailto:vietlutravel@gmail.com" class="ci-link">vietlutravel@gmail.com</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="ci-icon"><i class="bi bi-clock-fill"></i></div>
+                                <div class="ci-body">
+                                    <div class="ci-label">Giờ làm việc</div>
+                                    <div class="ci-value">08:00 – 22:00 · Tất cả các ngày</div>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="ci-icon"><i class="bi bi-chat-dots-fill"></i></div>
+                                <div class="ci-body">
+                                    <div class="ci-label">Chat trực tuyến</div>
+                                    <div class="ci-value">
+                                        <a href="/chat" class="ci-link">Chat với CSKH ngay →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-divider"></div>
+
+                        <div class="info-social">
+                            <div class="social-label">Mạng xã hội</div>
+                            <div class="social-pills">
+                                <a href="#" class="social-pill fb">
+                                    <i class="bi bi-facebook"></i> Facebook
+                                </a>
+                                <a href="#" class="social-pill ig">
+                                    <i class="bi bi-instagram"></i> Instagram
+                                </a>
+                                <a href="#" class="social-pill yt">
+                                    <i class="bi bi-youtube"></i> YouTube
+                                </a>
+                                <a href="#" class="social-pill tt">
+                                    <i class="bi bi-tiktok"></i> TikTok
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
-                <form method="post" th:action="@{/contact}" th:object="${contact}">
-                    <div class="mb-3">
-                        <label>Họ tên</label>
-                        <input th:field="*{name}" class="form-control" required>
+                <!-- ── Form ── -->
+                <div class="form-card">
+
+                    <div class="form-card-header">
+                        <div class="form-card-title">Gửi tin nhắn</div>
+                        <div class="form-card-sub">Điền thông tin bên dưới — chúng tôi sẽ phản hồi trong vòng 24 giờ</div>
                     </div>
 
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input th:field="*{email}" type="email" class="form-control" required>
-                    </div>
+                    <div class="form-body">
 
-                    <div class="mb-3">
-                        <label>Số điện thoại</label>
-                        <input th:field="*{phone}" class="form-control">
-                    </div>
+                        <!-- Success alert -->
+                        <div class="alert-success-custom" th:if="${param.success}">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Gửi liên hệ thành công! Chúng tôi sẽ phản hồi sớm nhất có thể.</span>
+                        </div>
 
-                    <div class="mb-3">
-                        <label>Nội dung</label>
-                        <textarea th:field="*{message}" rows="5" class="form-control" required></textarea>
-                    </div>
+                        <form method="post" th:action="@{/contact}" th:object="${contact}">
+                            <div class="fields-stack">
 
-                    <button class="btn btn-primary w-100 py-2">
-                        <i class="bi bi-send-fill"></i> Gửi liên hệ
-                    </button>
-                </form>
+                                <!-- Tên + SĐT -->
+                                <div class="field-row-2">
+                                    <div class="field-item">
+                                        <label class="field-label" for="name">
+                                            Họ và tên <span class="req">*</span>
+                                        </label>
+                                        <div class="field-wrap">
+                                            <i class="bi bi-person field-icon"></i>
+                                            <input id="name" th:field="*{name}"
+                                                   class="field-input"
+                                                   placeholder="Nguyễn Văn A"
+                                                   required autocomplete="name">
+                                        </div>
+                                    </div>
+                                    <div class="field-item">
+                                        <label class="field-label" for="phone">Số điện thoại</label>
+                                        <div class="field-wrap">
+                                            <i class="bi bi-telephone field-icon"></i>
+                                            <input id="phone" th:field="*{phone}"
+                                                   class="field-input"
+                                                   placeholder="090 123 4567"
+                                                   autocomplete="tel">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="field-item">
+                                    <label class="field-label" for="email">
+                                        Email <span class="req">*</span>
+                                    </label>
+                                    <div class="field-wrap">
+                                        <i class="bi bi-envelope field-icon"></i>
+                                        <input id="email" th:field="*{email}"
+                                               type="email"
+                                               class="field-input"
+                                               placeholder="example@email.com"
+                                               required autocomplete="email">
+                                    </div>
+                                </div>
+
+                                <!-- Nội dung -->
+                                <div class="field-item">
+                                    <label class="field-label" for="message">
+                                        Nội dung <span class="req">*</span>
+                                    </label>
+                                    <div class="field-wrap ta-wrap">
+                                        <i class="bi bi-chat-left-text field-icon"></i>
+                                        <textarea id="message" th:field="*{message}"
+                                                  class="field-input"
+                                                  placeholder="Nhập câu hỏi hoặc yêu cầu của bạn..."
+                                                  required></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <button type="submit" class="btn-submit">
+                                <i class="bi bi-send-fill"></i> Gửi tin nhắn
+                            </button>
+                            <div class="form-note">
+                                <i class="bi bi-shield-fill-check"></i>
+                                Thông tin của bạn được bảo mật hoàn toàn
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
             </div>
         </div>
-
     </div>
-</div>
+
+    <!-- ════ MAP ════ -->
+    <div class="map-section">
+        <div class="container">
+            <div class="map-label"><i class="bi bi-map"></i> Bản đồ</div>
+            <h2 class="map-title">Tìm <em>chúng tôi</em></h2>
+            <div class="map-frame">
+                <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.609941530495!2d106.80235827486265!3d10.841127589305!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752731176b07b1%3A0xb752b24b379bae5e!2zVHLGsOG7nW5nIMSQH2kgaOG7jWMgQ8O0bmcgbmdoacG7h3AgVFAuSENN!5e0!3m2!1svi!2svn!4v1700000000000!5m2!1svi!2svn"
+                        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                        title="Bản đồ Việt Lữ Travel">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+</main>
 
 <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
