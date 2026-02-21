@@ -1,4 +1,4 @@
-package com.travel3d.vietlutravel.controller.Admin;
+package com.travel3d.vietlutravel.controller;  // sửa package cho đúng (không cần .Admin riêng)
 
 import com.travel3d.vietlutravel.model.Booking;
 import com.travel3d.vietlutravel.model.Customer;

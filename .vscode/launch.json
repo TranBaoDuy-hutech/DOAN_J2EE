@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-VietlutravelApplication<vietlutravel>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.travel3d.vietlutravel.VietlutravelApplication",
+            "projectName": "vietlutravel",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

@@ -35,14 +35,14 @@ public class Customer {
 
     // Thêm field role để hỗ trợ phân quyền (USER / ADMIN)
     @Column(name = "Role", length = 20, nullable = false)
-    private String role = "USER";  // mặc định là USER
+    private String role = "USER"; // mặc định là USER
 
     public Customer() {
     }
 
     // Constructor đầy đủ (tùy chọn, tiện khi test)
     public Customer(String userName, String email, String phone, String address,
-                    LocalDate dateOfBirth, String gender, String passwordHash, String role) {
+            LocalDate dateOfBirth, String gender, String passwordHash, String role) {
         this.userName = userName;
         this.email = email;
         this.phone = phone;
