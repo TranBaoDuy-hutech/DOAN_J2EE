@@ -7,7 +7,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <th:block th:replace="~{fragments/header :: header-css}"></th:block>
     <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
@@ -53,7 +53,7 @@
         .main-content { flex: 1; }
 
         /* ════════════════════════════════════════
-           HERO SECTION
+           HERO — FULLSCREEN CINEMATIC
         ════════════════════════════════════════ */
         .hero {
             position: relative;
@@ -64,389 +64,334 @@
             background: var(--ink);
         }
 
-        .hero-slides {
-            position: absolute;
-            inset: 0;
-            display: flex;
-        }
+        .hero-slides { position: absolute; inset: 0; }
 
         .hero-slide {
             position: absolute;
             inset: 0;
             opacity: 0;
-            transition: opacity 1.2s ease;
+            transition: opacity 1.4s ease;
         }
 
         .hero-slide.active { opacity: 1; }
 
         .hero-slide img {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
-            transform: scale(1.06);
-            transition: transform 8s ease;
+            transform: scale(1.07);
+            transition: transform 10s ease;
+            filter: saturate(1.1);
         }
 
         .hero-slide.active img { transform: scale(1); }
 
         .hero-slide::after {
             content: '';
-            position: absolute;
-            inset: 0;
+            position: absolute; inset: 0;
             background:
-                linear-gradient(to right, rgba(12,35,64,0.72) 0%, rgba(12,35,64,0.2) 60%, transparent 100%),
-                linear-gradient(to top, rgba(12,35,64,0.5) 0%, transparent 50%);
+                linear-gradient(to right, rgba(12,35,64,0.80) 0%, rgba(12,35,64,0.25) 55%, transparent 100%),
+                linear-gradient(to top, rgba(12,35,64,0.55) 0%, transparent 45%);
         }
 
         .hero-content {
-            position: absolute;
-            inset: 0;
-            z-index: 10;
-            display: flex;
-            align-items: center;
+            position: absolute; inset: 0; z-index: 10;
+            display: flex; align-items: center;
             padding: 0 6%;
         }
 
-        .hero-text { max-width: 580px; }
+        .hero-text { max-width: 600px; }
+
+        /* Kicker line */
+        .hero-kicker {
+            display: inline-flex; align-items: center; gap: 12px;
+            margin-bottom: 1.6rem;
+            animation: fadeRight 0.8s ease 0.15s both;
+        }
+
+        .kicker-line { width: 36px; height: 1px; background: var(--sand); }
 
         .hero-eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(200,169,110,0.2);
-            border: 1px solid rgba(200,169,110,0.4);
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(200,169,110,0.18);
+            border: 1px solid rgba(200,169,110,0.38);
             color: var(--sand-light);
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            padding: 6px 16px;
-            border-radius: 50px;
-            margin-bottom: 1.4rem;
+            font-size: 0.73rem; font-weight: 600;
+            letter-spacing: 0.16em; text-transform: uppercase;
+            padding: 6px 16px; border-radius: 50px;
             backdrop-filter: blur(8px);
-            animation: fadeRight 0.8s ease 0.2s both;
         }
 
         .hero-eyebrow i { font-size: 0.85rem; color: var(--sand); }
 
         .hero-title {
             font-family: var(--font-h);
-            font-size: clamp(2.8rem, 6vw, 5rem);
-            font-weight: 700;
+            font-size: clamp(3rem, 6.5vw, 5.5rem);
+            font-weight: 300;
             color: #fff;
-            line-height: 1.1;
-            margin-bottom: 1.2rem;
-            animation: fadeRight 0.8s ease 0.35s both;
+            line-height: 1.03;
+            margin-bottom: 1.3rem;
+            animation: fadeRight 0.8s ease 0.3s both;
         }
 
-        .hero-title em {
-            font-style: italic;
-            color: var(--sand-light);
-        }
+        .hero-title strong { font-weight: 700; display: block; }
+        .hero-title em { font-style: italic; color: var(--sand-light); }
 
         .hero-desc {
-            font-size: 1.05rem;
-            color: rgba(255,255,255,0.78);
-            font-weight: 300;
-            line-height: 1.7;
-            margin-bottom: 2.2rem;
-            animation: fadeRight 0.8s ease 0.5s both;
+            font-size: 1.05rem; font-weight: 300;
+            color: rgba(255,255,255,0.72);
+            line-height: 1.75; margin-bottom: 2.3rem;
+            max-width: 480px;
+            animation: fadeRight 0.8s ease 0.45s both;
         }
 
         .hero-cta {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-            animation: fadeRight 0.8s ease 0.65s both;
+            display: flex; gap: 14px; flex-wrap: wrap;
+            animation: fadeRight 0.8s ease 0.6s both;
         }
 
         .btn-hero-primary {
             background: linear-gradient(135deg, var(--sand), #b8943c);
-            color: var(--ink);
-            font-weight: 700;
-            font-family: var(--font-b);
-            font-size: 0.92rem;
-            padding: 0.9rem 2rem;
-            border-radius: 50px;
-            border: none;
+            color: var(--ink); font-weight: 700;
+            font-family: var(--font-b); font-size: 0.92rem;
+            padding: 0.95rem 2.1rem; border-radius: 50px; border: none;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 8px 28px rgba(200,169,110,0.45);
-            transition: all 0.35s var(--ease-spring);
+            display: inline-flex; align-items: center; gap: 9px;
+            box-shadow: 0 10px 30px rgba(200,169,110,0.45);
+            transition: all 0.38s var(--ease-spring);
         }
 
         .btn-hero-primary:hover {
-            transform: translateY(-3px) scale(1.04);
-            box-shadow: 0 14px 40px rgba(200,169,110,0.55);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 18px 44px rgba(200,169,110,0.55);
             color: var(--ink);
         }
 
         .btn-hero-ghost {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            font-weight: 500;
-            font-family: var(--font-b);
-            font-size: 0.92rem;
-            padding: 0.9rem 2rem;
-            border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1); color: #fff;
+            font-weight: 500; font-family: var(--font-b); font-size: 0.92rem;
+            padding: 0.95rem 2.1rem; border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.28);
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            backdrop-filter: blur(8px);
-            transition: all 0.3s;
+            display: inline-flex; align-items: center; gap: 9px;
+            backdrop-filter: blur(10px); transition: all 0.3s;
         }
 
         .btn-hero-ghost:hover {
             background: rgba(255,255,255,0.2);
             border-color: rgba(255,255,255,0.5);
-            color: #fff;
-            transform: translateY(-2px);
+            color: #fff; transform: translateY(-2px);
+        }
+
+        /* Slide counter top-right */
+        .hero-counter {
+            position: absolute; right: 6%; top: 50%; transform: translateY(-50%);
+            z-index: 10;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+
+        .hc-current {
+            font-family: var(--font-h); font-size: 4rem; font-weight: 700;
+            color: rgba(255,255,255,0.1); line-height: 1;
+            transition: color 0.6s;
+        }
+
+        .hc-sep { width: 1px; height: 40px; background: rgba(255,255,255,0.15); }
+
+        .hc-total {
+            font-size: 0.7rem; font-weight: 600;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 0.14em; text-transform: uppercase;
         }
 
         .hero-dots {
-            position: absolute;
-            bottom: 28px;
-            left: 6%;
-            z-index: 10;
-            display: flex;
-            gap: 8px;
+            position: absolute; bottom: 30px; left: 6%; z-index: 10;
+            display: flex; gap: 8px;
         }
 
         .hero-dot {
-            width: 28px;
-            height: 3px;
-            border-radius: 2px;
-            background: rgba(255,255,255,0.3);
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-            padding: 0;
+            width: 28px; height: 3px; border-radius: 2px;
+            background: rgba(255,255,255,0.28); cursor: pointer;
+            transition: all 0.32s; border: none; padding: 0;
         }
 
-        .hero-dot.active {
-            background: var(--sand);
-            width: 52px;
-        }
+        .hero-dot.active { background: var(--sand); width: 54px; }
 
+        /* Scroll line cue */
         .scroll-hint {
-            position: absolute;
-            bottom: 32px;
-            right: 6%;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            color: rgba(255,255,255,0.5);
-            font-size: 0.72rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
+            position: absolute; bottom: 30px; right: 6%; z-index: 10;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            color: rgba(255,255,255,0.45); font-size: 0.65rem;
+            letter-spacing: 0.12em; text-transform: uppercase;
             animation: scrollBounce 2s ease-in-out infinite;
         }
 
-        .scroll-hint i { font-size: 1.1rem; }
+        .scroll-hint i { font-size: 1rem; }
+
+        .scroll-line {
+            width: 1px; height: 52px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.4));
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%,100% { transform: scaleY(1); opacity: 0.4; }
+            50% { transform: scaleY(0.5); opacity: 1; }
+        }
 
         @keyframes scrollBounce {
             0%,100% { transform: translateY(0); opacity: 0.5; }
-            50% { transform: translateY(6px); opacity: 0.9; }
+            50%      { transform: translateY(5px); opacity: 0.9; }
         }
 
         /* ════════════════════════════════════════
-           SEARCH — VIP PRO UPGRADED
+           MARQUEE STRIP
+        ════════════════════════════════════════ */
+        .marquee-strip {
+            background: var(--sand);
+            padding: 0.7rem 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-track {
+            display: inline-flex; align-items: center;
+            animation: marqueeRoll 30s linear infinite;
+        }
+
+        .marquee-item {
+            display: inline-flex; align-items: center; gap: 14px;
+            padding: 0 2.5rem;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(12,35,64,0.3); }
+
+        @keyframes marqueeRoll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* ════════════════════════════════════════
+           SEARCH — VIP PRO (tách khỏi hero)
         ════════════════════════════════════════ */
         .search-float {
             position: relative;
             z-index: 20;
-            margin-top: -68px;
-            padding: 0 5%;
-            margin-bottom: 3rem;
+            margin-top: 0;
+            padding: 2.5rem 5%;
+            margin-bottom: 0;
+            background: var(--ink);
         }
 
-        /* Tiny label above card */
         .search-eyebrow {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            padding-left: 4px;
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 12px; padding-left: 4px;
         }
 
         .search-eyebrow span {
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
+            font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 0.18em; text-transform: uppercase;
             color: rgba(255,255,255,0.55);
         }
 
-        .search-eyebrow::before,
-        .search-eyebrow::after {
-            content: '';
-            height: 1px;
-            background: rgba(255,255,255,0.2);
+        .search-eyebrow::before, .search-eyebrow::after {
+            content: ''; height: 1px; background: rgba(255,255,255,0.2);
         }
 
         .search-eyebrow::before { width: 16px; }
         .search-eyebrow::after  { flex: 1; max-width: 50px; }
 
-        /* Main card */
         .search-card {
-            background: rgba(255,255,255,0.98);
+            background: #ffffff;
             border-radius: 20px;
             box-shadow:
-                0 32px 80px rgba(12,35,64,0.22),
-                0 8px 24px rgba(12,35,64,0.10),
-                inset 0 1px 0 rgba(255,255,255,1);
-            border: 1px solid rgba(255,255,255,0.7);
+                0 24px 64px rgba(0,0,0,0.35),
+                0 8px 24px rgba(0,0,0,0.2);
+            border: none;
             overflow: hidden;
         }
 
-        /* Tab bar */
         .search-tabs {
-            display: flex;
-            background: var(--gray-1);
+            display: flex; background: var(--gray-1);
             border-bottom: 1px solid var(--gray-3);
-            padding: 0 1.6rem;
-            gap: 0;
-            overflow-x: auto;
-            scrollbar-width: none;
+            padding: 0 1.6rem; gap: 0;
+            overflow-x: auto; scrollbar-width: none;
         }
 
         .search-tabs::-webkit-scrollbar { display: none; }
 
         .search-tab {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            display: inline-flex; align-items: center; gap: 6px;
             padding: 0.85rem 1.2rem;
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--muted);
-            cursor: pointer;
-            border: none;
-            border-bottom: 2px solid transparent;
-            background: none;
-            font-family: var(--font-b);
-            letter-spacing: 0.02em;
-            transition: all 0.22s;
-            white-space: nowrap;
-            margin-bottom: -1px;
+            font-size: 0.78rem; font-weight: 600; color: var(--muted);
+            cursor: pointer; border: none; border-bottom: 2px solid transparent;
+            background: none; font-family: var(--font-b);
+            letter-spacing: 0.02em; transition: all 0.22s;
+            white-space: nowrap; margin-bottom: -1px;
         }
 
         .search-tab i { font-size: 0.85rem; }
 
         .search-tab.active {
-            color: var(--sea);
-            border-bottom-color: var(--sea);
-            background: var(--white);
+            color: var(--sea); border-bottom-color: var(--sea); background: var(--white);
         }
 
         .search-tab:hover:not(.active) { color: var(--ink); }
 
-        /* Fields row */
-        .search-body {
-            display: flex;
-            align-items: stretch;
-        }
+        .search-body { display: flex; align-items: stretch; }
 
         .sf {
-            flex: 1;
-            min-width: 180px;
+            flex: 1; min-width: 180px;
             padding: 1.25rem 1.6rem;
             border-right: 1px solid var(--gray-3);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            position: relative;
-            transition: background 0.18s;
-            cursor: text;
+            display: flex; flex-direction: column; gap: 4px;
+            position: relative; transition: background 0.18s; cursor: text;
         }
 
         .sf:hover { background: var(--gray-1); }
         .sf:focus-within { background: var(--sea-pale); }
 
         .sf-label {
-            font-size: 0.66rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--muted);
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            font-size: 0.66rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--muted); display: flex; align-items: center; gap: 5px;
             transition: color 0.18s;
         }
 
         .sf:focus-within .sf-label { color: var(--sea); }
-
         .sf-label i { font-size: 0.78rem; }
 
         .sf-input {
-            border: none;
-            outline: none;
-            font-family: var(--font-b);
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--ink);
-            background: transparent;
-            width: 100%;
+            border: none; outline: none;
+            font-family: var(--font-b); font-size: 0.95rem; font-weight: 500;
+            color: var(--ink); background: transparent; width: 100%;
         }
 
         .sf-input::placeholder { color: #b0bec5; font-weight: 400; }
-
-        /* native date input tweak */
         .sf-input[type="date"] { color-scheme: light; }
 
-        .sf-hint {
-            font-size: 0.7rem;
-            color: var(--muted);
-            margin-top: 2px;
-        }
+        .sf-hint { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
 
-        /* Focus accent line */
         .sf::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--sea-light);
-            transform: scaleX(0);
-            transition: transform 0.25s var(--ease-spring);
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+            height: 2px; background: var(--sea-light);
+            transform: scaleX(0); transition: transform 0.25s var(--ease-spring);
         }
 
         .sf:focus-within::after { transform: scaleX(1); }
 
-        /* CTA area */
         .search-cta {
-            flex-shrink: 0;
-            padding: 1rem 1.1rem;
-            display: flex;
-            align-items: center;
+            flex-shrink: 0; padding: 1rem 1.1rem;
+            display: flex; align-items: center;
         }
 
         .btn-search-go {
             background: linear-gradient(135deg, var(--sea-mid), var(--sea));
-            color: #fff;
-            border: none;
-            border-radius: 14px;
-            padding: 1rem 1.8rem;
-            font-family: var(--font-b);
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.32s var(--ease-spring);
-            white-space: nowrap;
-            box-shadow: 0 8px 24px rgba(2,132,199,0.32);
-            letter-spacing: 0.02em;
+            color: #fff; border: none; border-radius: 14px;
+            padding: 1rem 1.8rem; font-family: var(--font-b);
+            font-weight: 700; font-size: 0.9rem; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.32s var(--ease-spring); white-space: nowrap;
+            box-shadow: 0 8px 24px rgba(2,132,199,0.32); letter-spacing: 0.02em;
         }
 
         .btn-search-go:hover {
@@ -457,164 +402,145 @@
 
         .btn-search-go i { font-size: 0.95rem; }
 
-        /* Popular chips */
         .search-chips {
-            padding: 0.8rem 1.6rem;
-            border-top: 1px solid var(--gray-3);
-            background: var(--gray-1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            padding: 0.8rem 1.6rem; border-top: 1px solid var(--gray-3);
+            background: var(--gray-1); display: flex; align-items: center;
+            gap: 8px; flex-wrap: wrap;
         }
 
         .chips-label {
-            font-size: 0.66rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--muted);
-            white-space: nowrap;
-            flex-shrink: 0;
+            font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--muted); white-space: nowrap; flex-shrink: 0;
         }
 
         .chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: var(--white);
-            border: 1px solid var(--gray-3);
-            color: var(--ink);
-            font-size: 0.76rem;
-            font-weight: 500;
-            padding: 4px 12px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.22s;
-            text-decoration: none;
-            font-family: var(--font-b);
+            display: inline-flex; align-items: center; gap: 5px;
+            background: var(--white); border: 1px solid var(--gray-3);
+            color: var(--ink); font-size: 0.76rem; font-weight: 500;
+            padding: 4px 12px; border-radius: 50px; cursor: pointer;
+            transition: all 0.22s; text-decoration: none; font-family: var(--font-b);
         }
 
         .chip i { font-size: 0.72rem; color: var(--sand); }
 
         .chip:hover {
-            background: var(--sea-pale);
-            border-color: var(--sea-light);
-            color: var(--sea);
-            transform: translateY(-1px);
+            background: var(--sea-pale); border-color: var(--sea-light);
+            color: var(--sea); transform: translateY(-1px);
             box-shadow: 0 4px 10px rgba(2,132,199,0.12);
         }
 
         /* ════════════════════════════════════════
-           STATS STRIP
+           STATS STRIP — ANIMATED
         ════════════════════════════════════════ */
         .stats-strip {
-            padding: 2rem 5%;
-            display: flex;
-            gap: 0;
+            display: grid; grid-template-columns: repeat(4, 1fr);
             background: var(--ink);
-            overflow: hidden;
         }
 
         .stat-item {
-            flex: 1;
-            text-align: center;
-            padding: 1.2rem 1rem;
-            border-right: 1px solid rgba(255,255,255,0.08);
-            animation: fadeUp 0.6s ease both;
+            text-align: center; padding: 2.5rem 1rem;
+            border-right: 1px solid rgba(255,255,255,0.07);
+            position: relative; overflow: hidden;
+            transition: background 0.3s;
         }
 
         .stat-item:last-child { border-right: none; }
-        .stat-item:nth-child(2) { animation-delay: 0.1s; }
-        .stat-item:nth-child(3) { animation-delay: 0.2s; }
-        .stat-item:nth-child(4) { animation-delay: 0.3s; }
+
+        .stat-item::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--sand), transparent);
+            opacity: 0; transition: opacity 0.4s;
+        }
+
+        .stat-item:hover { background: rgba(255,255,255,0.03); }
+        .stat-item:hover::after { opacity: 1; }
 
         .stat-number {
-            font-family: var(--font-h);
-            font-size: 2.4rem;
-            font-weight: 700;
-            color: var(--sand-light);
-            line-height: 1;
-            margin-bottom: 4px;
+            font-family: var(--font-h); font-size: 2.8rem; font-weight: 700;
+            color: var(--sand-light); line-height: 1; margin-bottom: 6px;
         }
 
         .stat-label {
-            font-size: 0.78rem;
-            color: rgba(255,255,255,0.5);
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+            font-size: 0.74rem; color: rgba(255,255,255,0.45);
+            font-weight: 400; text-transform: uppercase; letter-spacing: 0.08em;
         }
+
+        /* ════════════════════════════════════════
+           MARQUEE 2 — between search and tours (dark)
+        ════════════════════════════════════════ */
+        .section-divider {
+            display: flex; align-items: center; gap: 1.5rem;
+            padding: 0 5%; margin: 3.5rem 0 0;
+        }
+
+        .section-divider-line { flex: 1; height: 1px; background: var(--gray-3); }
+
+        .section-divider-text {
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em;
+            text-transform: uppercase; color: var(--muted); white-space: nowrap;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .section-divider-text i { color: var(--sand); }
 
         /* ════════════════════════════════════════
            SECTION WRAPPER
         ════════════════════════════════════════ */
-        .section-wrap { padding: 4rem 5%; }
+        .section-wrap { padding: 3rem 5% 5rem; }
+
+        .section-header-row {
+            display: flex; align-items: flex-end; justify-content: space-between;
+            flex-wrap: wrap; gap: 1.5rem; margin-bottom: 3rem;
+        }
 
         .section-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: var(--sand);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em;
+            text-transform: uppercase; color: var(--sand); margin-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
         }
 
-        .section-label::after {
-            content: '';
-            flex: 1;
-            max-width: 40px;
-            height: 1px;
-            background: var(--sand);
-            opacity: 0.5;
-        }
+        .section-label::before { content: ''; width: 24px; height: 1px; background: var(--sand); }
 
         .section-title {
-            font-family: var(--font-h);
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 700;
-            color: var(--ink);
-            line-height: 1.15;
-            margin-bottom: 6px;
+            font-family: var(--font-h); font-size: clamp(2.2rem, 4vw, 3.2rem);
+            font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: 0;
         }
 
-        .section-title em {
-            font-style: italic;
-            color: var(--sea-mid);
+        .section-title em { font-style: italic; color: var(--sea-mid); }
+
+        .see-all-link {
+            display: inline-flex; align-items: center; gap: 7px;
+            font-size: 0.84rem; font-weight: 600; color: var(--sea);
+            text-decoration: none; white-space: nowrap;
+            border-bottom: 1px solid transparent; transition: all 0.25s;
         }
+
+        .see-all-link:hover { border-bottom-color: var(--sea); color: var(--sea); }
+        .see-all-link i { transition: transform 0.3s; }
+        .see-all-link:hover i { transform: translateX(4px); }
 
         /* ════════════════════════════════════════
-           3D BANNER — EDITORIAL STYLE
+           VR BANNER — EDITORIAL
         ════════════════════════════════════════ */
         .vr-banner {
-            background: var(--ink);
-            border-radius: var(--r-xl);
-            overflow: hidden;
-            display: flex;
-            min-height: 280px;
-            position: relative;
-            margin-bottom: 4rem;
-            box-shadow: 0 24px 64px rgba(12,35,64,0.22);
+            background: var(--ink); border-radius: var(--r-xl);
+            overflow: hidden; display: flex; min-height: 280px;
+            position: relative; margin-bottom: 3.5rem;
+            box-shadow: 0 24px 64px rgba(12,35,64,0.18);
         }
 
         .vr-banner-bg { position: absolute; inset: 0; }
 
         .vr-banner-bg::before {
-            content: '';
-            position: absolute;
-            inset: 0;
+            content: ''; position: absolute; inset: 0;
             background:
                 radial-gradient(ellipse 60% 80% at 80% 50%, rgba(56,189,248,0.15) 0%, transparent 70%),
                 radial-gradient(ellipse 40% 60% at 20% 80%, rgba(200,169,110,0.12) 0%, transparent 60%);
         }
 
         .vr-banner-bg::after {
-            content: '';
-            position: absolute;
-            inset: 0;
+            content: ''; position: absolute; inset: 0;
             background-image:
                 linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
@@ -622,108 +548,77 @@
         }
 
         .vr-banner-content {
-            position: relative;
-            z-index: 2;
-            padding: 3.5rem 4rem;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 2rem;
-            flex-wrap: wrap;
+            position: relative; z-index: 2; padding: 3.5rem 4rem;
+            flex: 1; display: flex; align-items: center;
+            justify-content: space-between; gap: 2rem; flex-wrap: wrap;
         }
 
         .vr-text { max-width: 500px; }
 
         .vr-eyebrow {
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: var(--sea-light);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em;
+            text-transform: uppercase; color: var(--sea-light); margin-bottom: 10px;
+            display: flex; align-items: center; gap: 8px;
         }
 
         .vr-eyebrow i { font-size: 1rem; }
 
         .vr-title {
-            font-family: var(--font-h);
-            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-            font-weight: 700;
-            color: #fff;
-            line-height: 1.15;
-            margin-bottom: 0.8rem;
+            font-family: var(--font-h); font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 700; color: #fff; line-height: 1.15; margin-bottom: 0.8rem;
         }
 
         .vr-title span { color: var(--sand-light); font-style: italic; }
 
-        .vr-desc {
-            font-size: 0.95rem;
-            color: rgba(255,255,255,0.6);
-            font-weight: 300;
-            line-height: 1.7;
-        }
+        .vr-desc { font-size: 0.95rem; color: rgba(255,255,255,0.58); font-weight: 300; line-height: 1.7; }
 
         .vr-cta { flex-shrink: 0; }
 
         .btn-vr {
             background: linear-gradient(135deg, var(--sand), #b8943c);
-            color: var(--ink);
-            font-weight: 700;
-            font-family: var(--font-b);
-            font-size: 0.9rem;
-            padding: 1rem 2.2rem;
-            border-radius: 50px;
-            border: none;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            color: var(--ink); font-weight: 700; font-family: var(--font-b);
+            font-size: 0.9rem; padding: 1rem 2.2rem; border-radius: 50px; border: none;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
             box-shadow: 0 8px 28px rgba(200,169,110,0.4);
-            transition: all 0.35s var(--ease-spring);
-            white-space: nowrap;
+            transition: all 0.35s var(--ease-spring); white-space: nowrap;
         }
 
         .btn-vr:hover {
             transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 16px 40px rgba(200,169,110,0.5);
-            color: var(--ink);
+            box-shadow: 0 16px 40px rgba(200,169,110,0.5); color: var(--ink);
         }
 
         .vr-icon-big {
-            font-size: 5rem;
-            color: rgba(56,189,248,0.25);
-            position: absolute;
-            right: 18%;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            line-height: 1;
+            font-size: 5rem; color: rgba(56,189,248,0.22);
+            position: absolute; right: 18%; top: 50%;
+            transform: translateY(-50%); pointer-events: none; line-height: 1;
         }
 
         /* ════════════════════════════════════════
-           TOUR CARDS — PREMIUM
+           TOUR CARDS — PREMIUM EDITORIAL
         ════════════════════════════════════════ */
+        /* Featured: first 3 in editorial asymmetric layout */
+        .tours-featured {
+            display: grid;
+            grid-template-columns: 1.45fr 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        /* Remaining tours in standard grid */
         .tours-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 22px;
         }
 
         .tour-card {
-            background: var(--white);
-            border-radius: var(--r-lg);
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(12,35,64,0.07);
+            background: var(--white); border-radius: var(--r-lg);
+            overflow: hidden; box-shadow: 0 4px 20px rgba(12,35,64,0.07);
             border: 1px solid var(--gray-3);
-            transition: transform 0.42s var(--ease-spring), box-shadow 0.42s ease;
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            animation: cardIn 0.55s ease forwards;
+            transition: transform 0.45s var(--ease-spring), box-shadow 0.45s ease;
+            display: flex; flex-direction: column;
+            opacity: 0; animation: cardIn 0.55s ease forwards;
         }
 
         .tour-card:nth-child(1) { animation-delay: 0.05s; }
@@ -739,179 +634,151 @@
         }
 
         .tour-card:hover {
-            transform: translateY(-12px);
+            transform: translateY(-10px);
             box-shadow: 0 24px 60px rgba(12,35,64,0.13), 0 8px 20px rgba(12,35,64,0.07);
         }
 
+        /* Featured card: 1st child taller image */
+        .tours-featured .tour-card:nth-child(1) .tc-img { height: 320px; }
+        .tours-featured .tour-card:nth-child(2) .tc-img,
+        .tours-featured .tour-card:nth-child(3) .tc-img { height: 210px; }
+
         .tc-img {
-            position: relative;
-            height: 230px;
-            overflow: hidden;
-            flex-shrink: 0;
+            position: relative; height: 230px;
+            overflow: hidden; flex-shrink: 0;
         }
 
         .tc-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.65s ease;
         }
 
         .tour-card:hover .tc-img img { transform: scale(1.09); }
 
         .tc-scrim {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 40%, rgba(12,35,64,0.65) 100%);
-            opacity: 0;
-            transition: opacity 0.4s;
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, transparent 35%, rgba(12,35,64,0.62) 100%);
+            opacity: 0; transition: opacity 0.4s;
         }
 
         .tour-card:hover .tc-scrim { opacity: 1; }
 
         .tc-tags {
-            position: absolute;
-            top: 14px;
-            left: 14px;
-            display: flex;
-            gap: 6px;
+            position: absolute; top: 14px; left: 14px; display: flex; gap: 6px;
         }
 
         .tc-tag {
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 20px;
+            font-size: 0.67rem; font-weight: 700; letter-spacing: 0.06em;
+            text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
         }
 
         .tc-tag-hot { background: var(--sand); color: var(--ink); }
 
+        /* Wishlist */
+        .tc-wishlist {
+            position: absolute; top: 14px; right: 14px;
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(255,255,255,0.18); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.28);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.88rem; cursor: pointer;
+            transition: all 0.25s; line-height: 1;
+        }
+
+        .tc-wishlist:hover { background: #fff; color: #e11d48; }
+
         .tc-quick {
-            position: absolute;
-            bottom: 16px;
-            left: 50%;
+            position: absolute; bottom: 14px; left: 50%;
             transform: translateX(-50%) translateY(12px);
-            background: rgba(255,255,255,0.18);
-            backdrop-filter: blur(12px);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 50px;
-            padding: 7px 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            font-family: var(--font-b);
+            background: rgba(255,255,255,0.18); backdrop-filter: blur(12px);
+            color: #fff; border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50px; padding: 7px 20px;
+            font-size: 0.78rem; font-weight: 600; font-family: var(--font-b);
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            opacity: 0;
-            transition: all 0.35s ease;
-            white-space: nowrap;
+            display: inline-flex; align-items: center; gap: 6px;
+            opacity: 0; transition: all 0.35s ease; white-space: nowrap;
         }
 
         .tour-card:hover .tc-quick {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+            opacity: 1; transform: translateX(-50%) translateY(0);
         }
 
         .tc-body {
             padding: 1.5rem 1.6rem 1.7rem;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
+            display: flex; flex-direction: column; flex: 1;
         }
+
+        /* Location tag */
+        .tc-location {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 0.72rem; font-weight: 600; color: var(--sea);
+            letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px;
+        }
+
+        .tc-location i { font-size: 0.78rem; }
 
         .tc-name {
-            font-family: var(--font-h);
-            font-size: 1.22rem;
-            font-weight: 700;
-            color: var(--ink);
-            line-height: 1.35;
-            margin-bottom: 1rem;
+            font-family: var(--font-h); font-size: 1.22rem; font-weight: 700;
+            color: var(--ink); line-height: 1.35; margin-bottom: 1rem;
         }
 
-        .tc-info { display: flex; flex-direction: column; gap: 7px; margin-bottom: 1.2rem; }
+        /* Featured first card bigger title */
+        .tours-featured .tour-card:nth-child(1) .tc-name { font-size: 1.45rem; }
+
+        .tc-info { display: flex; flex-direction: column; gap: 7px; margin-bottom: 1.1rem; }
 
         .tc-info-row {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            font-size: 0.875rem;
-            color: var(--muted);
+            display: flex; align-items: center; gap: 9px;
+            font-size: 0.875rem; color: var(--muted);
         }
 
         .tc-info-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            background: var(--sea-pale);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.82rem;
-            color: var(--sea);
-            flex-shrink: 0;
+            width: 28px; height: 28px; border-radius: 8px;
+            background: var(--sea-pale); display: flex; align-items: center;
+            justify-content: center; font-size: 0.82rem; color: var(--sea); flex-shrink: 0;
         }
 
         .tc-info-row span { flex: 1; }
         .tc-info-row strong { color: var(--ink); font-weight: 600; }
 
-        .tc-divider { height: 1px; background: var(--gray-3); margin-bottom: 1.2rem; }
+        /* Rating row */
+        .tc-rating {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 0.78rem; color: var(--muted); margin-bottom: 1rem;
+        }
+
+        .tc-stars { color: #f59e0b; font-size: 0.74rem; letter-spacing: 1px; }
+        .tc-rating strong { color: var(--ink); font-weight: 700; }
+
+        .tc-divider { height: 1px; background: var(--gray-3); margin-bottom: 1.1rem; }
 
         .tc-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-top: auto;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; margin-top: auto;
         }
 
         .tc-price-from {
-            font-size: 0.68rem;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            color: var(--muted);
-            font-weight: 500;
+            font-size: 0.68rem; text-transform: uppercase;
+            letter-spacing: 0.07em; color: var(--muted); font-weight: 500;
         }
 
         .tc-price {
-            font-family: var(--font-h);
-            font-size: 1.55rem;
-            font-weight: 700;
-            color: var(--ink);
-            line-height: 1;
+            font-family: var(--font-h); font-size: 1.55rem;
+            font-weight: 700; color: var(--ink); line-height: 1;
         }
 
-        .tc-price-unit {
-            font-family: var(--font-b);
-            font-size: 0.75rem;
-            color: var(--muted);
-            font-weight: 400;
-        }
+        .tc-price-unit { font-family: var(--font-b); font-size: 0.75rem; color: var(--muted); font-weight: 400; }
 
         .btn-tc {
-            background: var(--ink);
-            color: #fff;
-            border: none;
-            border-radius: 50px;
-            padding: 0.7rem 1.5rem;
-            font-family: var(--font-b);
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            transition: all 0.3s var(--ease-spring);
-            white-space: nowrap;
-            flex-shrink: 0;
+            background: var(--ink); color: #fff; border: none;
+            border-radius: 50px; padding: 0.7rem 1.5rem;
+            font-family: var(--font-b); font-size: 0.85rem; font-weight: 600;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 7px;
+            transition: all 0.3s var(--ease-spring); white-space: nowrap; flex-shrink: 0;
         }
 
         .btn-tc:hover {
-            background: var(--sea);
-            color: #fff;
+            background: var(--sea); color: #fff;
             transform: translateY(-2px) scale(1.04);
             box-shadow: 0 8px 20px rgba(2,132,199,0.35);
         }
@@ -923,29 +790,301 @@
            EMPTY STATE
         ════════════════════════════════════════ */
         .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 5rem 2rem;
-            background: var(--white);
-            border-radius: var(--r-lg);
-            border: 2px dashed var(--gray-3);
-            color: var(--muted);
+            grid-column: 1 / -1; text-align: center; padding: 5rem 2rem;
+            background: var(--white); border-radius: var(--r-lg);
+            border: 2px dashed var(--gray-3); color: var(--muted);
         }
 
         .empty-state i { font-size: 4rem; color: var(--gray-3); display: block; margin-bottom: 1rem; }
 
         /* ════════════════════════════════════════
+           DESTINATIONS SPOTLIGHT
+        ════════════════════════════════════════ */
+        .destinations-section {
+            background: var(--ink); padding: 5rem 5%;
+        }
+
+        .dest-section-header { margin-bottom: 3rem; }
+
+        .dest-kicker {
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--sea-light); margin-bottom: 8px;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .dest-kicker::before { content: ''; width: 24px; height: 1px; background: var(--sea-light); }
+
+        .dest-section-title {
+            font-family: var(--font-h); font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 700; color: #fff; line-height: 1.1;
+        }
+
+        .dest-section-title em { font-style: italic; color: var(--sand-light); }
+
+        .destinations-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+        }
+
+        .dest-card {
+            position: relative; border-radius: 16px;
+            overflow: hidden; cursor: pointer; text-decoration: none;
+            display: block;
+        }
+
+        .dest-card:nth-child(1) { grid-column: span 2; }
+
+        .dest-img { overflow: hidden; }
+        .dest-card:nth-child(1) .dest-img { height: 340px; }
+        .dest-card .dest-img { height: 162px; }
+
+        .dest-img img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+
+        .dest-card:hover .dest-img img { transform: scale(1.1); }
+
+        .dest-img::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(12,35,64,0.78) 0%, transparent 55%);
+            transition: opacity 0.35s;
+        }
+
+        .dest-card:hover .dest-img::after { opacity: 0.9; }
+
+        .dest-info {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 1.1rem 1.3rem;
+        }
+
+        .dest-name {
+            font-family: var(--font-h); font-size: 1.05rem; font-weight: 700;
+            color: #fff; line-height: 1.2; margin-bottom: 3px;
+        }
+
+        .dest-card:nth-child(1) .dest-name { font-size: 1.45rem; }
+
+        .dest-count { font-size: 0.72rem; color: var(--sand-light); font-weight: 500; }
+
+        .dest-arrow {
+            position: absolute; top: 12px; right: 12px;
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(255,255,255,0.14); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.22);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.78rem;
+            opacity: 0; transform: translateY(-4px); transition: all 0.3s;
+        }
+
+        .dest-card:hover .dest-arrow { opacity: 1; transform: none; }
+
+        /* ════════════════════════════════════════
+           EXPERIENCE SPLIT SECTION
+        ════════════════════════════════════════ */
+        .experience-section {
+            display: grid; grid-template-columns: 1fr 1fr;
+            min-height: 500px;
+        }
+
+        .exp-visual { position: relative; overflow: hidden; }
+
+        .exp-visual img { width: 100%; height: 100%; object-fit: cover; }
+
+        .exp-visual::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to right, transparent 55%, var(--ink) 100%);
+        }
+
+        .exp-content {
+            background: var(--ink);
+            padding: 5rem 5rem 5rem 3rem;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
+        .exp-kicker {
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--sand); margin-bottom: 1.2rem;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .exp-kicker::before { content: ''; width: 24px; height: 1px; background: var(--sand); }
+
+        .exp-title {
+            font-family: var(--font-h); font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-weight: 700; color: #fff; line-height: 1.15; margin-bottom: 1.1rem;
+        }
+
+        .exp-title em { font-style: italic; color: var(--sand-light); }
+
+        .exp-desc {
+            font-size: 0.93rem; color: rgba(255,255,255,0.52);
+            font-weight: 300; line-height: 1.8; margin-bottom: 2.2rem;
+        }
+
+        .exp-features { display: flex; flex-direction: column; gap: 14px; margin-bottom: 2.5rem; }
+
+        .exp-feature { display: flex; align-items: flex-start; gap: 14px; }
+
+        .exp-feature-icon {
+            width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+            background: rgba(200,169,110,0.12); border: 1px solid rgba(200,169,110,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem; color: var(--sand);
+        }
+
+        .exp-feature-text strong {
+            display: block; font-size: 0.86rem; color: rgba(255,255,255,0.88);
+            font-weight: 600; margin-bottom: 2px;
+        }
+
+        .exp-feature-text span { font-size: 0.78rem; color: rgba(255,255,255,0.4); line-height: 1.5; }
+
+        /* ════════════════════════════════════════
+           TESTIMONIALS
+        ════════════════════════════════════════ */
+        .testimonials-section { padding: 5rem 5%; background: var(--white); }
+
+        .testi-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 22px; margin-top: 3rem;
+        }
+
+        .testi-card {
+            background: var(--gray-1); border-radius: 20px;
+            padding: 2rem; border: 1px solid var(--gray-3);
+            position: relative; overflow: hidden;
+            transition: transform 0.4s var(--ease-spring), box-shadow 0.4s ease;
+            opacity: 0; animation: cardIn 0.55s ease forwards;
+        }
+
+        .testi-card:nth-child(1) { animation-delay: 0.1s; }
+        .testi-card:nth-child(2) { animation-delay: 0.2s; }
+        .testi-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .testi-card:hover { transform: translateY(-7px); box-shadow: 0 18px 44px rgba(12,35,64,0.09); }
+
+        .testi-card::before {
+            content: '\201C';
+            position: absolute; top: -0.8rem; left: 1.2rem;
+            font-family: var(--font-h); font-size: 7rem;
+            color: var(--sand); opacity: 0.1; line-height: 1; pointer-events: none;
+        }
+
+        .testi-stars { color: #f59e0b; font-size: 0.82rem; margin-bottom: 0.9rem; }
+
+        .testi-text {
+            font-size: 0.92rem; color: var(--muted);
+            line-height: 1.78; font-style: italic; margin-bottom: 1.5rem;
+        }
+
+        .testi-author { display: flex; align-items: center; gap: 12px; }
+
+        .testi-avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--sea-pale), var(--sand-pale));
+            border: 2px solid var(--sand);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-h); font-size: 1.1rem; font-weight: 700;
+            color: var(--ink); flex-shrink: 0;
+        }
+
+        .testi-name { font-size: 0.86rem; font-weight: 700; color: var(--ink); }
+        .testi-meta { font-size: 0.74rem; color: var(--muted); }
+
+        .testi-tour-tag {
+            margin-top: 1.2rem;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--sea-pale); color: var(--sea);
+            font-size: 0.7rem; font-weight: 600;
+            padding: 4px 12px; border-radius: 20px; letter-spacing: 0.04em;
+        }
+
+        /* ════════════════════════════════════════
+           CTA BANNER
+        ════════════════════════════════════════ */
+        .cta-banner {
+            position: relative; overflow: hidden; background: var(--ink);
+            min-height: 320px; display: flex; align-items: center;
+        }
+
+        .cta-banner::before {
+            content: ''; position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 70% 80% at 10% 50%, rgba(56,189,248,0.1) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 70% at 90% 50%, rgba(200,169,110,0.1) 0%, transparent 60%);
+        }
+
+        .cta-banner::after {
+            content: ''; position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 44px 44px;
+        }
+
+        .cta-inner {
+            position: relative; z-index: 2; padding: 4.5rem 5%;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 2rem; flex-wrap: wrap; width: 100%;
+        }
+
+        .cta-deco {
+            position: absolute; right: 5%; top: 50%; transform: translateY(-50%);
+            font-family: var(--font-h); font-size: 13rem; font-weight: 700;
+            color: rgba(255,255,255,0.025); line-height: 1; pointer-events: none; z-index: 1;
+        }
+
+        .cta-eyebrow {
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--sea-light); margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .cta-title {
+            font-family: var(--font-h); font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700; color: #fff; line-height: 1.1; margin-bottom: 0.9rem;
+        }
+
+        .cta-title em { font-style: italic; color: var(--sand-light); }
+
+        .cta-desc {
+            font-size: 0.93rem; color: rgba(255,255,255,0.52); font-weight: 300; line-height: 1.7;
+        }
+
+        .cta-actions { display: flex; gap: 14px; flex-wrap: wrap; flex-shrink: 0; }
+
+        .btn-cta-primary {
+            background: linear-gradient(135deg, var(--sand), #b8943c);
+            color: var(--ink); font-weight: 700; font-family: var(--font-b); font-size: 0.9rem;
+            padding: 1rem 2.2rem; border-radius: 50px; border: none;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 9px;
+            box-shadow: 0 10px 30px rgba(200,169,110,0.4);
+            transition: all 0.38s var(--ease-spring);
+        }
+
+        .btn-cta-primary:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 18px 44px rgba(200,169,110,0.52); color: var(--ink);
+        }
+
+        .btn-cta-ghost {
+            background: rgba(255,255,255,0.08); color: #fff; font-weight: 500;
+            font-family: var(--font-b); font-size: 0.9rem;
+            padding: 1rem 2.2rem; border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.22);
+            text-decoration: none; display: inline-flex; align-items: center; gap: 9px;
+            backdrop-filter: blur(10px); transition: all 0.3s;
+        }
+
+        .btn-cta-ghost:hover { background: rgba(255,255,255,0.16); color: #fff; transform: translateY(-2px); }
+
+        /* ════════════════════════════════════════
            FLOATING CHAT
         ════════════════════════════════════════ */
         .chat-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
+            position: fixed; bottom: 30px; right: 30px; z-index: 9999;
+            display: flex; align-items: center; gap: 10px; text-decoration: none;
             animation: floatIn 0.6s var(--ease-spring) 1s both;
         }
 
@@ -955,43 +1094,26 @@
         }
 
         .chat-label {
-            background: var(--ink);
-            color: #fff;
-            font-size: 0.8rem;
-            font-weight: 600;
-            font-family: var(--font-b);
-            padding: 8px 16px;
-            border-radius: 50px;
-            white-space: nowrap;
-            box-shadow: 0 4px 16px rgba(12,35,64,0.25);
-            opacity: 0;
-            transform: translateX(8px);
-            transition: all 0.3s;
-            pointer-events: none;
+            background: var(--ink); color: #fff; font-size: 0.8rem; font-weight: 600;
+            font-family: var(--font-b); padding: 8px 16px; border-radius: 50px;
+            white-space: nowrap; box-shadow: 0 4px 16px rgba(12,35,64,0.25);
+            opacity: 0; transform: translateX(8px); transition: all 0.3s; pointer-events: none;
         }
 
         .chat-float:hover .chat-label { opacity: 1; transform: none; }
 
         .chat-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--sea-light), var(--sea));
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--sea-light), var(--sea)); color: #fff;
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
             box-shadow: 0 10px 30px rgba(2,132,199,0.4), 0 0 0 0 rgba(56,189,248,0.4);
             transition: all 0.35s var(--ease-spring);
-            animation: chatPulse 2.5s ease-in-out infinite 2s;
-            flex-shrink: 0;
+            animation: chatPulse 2.5s ease-in-out infinite 2s; flex-shrink: 0;
         }
 
         .chat-float:hover .chat-btn {
             transform: scale(1.14) rotate(8deg);
-            box-shadow: 0 16px 40px rgba(2,132,199,0.5);
-            animation-play-state: paused;
+            box-shadow: 0 16px 40px rgba(2,132,199,0.5); animation-play-state: paused;
         }
 
         @keyframes chatPulse {
@@ -1004,7 +1126,7 @@
            ANIMATIONS
         ════════════════════════════════════════ */
         @keyframes fadeRight {
-            from { opacity: 0; transform: translateX(-20px); }
+            from { opacity: 0; transform: translateX(-22px); }
             to   { opacity: 1; transform: none; }
         }
 
@@ -1016,41 +1138,62 @@
         /* ════════════════════════════════════════
            RESPONSIVE
         ════════════════════════════════════════ */
+        @media (max-width: 1100px) {
+            .destinations-grid { grid-template-columns: repeat(3, 1fr); }
+            .dest-card:nth-child(1) { grid-column: span 2; }
+        }
+
         @media (max-width: 900px) {
-            .hero { height: 70vh; min-height: 440px; }
-            .hero-title { font-size: 2.6rem; }
-            .search-float { margin-top: 0; padding: 1rem 4%; }
+            .hero { height: 70vh; min-height: 440px; max-height: 820px; }
+            .hero-title { font-size: 2.8rem; }
+            .hero-counter { display: none; }
+            .search-float { padding: 2rem 4%; }
             .search-body { flex-direction: column; }
             .sf { border-right: none; border-bottom: 1px solid var(--gray-3); }
             .search-cta { padding: 1rem 1.6rem; }
             .btn-search-go { width: 100%; justify-content: center; border-radius: 12px; }
+            .stats-strip { grid-template-columns: 1fr 1fr; }
+            .stat-item:nth-child(2) { border-right: none; }
+            .stat-item { border-bottom: 1px solid rgba(255,255,255,0.06); }
+            .tours-featured { grid-template-columns: 1fr; }
+            .tours-featured .tour-card:nth-child(1) .tc-img { height: 240px; }
             .tours-grid { grid-template-columns: 1fr; }
-            .stats-strip { display: grid; grid-template-columns: 1fr 1fr; }
-            .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+            .destinations-grid { grid-template-columns: 1fr 1fr; }
+            .dest-card:nth-child(1) { grid-column: span 2; }
+            .experience-section { grid-template-columns: 1fr; }
+            .exp-visual { height: 280px; }
+            .exp-content { padding: 3.5rem 4%; }
+            .testi-grid { grid-template-columns: 1fr; }
             .vr-banner-content { padding: 2.5rem 2rem; }
             .vr-icon-big { display: none; }
-            .section-wrap { padding: 3rem 4%; }
+            .section-wrap { padding: 3rem 4% 4rem; }
         }
 
         @media (max-width: 576px) {
             .hero-cta { flex-direction: column; align-items: flex-start; }
-            .tours-grid { gap: 18px; }
             .chat-float { bottom: 20px; right: 20px; }
             .chat-label { display: none; }
             .search-chips { display: none; }
             .search-eyebrow { display: none; }
+            .destinations-grid { grid-template-columns: 1fr; }
+            .dest-card:nth-child(1) { grid-column: span 1; }
+            .dest-card:nth-child(1) .dest-img { height: 220px; }
+            .cta-inner { padding: 3.5rem 5%; }
+            .marquee-strip { display: none; }
         }
     </style>
 </head>
 
 <body>
 
-<!-- Header -->
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
 <th:block th:replace="~{fragments/header :: header}"></th:block>
 
 <main class="main-content">
 
-    <!-- ════ HERO ════ -->
+    <!-- ════════════════════════════════════════
+         HERO
+    ════════════════════════════════════════ -->
     <section class="hero" id="hero">
         <div class="hero-slides">
             <div class="hero-slide active">
@@ -1069,15 +1212,20 @@
 
         <div class="hero-content">
             <div class="hero-text">
-                <div class="hero-eyebrow">
-                    <i class="bi bi-geo-alt-fill"></i>
-                    An Giang - Kiên Giang · Miền Tây Nam Bộ
+                <div class="hero-kicker">
+                    <span class="kicker-line"></span>
+                    <div class="hero-eyebrow">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        An Giang - Kiên Giang · Miền Tây Nam Bộ
+                    </div>
                 </div>
                 <h1 class="hero-title">
-                    Khám phá<br><em>vẻ đẹp tuyệt vời</em>
+                    Khám phá
+                    <strong><em>vẻ đẹp</em> tuyệt vời</strong>
                 </h1>
                 <p class="hero-desc">
-                    Trải nghiệm những hành trình đáng nhớ cùng Việt Lữ Travel — đồng hành trên mọi nẻo đường của bạn.
+                    Trải nghiệm những hành trình đáng nhớ cùng Việt Lữ Travel —
+                    đồng hành trên mọi nẻo đường của bạn.
                 </p>
                 <div class="hero-cta">
                     <a href="#tours" class="btn-hero-primary">
@@ -1090,6 +1238,13 @@
             </div>
         </div>
 
+        <!-- Slide counter -->
+        <div class="hero-counter">
+            <span class="hc-current" id="slideNum">01</span>
+            <div class="hc-sep"></div>
+            <span class="hc-total">04</span>
+        </div>
+
         <div class="hero-dots" id="heroDots">
             <button class="hero-dot active" data-index="0"></button>
             <button class="hero-dot" data-index="1"></button>
@@ -1098,22 +1253,45 @@
         </div>
 
         <div class="scroll-hint">
+            <div class="scroll-line"></div>
             <span>Cuộn xuống</span>
-            <i class="bi bi-chevron-down"></i>
         </div>
     </section>
 
-    <!-- ════ SEARCH — VIP PRO ════ -->
-    <div class="search-float">
+    <!-- ════════════════════════════════════════
+         MARQUEE STRIP
+    ════════════════════════════════════════ -->
+    <div class="marquee-strip" aria-hidden="true">
+        <div class="marquee-track">
+            <span class="marquee-item"><span class="marquee-dot"></span>Núi Sam</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Rừng Tràm Trà Sư</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Hồ Tà Pạ</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Châu Đốc</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Long Xuyên</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Phú Quốc</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Đền Bà Chúa Xứ</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Làng nổi Châu Giang</span>
+            <!-- duplicate for seamless loop -->
+            <span class="marquee-item"><span class="marquee-dot"></span>Núi Sam</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Rừng Tràm Trà Sư</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Hồ Tà Pạ</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Châu Đốc</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Long Xuyên</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Phú Quốc</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Đền Bà Chúa Xứ</span>
+            <span class="marquee-item"><span class="marquee-dot"></span>Làng nổi Châu Giang</span>
+        </div>
+    </div>
 
-        <!-- Eyebrow label -->
+    <!-- ════════════════════════════════════════
+         SEARCH — VIP PRO (giữ nguyên logic gốc)
+    ════════════════════════════════════════ -->
+    <div class="search-float">
         <div class="search-eyebrow">
             <span>Tìm kiếm hành trình</span>
         </div>
 
         <div class="search-card">
-
-            <!-- Tab bar -->
             <div class="search-tabs" id="searchTabs">
                 <button class="search-tab active" type="button">
                     <i class="bi bi-airplane-fill"></i> Tour trọn gói
@@ -1126,27 +1304,16 @@
                 </button>
             </div>
 
-            <!-- Search fields -->
             <form class="search-body" th:action="@{/tours}" method="get">
-
-                <!-- Field: Keyword -->
                 <div class="sf">
-                    <div class="sf-label">
-                        <i class="bi bi-search"></i> Tìm kiếm
-                    </div>
-                    <input class="sf-input"
-                           type="text"
-                           name="keyword"
-                           placeholder="Tên tour, địa điểm..."
-                           th:value="${keyword}">
+                    <div class="sf-label"><i class="bi bi-search"></i> Tìm kiếm</div>
+                    <input class="sf-input" type="text" name="keyword"
+                           placeholder="Tên tour, địa điểm..." th:value="${keyword}">
                     <div class="sf-hint">Nhập tên tour hoặc điểm đến</div>
                 </div>
 
-                <!-- Field: Destination -->
                 <div class="sf">
-                    <div class="sf-label">
-                        <i class="bi bi-geo-alt-fill"></i> Điểm đến
-                    </div>
+                    <div class="sf-label"><i class="bi bi-geo-alt-fill"></i> Điểm đến</div>
                     <select class="sf-input" name="destination">
                         <option value="">Tất cả điểm đến</option>
                         <option value="An Giang">An Giang</option>
@@ -1159,51 +1326,33 @@
                     <div class="sf-hint">Chọn khu vực bạn muốn đến</div>
                 </div>
 
-                <!-- Field: Date -->
                 <div class="sf" style="border-right:none;">
-                    <div class="sf-label">
-                        <i class="bi bi-calendar-event"></i> Ngày khởi hành
-                    </div>
-                    <input class="sf-input"
-                           type="date"
-                           name="date"
-                           th:value="${date}">
+                    <div class="sf-label"><i class="bi bi-calendar-event"></i> Ngày khởi hành</div>
+                    <input class="sf-input" type="date" name="date" th:value="${date}">
                     <div class="sf-hint">Chọn ngày phù hợp</div>
                 </div>
 
-                <!-- CTA -->
                 <div class="search-cta">
                     <button type="submit" class="btn-search-go">
                         <i class="bi bi-search"></i> Tìm ngay
                     </button>
                 </div>
-
             </form>
 
-            <!-- Popular chips -->
             <div class="search-chips">
                 <span class="chips-label">Phổ biến:</span>
-                <a href="/tours?keyword=Núi+Sam" class="chip">
-                    <i class="bi bi-geo-fill"></i> Núi Sam
-                </a>
-                <a href="/tours?keyword=Trà+Sư" class="chip">
-                    <i class="bi bi-tree-fill"></i> Rừng Trà Sư
-                </a>
-                <a href="/tours?keyword=Tà+Pạ" class="chip">
-                    <i class="bi bi-water"></i> Hồ Tà Pạ
-                </a>
-                <a href="/tours?keyword=Châu+Đốc" class="chip">
-                    <i class="bi bi-building"></i> Châu Đốc
-                </a>
-                <a href="/tours?keyword=cuoi+tuan" class="chip">
-                    <i class="bi bi-sun-fill"></i> Cuối tuần
-                </a>
+                <a href="/tours?keyword=Núi+Sam" class="chip"><i class="bi bi-geo-fill"></i> Núi Sam</a>
+                <a href="/tours?keyword=Trà+Sư" class="chip"><i class="bi bi-tree-fill"></i> Rừng Trà Sư</a>
+                <a href="/tours?keyword=Tà+Pạ" class="chip"><i class="bi bi-water"></i> Hồ Tà Pạ</a>
+                <a href="/tours?keyword=Châu+Đốc" class="chip"><i class="bi bi-building"></i> Châu Đốc</a>
+                <a href="/tours?keyword=cuoi+tuan" class="chip"><i class="bi bi-sun-fill"></i> Cuối tuần</a>
             </div>
-
         </div>
     </div>
 
-    <!-- ════ STATS ════ -->
+    <!-- ════════════════════════════════════════
+         STATS
+    ════════════════════════════════════════ -->
     <div class="stats-strip">
         <div class="stat-item">
             <div class="stat-number">120+</div>
@@ -1223,10 +1372,12 @@
         </div>
     </div>
 
-    <!-- ════ TOURS ════ -->
+    <!-- ════════════════════════════════════════
+         TOURS SECTION
+    ════════════════════════════════════════ -->
     <section class="section-wrap" id="tours">
 
-        <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-5">
+        <div class="section-header-row">
             <div>
                 <div class="section-label">
                     <i class="bi bi-airplane-fill"></i> Điểm đến nổi bật
@@ -1235,6 +1386,9 @@
                     Tour <em>An Giang - Kiên Giang</em> &amp; vùng lân cận
                 </h2>
             </div>
+            <a href="/tours" class="see-all-link">
+                Xem tất cả tour <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
 
         <!-- VR Banner -->
@@ -1261,28 +1415,26 @@
             </div>
         </div>
 
-        <!-- Cards Grid -->
-        <div class="tours-grid">
-
-            <div class="empty-state" th:if="${#lists.isEmpty(tours)}">
-                <i class="bi bi-compass"></i>
-                <h5 class="mb-1" style="font-family:var(--font-h); font-size:1.5rem;">Chưa có tour nào</h5>
-                <p class="mb-0">Vui lòng quay lại sau hoặc thử từ khóa khác.</p>
-            </div>
-
-            <div class="tour-card" th:each="tour : ${tours}">
+        <!-- ── 3 TOUR NỔI BẬT — EDITORIAL LAYOUT ── -->
+        <div class="tours-featured" th:if="${tours != null and !#lists.isEmpty(tours)}">
+            <div class="tour-card" th:each="tour, iterStat : ${tours}" th:if="${iterStat.index < 3 and iterStat.index < 7}">
                 <div class="tc-img">
                     <img th:src="${tour.imageUrl}" th:alt="${tour.tourName}" loading="lazy">
                     <div class="tc-scrim"></div>
                     <div class="tc-tags">
                         <span class="tc-tag tc-tag-hot">Nổi bật</span>
                     </div>
+                    <button class="tc-wishlist" type="button"><i class="bi bi-heart"></i></button>
                     <a th:href="@{/tour/{id}(id=${tour.tourID})}" class="tc-quick">
                         <i class="bi bi-eye"></i> Xem nhanh
                     </a>
                 </div>
 
                 <div class="tc-body">
+                    <div class="tc-location">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span th:text="${tour.location}"></span>
+                    </div>
                     <h5 class="tc-name" th:text="${tour.tourName}"></h5>
 
                     <div class="tc-info">
@@ -1302,6 +1454,12 @@
                         </div>
                     </div>
 
+                    <div class="tc-rating">
+                        <span class="tc-stars">★★★★★</span>
+                        <strong>4.9</strong>
+                        <span>(128 đánh giá)</span>
+                    </div>
+
                     <div class="tc-divider"></div>
 
                     <div class="tc-footer">
@@ -1318,22 +1476,284 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <!-- ── CÁC TOUR CÒN LẠI — STANDARD GRID ── -->
+        <div class="tours-grid" th:if="${tours != null and !#lists.isEmpty(tours)}"
+             style="margin-top: 22px;">
+            <div class="tour-card" th:each="tour, iterStat : ${tours}" th:if="${iterStat.index >= 3 and iterStat.index < 7}">
+                <div class="tc-img">
+                    <img th:src="${tour.imageUrl}" th:alt="${tour.tourName}" loading="lazy">
+                    <div class="tc-scrim"></div>
+                    <div class="tc-tags">
+                        <span class="tc-tag tc-tag-hot">Nổi bật</span>
+                    </div>
+                    <button class="tc-wishlist" type="button"><i class="bi bi-heart"></i></button>
+                    <a th:href="@{/tour/{id}(id=${tour.tourID})}" class="tc-quick">
+                        <i class="bi bi-eye"></i> Xem nhanh
+                    </a>
+                </div>
+
+                <div class="tc-body">
+                    <div class="tc-location">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span th:text="${tour.location}"></span>
+                    </div>
+                    <h5 class="tc-name" th:text="${tour.tourName}"></h5>
+
+                    <div class="tc-info">
+                        <div class="tc-info-row">
+                            <div class="tc-info-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                            <span>
+                                <strong>Khởi hành: </strong>
+                                <span th:text="${tour.departureLocation}"></span>
+                            </span>
+                        </div>
+                        <div class="tc-info-row">
+                            <div class="tc-info-icon"><i class="bi bi-flag-fill"></i></div>
+                            <span>
+                                <strong>Điểm đến: </strong>
+                                <span th:text="${tour.location}"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="tc-rating">
+                        <span class="tc-stars">★★★★★</span>
+                        <strong>4.8</strong>
+                        <span>(96 đánh giá)</span>
+                    </div>
+
+                    <div class="tc-divider"></div>
+
+                    <div class="tc-footer">
+                        <div class="tc-price-wrap">
+                            <div class="tc-price-from">Giá từ</div>
+                            <div class="tc-price"
+                                 th:text="${#numbers.formatDecimal(tour.price, 0, 'COMMA', 0, 'POINT')} + '₫'">
+                            </div>
+                            <div class="tc-price-unit">/ người</div>
+                        </div>
+                        <a th:href="@{/tour/{id}(id=${tour.tourID})}" class="btn-tc">
+                            Chi tiết <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="tours-grid" th:if="${tours == null or #lists.isEmpty(tours)}">
+            <div class="empty-state">
+                <i class="bi bi-compass"></i>
+                <h5 class="mb-1" style="font-family:var(--font-h); font-size:1.5rem;">Chưa có tour nào</h5>
+                <p class="mb-0">Vui lòng quay lại sau hoặc thử từ khóa khác.</p>
+            </div>
+        </div>
+
+        <!-- Xem thêm -->
+        <div style="text-align:center; margin-top: 2.8rem;" th:if="${tours != null and !#lists.isEmpty(tours)}">
+            <a href="/tours" style="
+                display: inline-flex; align-items: center; gap: 10px;
+                background: transparent;
+                border: 2px solid var(--ink);
+                color: var(--ink);
+                font-family: var(--font-b); font-weight: 700; font-size: 0.9rem;
+                padding: 1rem 2.6rem; border-radius: 50px;
+                text-decoration: none; letter-spacing: 0.04em;
+                transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            "
+               onmouseover="this.style.background='var(--ink)';this.style.color='#fff';this.style.transform='translateY(-3px) scale(1.04)';"
+               onmouseout="this.style.background='transparent';this.style.color='var(--ink)';this.style.transform='';">
+                <i class="bi bi-compass-fill"></i> Xem tất cả tour
+            </a>
+        </div>
+
+    </section>
+
+    <!-- ════════════════════════════════════════
+         DESTINATIONS SPOTLIGHT
+    ════════════════════════════════════════ -->
+    <section class="destinations-section">
+        <div class="dest-section-header">
+            <div class="dest-kicker">
+                <i class="bi bi-map-fill"></i> Khám phá theo điểm đến
+            </div>
+            <h2 class="dest-section-title">
+                Điểm đến <em>đang chờ</em> bạn
+            </h2>
+        </div>
+
+        <div class="destinations-grid">
+            <a href="/tours?destination=Châu+Đốc" class="dest-card">
+                <div class="dest-img">
+                    <img src="/image/t22.jpg" alt="Châu Đốc & Núi Sam">
+                </div>
+                <div class="dest-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                <div class="dest-info">
+                    <div class="dest-name">Châu Đốc & Núi Sam</div>
+                    <div class="dest-count">12 tour · An Giang</div>
+                </div>
+            </a>
+            <a href="/tours?destination=Rừng+Tràm" class="dest-card">
+                <div class="dest-img">
+                    <img src="/image/b9.jpg" alt="Rừng Tràm Trà Sư">
+                </div>
+                <div class="dest-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                <div class="dest-info">
+                    <div class="dest-name">Rừng Tràm Trà Sư</div>
+                    <div class="dest-count">8 tour · Tịnh Biên</div>
+                </div>
+            </a>
+            <a href="/tours?destination=Hồ+Tà+Pạ" class="dest-card">
+                <div class="dest-img">
+                    <img src="/image/t3.jpg" alt="Hồ Tà Pạ">
+                </div>
+                <div class="dest-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                <div class="dest-info">
+                    <div class="dest-name">Hồ Tà Pạ</div>
+                    <div class="dest-count">5 tour · Tri Tôn</div>
+                </div>
+            </a>
+            <a href="/tours?destination=Phú+Quốc" class="dest-card">
+                <div class="dest-img">
+                    <img src="/image/b10.jpg" alt="Phú Quốc">
+                </div>
+                <div class="dest-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                <div class="dest-info">
+                    <div class="dest-name">Phú Quốc</div>
+                    <div class="dest-count">10 tour · Kiên Giang</div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         EXPERIENCE SPLIT
+    ════════════════════════════════════════ -->
+    <section class="experience-section">
+        <div class="exp-visual">
+            <img src="/image/nen.png" alt="Việt Lữ Experience">
+        </div>
+        <div class="exp-content">
+            <div class="exp-kicker">Tại sao chọn chúng tôi</div>
+            <h2 class="exp-title">Hơn 8 năm<br><em>đồng hành</em><br>cùng bạn</h2>
+            <p class="exp-desc">
+                Việt Lữ Travel tự hào là đơn vị lữ hành uy tín hàng đầu vùng An Giang — Kiên Giang
+                với cam kết mang đến trải nghiệm chân thực và an toàn nhất.
+            </p>
+            <div class="exp-features">
+                <div class="exp-feature">
+                    <div class="exp-feature-icon"><i class="bi bi-shield-check-fill"></i></div>
+                    <div class="exp-feature-text">
+                        <strong>An toàn tuyệt đối</strong>
+                        <span>Xe đời mới, HDV chuyên nghiệp, bảo hiểm du lịch đầy đủ</span>
+                    </div>
+                </div>
+                <div class="exp-feature">
+                    <div class="exp-feature-icon"><i class="bi bi-cash-coin"></i></div>
+                    <div class="exp-feature-text">
+                        <strong>Giá minh bạch, không phụ phí</strong>
+                        <span>Cam kết giá tốt nhất, hoàn tiền nếu không hài lòng</span>
+                    </div>
+                </div>
+                <div class="exp-feature">
+                    <div class="exp-feature-icon"><i class="bi bi-headset"></i></div>
+                    <div class="exp-feature-text">
+                        <strong>Hỗ trợ 24/7</strong>
+                        <span>Đội ngũ CSKH luôn sẵn sàng bất kỳ lúc nào</span>
+                    </div>
+                </div>
+            </div>
+            <a href="/about" class="btn-vr" style="width:fit-content; text-decoration:none;">
+                <i class="bi bi-info-circle-fill"></i> Tìm hiểu thêm
+            </a>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         TESTIMONIALS
+    ════════════════════════════════════════ -->
+    <section class="testimonials-section">
+        <div class="section-header-row">
+            <div>
+                <div class="section-label"><i class="bi bi-chat-quote-fill"></i> Khách hàng nói gì</div>
+                <h2 class="section-title">Cảm nhận <em>thực tế</em> từ du khách</h2>
+            </div>
+        </div>
+
+        <div class="testi-grid">
+            <div class="testi-card">
+                <div class="testi-stars">★★★★★</div>
+                <p class="testi-text">"Chuyến đi Núi Sam cùng Việt Lữ thật tuyệt vời! Hướng dẫn viên nhiệt tình, xe sạch sẽ thoải mái. Nhất định sẽ đặt tour lần 2!"</p>
+                <div class="testi-author">
+                    <div class="testi-avatar">N</div>
+                    <div>
+                        <div class="testi-name">Nguyễn Thị Mai</div>
+                        <div class="testi-meta">TP. Hồ Chí Minh · Tháng 11/2024</div>
+                    </div>
+                </div>
+                <div class="testi-tour-tag"><i class="bi bi-geo-fill"></i> Tour Núi Sam 2N1Đ</div>
+            </div>
+            <div class="testi-card">
+                <div class="testi-stars">★★★★★</div>
+                <p class="testi-text">"Rừng Trà Sư vào mùa nước nổi đẹp không tưởng. Cảnh chụp hình y chang ảnh quảng cáo, không hề bị thất vọng. Dịch vụ 10/10!"</p>
+                <div class="testi-author">
+                    <div class="testi-avatar">T</div>
+                    <div>
+                        <div class="testi-name">Trần Văn Hùng</div>
+                        <div class="testi-meta">Cần Thơ · Tháng 10/2024</div>
+                    </div>
+                </div>
+                <div class="testi-tour-tag"><i class="bi bi-tree-fill"></i> Tour Rừng Trà Sư</div>
+            </div>
+            <div class="testi-card">
+                <div class="testi-stars">★★★★★</div>
+                <p class="testi-text">"Săn mây ở Hồ Tà Pạ lúc 5 giờ sáng là trải nghiệm không thể quên. Team Việt Lữ chuẩn bị đồ ăn sáng, cà phê đầy đủ. Rất chu đáo!"</p>
+                <div class="testi-author">
+                    <div class="testi-avatar">L</div>
+                    <div>
+                        <div class="testi-name">Lê Hoàng Phúc</div>
+                        <div class="testi-meta">Hà Nội · Tháng 12/2024</div>
+                    </div>
+                </div>
+                <div class="testi-tour-tag"><i class="bi bi-water"></i> Tour Hồ Tà Pạ</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         CTA BANNER
+    ════════════════════════════════════════ -->
+    <section class="cta-banner">
+        <div class="cta-deco">VL</div>
+        <div class="cta-inner">
+            <div>
+                <div class="cta-eyebrow"><i class="bi bi-stars"></i> Ưu đãi thành viên mới</div>
+                <h2 class="cta-title">Đặt tour ngay —<br><em>giảm 15%</em> chuyến đầu</h2>
+                <p class="cta-desc">Tạo tài khoản miễn phí và nhận ngay voucher giảm 15% cho đơn đặt tour đầu tiên. Ưu đãi có hạn!</p>
+            </div>
+            <div class="cta-actions">
+                <a href="/register" class="btn-cta-primary">
+                    <i class="bi bi-person-plus-fill"></i> Đăng ký miễn phí
+                </a>
+                <a href="#tours" class="btn-cta-ghost">
+                    <i class="bi bi-compass-fill"></i> Xem tất cả tour
+                </a>
+            </div>
         </div>
     </section>
 
 </main>
 
-<!-- Floating Chat
+<!--
+═══════════════════════ FLOATING CHAT ═══════════════════════
 <a href="/chat" class="chat-float" title="Chat với CSKH">
     <span class="chat-label">Chat với CSKH</span>
-    <div class="chat-btn">
-        <i class="bi bi-chat-dots-fill"></i>
-    </div>
+    <div class="chat-btn"><i class="bi bi-chat-dots-fill"></i></div>
 </a>
 -->
-
-<!-- Footer -->
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
 <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -1347,8 +1767,8 @@
         /* ── Hero slideshow ── */
         var slides  = document.querySelectorAll('.hero-slide');
         var dots    = document.querySelectorAll('.hero-dot');
-        var current = 0;
-        var timer;
+        var numEl   = document.getElementById('slideNum');
+        var current = 0, timer;
 
         function goTo(n) {
             slides[current].classList.remove('active');
@@ -1356,13 +1776,12 @@
             current = (n + slides.length) % slides.length;
             slides[current].classList.add('active');
             dots[current].classList.add('active');
+            if (numEl) numEl.textContent = String(current + 1).padStart(2, '0');
         }
-
-        function next() { goTo(current + 1); }
 
         function startTimer() {
             clearInterval(timer);
-            timer = setInterval(next, 5000);
+            timer = setInterval(function () { goTo(current + 1); }, 5500);
         }
 
         dots.forEach(function (dot) {
@@ -1374,13 +1793,12 @@
 
         startTimer();
 
-        /* ── Smooth scroll for hero CTA ── */
+        /* ── Smooth scroll ── */
         var toursLink = document.querySelector('a[href="#tours"]');
         if (toursLink) {
             toursLink.addEventListener('click', function (e) {
                 e.preventDefault();
-                var target = document.getElementById('tours');
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                document.getElementById('tours').scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         }
 
@@ -1390,6 +1808,18 @@
             tab.addEventListener('click', function () {
                 tabs.forEach(function (t) { t.classList.remove('active'); });
                 this.classList.add('active');
+            });
+        });
+
+        /* ── Wishlist heart toggle ── */
+        document.querySelectorAll('.tc-wishlist').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var icon = this.querySelector('i');
+                var saved = icon.classList.contains('bi-heart-fill');
+                icon.className = saved ? 'bi bi-heart' : 'bi bi-heart-fill';
+                this.style.color    = saved ? '' : '#e11d48';
+                this.style.background = saved ? '' : '#fff';
             });
         });
 

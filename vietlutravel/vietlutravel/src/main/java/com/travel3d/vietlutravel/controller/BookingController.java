@@ -19,6 +19,9 @@ import java.time.LocalDate;
 @Controller
 public class BookingController {
 
+    private static final int MIN_PEOPLE = 1;
+    private static final int MAX_PEOPLE = 50;
+
     @Autowired
     private BookingService bookingService;
 
@@ -42,9 +45,14 @@ public class BookingController {
         }
 
         Tours tour = entityManager.find(Tours.class, id);
+        if (tour == null) {
+            return "redirect:/";
+        }
 
         model.addAttribute("tour", tour);
         model.addAttribute("customer", customer);
+        model.addAttribute("minPeople", MIN_PEOPLE);
+        model.addAttribute("maxPeople", MAX_PEOPLE);
 
         return "booking-form";
     }
@@ -60,6 +68,10 @@ public class BookingController {
         Customer customer = (Customer) session.getAttribute("user");
         if (customer == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        if (numberOfPeople < MIN_PEOPLE || numberOfPeople > MAX_PEOPLE) {
+            return ResponseEntity.badRequest().build();
         }
 
         Tours tour = entityManager.find(Tours.class, tourID);
@@ -89,31 +101,42 @@ public class BookingController {
     }
 
     /**
-     * XỬ LÝ ĐẶT TOUR (LÚC NÀY MỚI LƯU DB)
+     * XỬ LÝ ĐẶT TOUR (LƯU DATABASE)
      */
     @PostMapping("/booking-tour")
     public String bookTour(@RequestParam("tourID") int tourID,
                            @RequestParam("numberOfPeople") int numberOfPeople,
-                           HttpSession session) {
+                           @RequestParam(value = "tourIDRedirect", required = false) Integer tourIDRedirect,
+                           HttpSession session,
+                           Model model) {
 
         Customer customer = (Customer) session.getAttribute("user");
-
         if (customer == null) {
             return "redirect:/login";
         }
 
-        Booking booking = bookingService.bookTour(
+        if (numberOfPeople < MIN_PEOPLE || numberOfPeople > MAX_PEOPLE) {
+            Tours tour = entityManager.find(Tours.class, tourID);
+            model.addAttribute("tour", tour);
+            model.addAttribute("customer", customer);
+            model.addAttribute("minPeople", MIN_PEOPLE);
+            model.addAttribute("maxPeople", MAX_PEOPLE);
+            model.addAttribute("errorMessage",
+                    "Số người phải từ " + MIN_PEOPLE + " đến " + MAX_PEOPLE + " người.");
+            return "booking-form";
+        }
+
+        bookingService.bookTour(
                 tourID,
                 customer.getCustomerID(),
                 numberOfPeople
         );
 
-        // Sau khi đặt xong → mở hợp đồng thật
-        return "redirect:/contract/" + booking.getBookingID();
+        return "redirect:/";
     }
 
     /**
-     * HỢP ĐỒNG CHÍNH THỨC (SAU KHI ĐẶT TOUR)
+     * XEM HỢP ĐỒNG (NẾU USER MUỐN XEM LẠI)
      */
     @GetMapping("/contract/{id}")
     public ResponseEntity<byte[]> viewContract(@PathVariable int id) {

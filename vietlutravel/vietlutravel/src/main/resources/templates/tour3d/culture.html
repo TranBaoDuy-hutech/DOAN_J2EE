@@ -325,6 +325,11 @@
             #panorama2 { height: 50vh; min-height: 340px; }
             .thumb-wrap { height: 180px; }
         }
+        .header-link {
+        text-decoration: none;
+        color: inherit;
+        display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -361,11 +366,15 @@
     <header class="header">
         <div class="header-left">
             <div class="header-eyebrow">Văn hóa · Lễ hội · Di sản</div>
-            <h1 class="header-title">
-                Văn <em>Hóa</em><br>
-                <span class="outline">An Giang</span>
-            </h1>
+
+            <a th:href="@{/tour3d}" class="header-link">
+                <h1 class="header-title">
+                    Văn <em>Hóa</em><br>
+                    <span class="outline">An Giang</span>
+                </h1>
+            </a>
         </div>
+
         <div class="header-right">
             <p class="header-desc">
                 Khám phá kho tàng văn hóa đa dân tộc — Kinh, Khmer, Chăm, Hoa —

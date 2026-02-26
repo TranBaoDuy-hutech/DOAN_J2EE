@@ -1,463 +1,646 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng nhập | Việt Lữ Travel</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <!-- Include Header CSS -->
     <th:block th:replace="~{fragments/header :: header-css}"></th:block>
-
-    <!-- Include Footer CSS -->
     <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
 
     <style>
         :root {
-            --ocean-blue: #0891b2;
-            --ocean-blue-dark: #0e7490;
-            --ocean-blue-light: #06b6d4;
+            --sea:         #0369a1;
+            --sea-mid:     #0284c7;
+            --sea-pale:    #e0f2fe;
+            --ink:         #0c1f35;
+            --sand:        #c8a96e;
+            --sand-light:  #e8cfa0;
+            --white:       #ffffff;
+            --gray-1:      #f8fafc;
+            --gray-2:      #f1f5f9;
+            --gray-3:      #e2e8f0;
+            --muted:       #64748b;
+            --success:     #059669;
+            --danger:      #dc2626;
+            --font-h:      'Playfair Display', Georgia, serif;
+            --font-b:      'DM Sans', system-ui, sans-serif;
+            --font-mono:   'DM Mono', monospace;
+            --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
         }
 
-        body {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-b);
+            overflow: hidden;
+        }
+
+        /* ═══════════════════════
+           LAYOUT
+        ═══════════════════════ */
+        .page-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 100vh;
             min-height: 100vh;
+        }
+
+        /* ═══════════════════════
+           LEFT — VISUAL PANEL
+        ═══════════════════════ */
+        .visual-panel {
+            position: relative;
+            background: var(--ink);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            padding: 3rem 3.5rem;
         }
 
-        .main-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            padding: 3rem 0;
+        .visual-panel::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 15% 15%,  rgba(56,189,248,0.16) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 70% at 85% 85%,  rgba(200,169,110,0.13) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 65% 35%,  rgba(3,105,161,0.18)  0%, transparent 60%);
+            pointer-events: none;
         }
 
-        .login-container {
-            max-width: 480px;
-            margin: 0 auto;
-            width: 100%;
+        .visual-panel::after {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
         }
 
-        .login-card {
-            background: white;
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: 0 15px 50px rgba(8, 145, 178, 0.2);
-            border: 2px solid #e0f2fe;
-        }
-
-        .login-header {
-            background: linear-gradient(135deg, var(--ocean-blue-dark), var(--ocean-blue));
-            color: white;
-            padding: 3rem 2rem 2rem;
-            text-align: center;
-            position: relative;
-        }
-
-        .login-icon {
-            width: 80px;
-            height: 80px;
-            background: white;
+        /* Decorative ring */
+        .deco-ring {
+            position: absolute;
+            width: 520px; height: 520px;
             border-radius: 50%;
+            border: 1px solid rgba(200,169,110,0.1);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: spinRing 50s linear infinite;
+        }
+
+        .deco-ring::before {
+            content: '';
+            position: absolute;
+            width: 340px; height: 340px;
+            border-radius: 50%;
+            border: 1px solid rgba(56,189,248,0.08);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .deco-ring::after {
+            content: '';
+            position: absolute;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            border: 1px dashed rgba(200,169,110,0.15);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spinRing { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+        /* Floating badge */
+        .floating-badge {
+            position: absolute; top: 2.5rem; right: 2.5rem; z-index: 3;
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px;
+            padding: 0.5rem 1rem;
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: rgba(255,255,255,0.55);
+        }
+
+        .floating-badge .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #22d3ee; box-shadow: 0 0 8px #22d3ee;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%,100% { opacity:1; transform:scale(1); }
+            50%      { opacity:0.4; transform:scale(0.75); }
+        }
+
+        /* Logo */
+        .vp-logo {
+            position: relative; z-index: 2;
+            display: flex; align-items: center; gap: 12px;
+            animation: slideFromLeft 0.6s ease both;
+        }
+
+        .vp-logo-icon {
+            width: 46px; height: 46px; border-radius: 13px;
+            background: linear-gradient(135deg, var(--sand), #b8943c);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 24px rgba(200,169,110,0.28);
+        }
+
+        .vp-logo-icon i { font-size: 1.25rem; color: var(--ink); }
+        .vp-logo-name { font-family: var(--font-h); font-size: 1.25rem; color: #fff; font-weight: 700; }
+        .vp-logo-name span { color: var(--sand); font-style: italic; }
+
+        /* Hero text */
+        .vp-hero {
+            position: relative; z-index: 2;
+            animation: slideFromLeft 0.7s 0.1s ease both;
+        }
+
+        .vp-tagline {
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.22em; text-transform: uppercase;
+            color: var(--sand); margin-bottom: 1.2rem;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .vp-tagline::before {
+            content: ''; display: inline-block;
+            width: 32px; height: 1px; background: var(--sand);
+        }
+
+        .vp-heading {
+            font-family: var(--font-h);
+            font-size: clamp(2.2rem, 3.2vw, 3rem);
+            font-weight: 900; color: #fff;
+            line-height: 1.06; margin-bottom: 1.3rem;
+        }
+
+        .vp-heading em { font-style: italic; color: #7dd3fc; }
+
+        .vp-desc {
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.48);
+            line-height: 1.72; max-width: 340px;
+        }
+
+        /* Stats strip */
+        .stats-strip {
+            position: relative; z-index: 2;
+            display: flex; gap: 0;
+            animation: slideFromLeft 0.7s 0.2s ease both;
+        }
+
+        .stat-item {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 1.1rem 1.3rem;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .stat-item:first-child { border-radius: 16px 0 0 16px; }
+        .stat-item:last-child  { border-radius: 0 16px 16px 0; }
+        .stat-item + .stat-item { border-left: none; }
+
+        .stat-item:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(200,169,110,0.25);
+        }
+
+        .stat-value {
+            font-family: var(--font-h);
+            font-size: 1.5rem; font-weight: 900;
+            color: var(--sand-light); line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.68rem; color: rgba(255,255,255,0.42);
+            font-weight: 500; letter-spacing: 0.04em;
+        }
+
+        @keyframes slideFromLeft {
+            from { opacity: 0; transform: translateX(-24px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* ═══════════════════════
+           RIGHT — FORM PANEL
+        ═══════════════════════ */
+        .form-panel {
+            background: var(--white);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            flex-direction: column;
+            overflow-y: auto;
         }
 
-        .login-icon i {
-            font-size: 2.5rem;
-            color: var(--ocean-blue);
+        .form-accent {
+            height: 3px;
+            background: linear-gradient(90deg, var(--sand), #38bdf8, var(--sand));
+            flex-shrink: 0;
         }
 
-        .login-header h2 {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+        .form-inner {
+            flex: 1;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 2.5rem 3.5rem;
+            max-width: 520px; margin: 0 auto; width: 100%;
+            animation: slideFromRight 0.6s 0.1s ease both;
         }
 
-        .login-header p {
-            margin: 0;
-            opacity: 0.9;
+        @keyframes slideFromRight {
+            from { opacity: 0; transform: translateX(24px); }
+            to   { opacity: 1; transform: none; }
         }
 
-        .login-form {
-            padding: 2.5rem;
+        /* Form header */
+        .form-eyebrow {
+            font-size: 0.68rem; font-weight: 600;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--sea-mid); margin-bottom: 0.5rem;
         }
 
-        .form-label {
-            font-weight: 600;
-            color: var(--ocean-blue-dark);
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
+        .form-title {
+            font-family: var(--font-h);
+            font-size: 2.2rem; font-weight: 700;
+            color: var(--ink); line-height: 1.1; margin-bottom: 0.45rem;
         }
 
-        .input-group-custom {
-            position: relative;
-            margin-bottom: 1.5rem;
+        .form-title em { font-style: italic; color: var(--sea-mid); }
+        .form-subtitle { font-size: 0.87rem; color: var(--muted); margin-bottom: 1.8rem; line-height: 1.55; }
+
+        /* Alerts */
+        .auth-alert {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 0.88rem 1.1rem; border-radius: 12px;
+            font-size: 0.855rem; margin-bottom: 1.3rem;
+        }
+        .auth-alert i { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+        .auth-alert.error   { background: #fef2f2; border: 1px solid #fecaca; color: var(--danger); }
+        .auth-alert.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: var(--success); }
+
+        /* Fields */
+        .field-item { display: flex; flex-direction: column; gap: 5px; margin-bottom: 1.25rem; }
+
+        .field-label {
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
         }
 
-        .input-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--ocean-blue);
-            font-size: 1.2rem;
-            z-index: 10;
+        .field-wrap { position: relative; }
+
+        .field-icon {
+            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+            color: #94a3b8; font-size: 1rem; pointer-events: none; transition: color 0.25s;
         }
 
-        .form-control {
-            border: 2px solid #e0f2fe;
-            border-radius: 12px;
-            padding: 0.9rem 1rem 0.9rem 3rem;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
+        .field-wrap:focus-within .field-icon { color: var(--sea-mid); }
 
-        .form-control:focus {
-            border-color: var(--ocean-blue);
-            box-shadow: 0 0 0 0.25rem rgba(8, 145, 178, 0.15);
-        }
-
-        .form-control::placeholder {
-            color: #94a3b8;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: var(--ocean-blue);
-            z-index: 10;
-        }
-
-        .btn-login {
-            background: linear-gradient(135deg, var(--ocean-blue), var(--ocean-blue-light));
-            border: none;
-            color: white;
-            padding: 1rem;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.3s;
+        .field-input {
             width: 100%;
-            margin-top: 1rem;
+            padding: 0.85rem 1rem 0.85rem 2.9rem;
+            border: 1.5px solid var(--gray-3); border-radius: 12px;
+            font-family: var(--font-b); font-size: 0.93rem;
+            color: var(--ink); background: var(--gray-1); outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
         }
 
-        .btn-login:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(8, 145, 178, 0.4);
+        .field-input::placeholder { color: #94a3b8; }
+
+        .field-input:focus {
+            border-color: var(--sea);
+            box-shadow: 0 0 0 3px rgba(2,132,199,0.1);
+            background: var(--white);
         }
 
-        .forgot-password {
-            text-align: right;
-            margin-top: -0.5rem;
-            margin-bottom: 1rem;
+        /* Toggle PW */
+        .toggle-pw {
+            position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: #94a3b8;
+            cursor: pointer; font-size: 1rem; transition: color 0.2s; padding: 0;
+        }
+        .toggle-pw:hover { color: var(--sea); }
+        .has-toggle { padding-right: 2.8rem; }
+
+        /* Row: remember + forgot */
+        .meta-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.3rem;
         }
 
-        .forgot-password a {
-            color: var(--ocean-blue);
-            font-size: 0.9rem;
-            text-decoration: none;
-            font-weight: 500;
+        .check-wrap {
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
         }
 
-        .forgot-password a:hover {
-            text-decoration: underline;
+        .check-wrap input[type="checkbox"] {
+            width: 16px; height: 16px;
+            accent-color: var(--sea); cursor: pointer;
+            border-radius: 4px;
         }
 
-        .remember-me {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
+        .check-wrap label {
+            font-size: 0.85rem; color: var(--muted);
+            cursor: pointer; margin: 0;
         }
 
-        .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-right: 0.5rem;
-            cursor: pointer;
-            accent-color: var(--ocean-blue);
+        .forgot-link {
+            font-size: 0.82rem; color: var(--sea);
+            font-weight: 600; text-decoration: none;
+            display: flex; align-items: center; gap: 4px;
+            transition: color 0.2s;
         }
 
-        .remember-me label {
-            margin: 0;
-            cursor: pointer;
-            color: #64748b;
-            font-size: 0.95rem;
+        .forgot-link:hover { color: var(--sea-mid); text-decoration: underline; }
+
+        /* Main button */
+        .btn-main {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; padding: 0.95rem;
+            background: linear-gradient(135deg, var(--sand), #b8943c);
+            color: var(--ink); font-family: var(--font-b); font-weight: 700; font-size: 0.97rem;
+            border: none; border-radius: 50px; cursor: pointer;
+            transition: all 0.35s var(--ease-spring);
+            box-shadow: 0 8px 24px rgba(200,169,110,0.32);
+            margin-bottom: 1.4rem;
         }
 
+        .btn-main:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 14px 32px rgba(200,169,110,0.48);
+        }
+
+        /* Divider */
         .divider {
-            text-align: center;
-            margin: 1.5rem 0;
-            position: relative;
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 1.2rem;
         }
 
-        .divider::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 50%;
-            width: 100%;
-            height: 1px;
-            background: #e0f2fe;
+        .divider-line { flex: 1; height: 1px; background: var(--gray-3); }
+
+        .divider-text {
+            font-size: 0.75rem; color: var(--muted); font-weight: 500;
+            white-space: nowrap; letter-spacing: 0.04em;
         }
 
-        .divider span {
-            background: white;
-            padding: 0 1rem;
-            position: relative;
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        .register-link {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #64748b;
-        }
-
-        .register-link a {
-            color: var(--ocean-blue);
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .register-link a:hover {
-            color: var(--ocean-blue-dark);
-            text-decoration: underline;
-        }
-
-        .social-login {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
+        /* Social buttons */
+        .social-row { display: flex; gap: 10px; margin-bottom: 1.4rem; }
 
         .social-btn {
-            flex: 1;
-            padding: 0.8rem;
-            border: 2px solid #e0f2fe;
-            border-radius: 10px;
-            background: white;
-            color: #64748b;
-            font-weight: 500;
-            transition: all 0.3s;
-            cursor: pointer;
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 0.78rem 1rem;
+            border: 1.5px solid var(--gray-3); border-radius: 12px;
+            background: var(--white); color: var(--muted);
+            font-family: var(--font-b); font-size: 0.87rem; font-weight: 600;
+            text-decoration: none; transition: all 0.25s; cursor: pointer;
         }
 
         .social-btn:hover {
-            border-color: var(--ocean-blue);
-            color: var(--ocean-blue);
-            background: #f0f9ff;
+            border-color: var(--sea);
+            color: var(--sea); background: var(--sea-pale);
         }
 
-        .social-btn i {
-            margin-right: 0.5rem;
+        .social-btn i { font-size: 1.05rem; }
+
+        /* Bottom links */
+        .bottom-row {
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 0.845rem; color: var(--muted);
         }
 
-        .error-message {
-            background: #fee2e2;
-            border: 1px solid #ef4444;
-            color: #991b1b;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
+        .bottom-row a {
+            color: var(--sea); font-weight: 600; text-decoration: none;
         }
 
-        .error-message i {
-            margin-right: 0.5rem;
+        .bottom-row a:hover { text-decoration: underline; }
+
+        .guest-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 0.42rem 0.9rem;
+            border: 1.5px solid var(--gray-3); border-radius: 100px;
+            font-size: 0.8rem; color: var(--muted); font-weight: 500;
+            text-decoration: none; transition: all 0.25s;
         }
 
-        .success-message {
-            background: #d1fae5;
-            border: 1px solid #10b981;
-            color: #065f46;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
+        .guest-chip:hover {
+            border-color: var(--sea); color: var(--sea); background: var(--sea-pale);
         }
 
-        .success-message i {
-            margin-right: 0.5rem;
-        }
-
-        .quick-access {
-            background: #f0f9ff;
-            padding: 1rem;
-            border-radius: 10px;
+        /* Footer */
+        .form-footer {
             text-align: center;
-            margin-top: 1.5rem;
-            border: 1px solid #e0f2fe;
+            padding: 1rem 3.5rem 1.4rem;
+            border-top: 1px solid var(--gray-2);
+            font-size: 0.82rem; color: var(--muted); flex-shrink: 0;
         }
 
-        .quick-access i {
-            color: var(--ocean-blue);
-            font-size: 1.2rem;
+        .form-footer a {
+            color: var(--sea); font-weight: 600; text-decoration: none;
+        }
+
+        .form-footer a:hover { text-decoration: underline; }
+
+        /* ═══════════════════════
+           RESPONSIVE
+        ═══════════════════════ */
+        @media (max-width: 900px) {
+            html, body { overflow: auto; }
+            .page-wrap { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
+            .visual-panel { min-height: 200px; padding: 2rem; }
+            .vp-hero { display: none; }
+            .stats-strip { display: none; }
+            .form-inner { padding: 2rem 1.8rem; }
+            .form-footer { padding: 1rem 1.8rem; }
         }
     </style>
 </head>
-
 <body>
 
-<!-- ========== INCLUDE HEADER ========== -->
-<th:block th:replace="~{fragments/header :: header}"></th:block>
+<div class="page-wrap">
 
-<!-- ========== MAIN CONTENT ========== -->
-<main class="main-content">
-    <div class="login-container">
+    <!-- ══════════════════════════
+         LEFT — VISUAL PANEL
+    ══════════════════════════ -->
+    <div class="visual-panel">
+        <div class="deco-ring"></div>
 
-        <div class="login-card">
-
-            <!-- Login Header -->
-            <div class="login-header">
-                <div class="login-icon">
-                    <i class="bi bi-person-check-fill"></i>
-                </div>
-                <h2>Chào mừng trở lại!</h2>
-                <p>Đăng nhập để tiếp tục hành trình của bạn</p>
-            </div>
-
-            <!-- Login Form -->
-            <div class="login-form">
-
-                <!-- Error Message (nếu có) -->
-                <div class="error-message" th:if="${error}">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <span th:text="${error}">Email hoặc mật khẩu không đúng!</span>
-                </div>
-
-                <!-- Success Message (nếu có) -->
-                <div class="success-message" th:if="${success}">
-                    <i class="bi bi-check-circle-fill"></i>
-                    <span th:text="${success}">Đăng ký thành công! Vui lòng đăng nhập.</span>
-                </div>
-
-                <form th:action="@{/login}" method="post">
-
-                    <!-- Email -->
-                    <div class="input-group-custom">
-                        <label class="form-label">
-                            <i class="bi bi-envelope-fill"></i> Email
-                        </label>
-                        <i class="input-icon bi bi-envelope"></i>
-                        <input name="email" type="email" class="form-control" placeholder="Nhập email của bạn"
-                               required autofocus>
-                    </div>
-
-                    <!-- Password -->
-                    <div class="input-group-custom">
-                        <label class="form-label">
-                            <i class="bi bi-lock-fill"></i> Mật khẩu
-                        </label>
-                        <i class="input-icon bi bi-lock"></i>
-                        <input name="password" type="password" id="password" class="form-control"
-                               placeholder="Nhập mật khẩu" required>
-                        <i class="password-toggle bi bi-eye" id="togglePassword"></i>
-                    </div>
-
-                    <!-- Remember Me & Forgot Password -->
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="remember-me">
-                            <input type="checkbox" id="rememberMe" name="rememberMe">
-                            <label for="rememberMe">Ghi nhớ đăng nhập</label>
-                        </div>
-                        <div class="forgot-password">
-                            <a href="/forgot-password">
-                                <i class="bi bi-question-circle"></i> Quên mật khẩu?
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-login">
-                        <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
-                    </button>
-
-                </form>
-
-                <!-- Divider -->
-                <div class="divider">
-                    <span>hoặc đăng nhập với</span>
-                </div>
-
-                <!-- Social Login Buttons -->
-                <div class="social-login">
-                    <a href="/oauth2/authorization/google"
-                       class="social-btn text-decoration-none d-flex justify-content-center align-items-center">
-                        <i class="bi bi-google"></i> Google
-                    </a>
-                    <a href="/oauth2/authorization/facebook"
-                       class="social-btn text-decoration-none d-flex justify-content-center align-items-center">
-                        <i class="bi bi-facebook"></i> Facebook
-                    </a>
-                </div>
-
-                <!-- Register Link -->
-                <div class="register-link">
-                    Chưa có tài khoản?
-                    <a href="/register">
-                        <i class="bi bi-person-plus"></i> Đăng ký ngay
-                    </a>
-                </div>
-
-                <!-- Quick Access -->
-                <div class="quick-access">
-                    <i class="bi bi-lightning-fill"></i>
-                    <small>Hoặc tiếp tục với vai trò <a href="/"
-                                                        style="color: var(--ocean-blue); font-weight: 600;">Khách</a></small>
-                </div>
-
-            </div>
-
+        <div class="floating-badge">
+            <span class="dot"></span>
+            Đăng nhập an toàn
         </div>
 
-        <!-- Help Text -->
-        <div class="text-center mt-4">
-            <p class="text-muted">
-                <i class="bi bi-headset"></i>
-                Cần hỗ trợ? Liên hệ:
-                <a href="tel:0901234567" style="color: var(--ocean-blue); font-weight: 600;">090 123 4567</a>
+        <!-- Logo -->
+        <div class="vp-logo">
+            <div class="vp-logo-icon"><i class="bi bi-compass-fill"></i></div>
+            <div class="vp-logo-name">Việt Lữ <span>Travel</span></div>
+        </div>
+
+        <!-- Hero -->
+        <div class="vp-hero">
+            <div class="vp-tagline">Chào mừng trở lại</div>
+            <h1 class="vp-heading">
+                Hành trình<br>
+                tiếp theo<br>
+                <em>bắt đầu ở đây</em>
+            </h1>
+            <p class="vp-desc">
+                Đăng nhập để mở khóa những ưu đãi độc quyền,
+                theo dõi lịch trình và tiếp tục khám phá An Giang - Kiên Giang cùng chúng tôi.
             </p>
         </div>
 
-    </div>
-</main>
+        <!-- Stats -->
+        <div class="stats-strip">
+            <div class="stat-item">
+                <div class="stat-value">30+</div>
+                <div class="stat-label">Điểm du lịch nổi bật</div>
+            </div>
 
-<!-- ========== INCLUDE FOOTER ========== -->
-<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+            <div class="stat-item">
+                <div class="stat-value">80+</div>
+                <div class="stat-label">Tour An Giang - Kiên Giang</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-value">15K+</div>
+                <div class="stat-label">Du khách mỗi năm</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-value">20+</div>
+                <div class="stat-label">Đảo & Khu sinh thái</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════
+         RIGHT — FORM PANEL
+    ══════════════════════════ -->
+    <div class="form-panel">
+        <div class="form-accent"></div>
+
+        <div class="form-inner">
+
+            <div class="form-eyebrow">Tài khoản của bạn</div>
+            <h2 class="form-title">Đăng <em>nhập</em></h2>
+            <p class="form-subtitle">Nhập thông tin để tiếp tục hành trình của bạn</p>
+
+            <!-- Alerts -->
+            <div th:if="${error}" class="auth-alert error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span th:text="${error}">Email hoặc mật khẩu không đúng!</span>
+            </div>
+            <div th:if="${success}" class="auth-alert success">
+                <i class="bi bi-check-circle-fill"></i>
+                <span th:text="${success}">Đăng ký thành công! Vui lòng đăng nhập.</span>
+            </div>
+
+            <form th:action="@{/login}" method="post">
+
+                <!-- Email -->
+                <div class="field-item">
+                    <label class="field-label" for="email">Email</label>
+                    <div class="field-wrap">
+                        <i class="bi bi-envelope field-icon"></i>
+                        <input type="email" id="email" name="email"
+                               class="field-input"
+                               placeholder="example@email.com"
+                               required autofocus autocomplete="email">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="field-item">
+                    <label class="field-label" for="password">Mật khẩu</label>
+                    <div class="field-wrap">
+                        <i class="bi bi-lock field-icon"></i>
+                        <input type="password" id="password" name="password"
+                               class="field-input has-toggle"
+                               placeholder="Nhập mật khẩu"
+                               required autocomplete="current-password">
+                        <button type="button" class="toggle-pw" id="togglePassword">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember + Forgot -->
+                <div class="meta-row">
+                    <div class="check-wrap">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <label for="rememberMe">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <a href="/forgot-password" class="forgot-link">
+                        <i class="bi bi-question-circle"></i> Quên mật khẩu?
+                    </a>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-main">
+                    <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                </button>
+
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-text">hoặc tiếp tục với</span>
+                <div class="divider-line"></div>
+            </div>
+
+            <!-- Social -->
+            <div class="social-row">
+                <a href="/oauth2/authorization/google" class="social-btn">
+                    <i class="bi bi-google"></i> Google
+                </a>
+                <a href="/oauth2/authorization/facebook" class="social-btn">
+                    <i class="bi bi-facebook"></i> Facebook
+                </a>
+            </div>
+
+            <!-- Bottom row -->
+            <div class="bottom-row">
+                <span>Chưa có tài khoản? <a href="/register"><i class="bi bi-person-plus"></i> Đăng ký ngay</a></span>
+                <a href="/" class="guest-chip">
+                    <i class="bi bi-lightning-fill"></i> Vào với tư cách khách
+                </a>
+            </div>
+
+        </div>
+
+        <div class="form-footer">
+            <i class="bi bi-headset"></i> Cần hỗ trợ? &nbsp;
+            <a href="tel:0901234567">090 123 4567</a>
+        </div>
+    </div>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-    // Toggle password visibility
-    const togglePassword = document.getElementById('togglePassword');
-    const password = document.getElementById('password');
+    const toggleBtn = document.getElementById('togglePassword');
+    const pwInput   = document.getElementById('password');
 
-    if (togglePassword && password) {
-        togglePassword.addEventListener('click', function () {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-
-            // Toggle icon
-            this.classList.toggle('bi-eye');
-            this.classList.toggle('bi-eye-slash');
+    if (toggleBtn && pwInput) {
+        toggleBtn.addEventListener('click', function () {
+            const isHidden = pwInput.type === 'password';
+            pwInput.type   = isHidden ? 'text' : 'password';
+            this.querySelector('i').className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
         });
     }
 </script>
 
 </body>
-
 </html>

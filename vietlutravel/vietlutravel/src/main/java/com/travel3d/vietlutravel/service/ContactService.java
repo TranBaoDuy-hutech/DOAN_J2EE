@@ -28,9 +28,18 @@ public class ContactService {
         }
     }
 
-    // (Tùy chọn) Đếm tổng số liên hệ cho dashboard
     public long countContacts() {
         return entityManager.createQuery("SELECT COUNT(c) FROM Contact c", Long.class)
                 .getSingleResult();
+    }
+
+    // ← Thêm method này
+    @Transactional
+    public void markReplied(int id) {
+        Contact contact = entityManager.find(Contact.class, id);
+        if (contact != null) {
+            contact.setReplied(true);
+            // Không cần gọi save() vì EntityManager tự merge khi transaction commit
+        }
     }
 }

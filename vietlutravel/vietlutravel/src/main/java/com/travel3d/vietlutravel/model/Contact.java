@@ -27,6 +27,9 @@ public class Contact {
     @Column(name = "created_at")   // QUAN TRỌNG
     private LocalDateTime createdAt;
 
+    @Column(name = "replied", nullable = false)
+    private boolean replied = false;
+
     // ===== Getter Setter =====
 
     public int getId() { return id; }
@@ -46,4 +49,7 @@ public class Contact {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public boolean isReplied() { return replied; }
+    public void setReplied(boolean replied) { this.replied = replied; }
 }

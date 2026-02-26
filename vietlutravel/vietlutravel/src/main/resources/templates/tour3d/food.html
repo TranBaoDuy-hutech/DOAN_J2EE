@@ -239,6 +239,11 @@
             .model-loading { height: 240px; }
             .model-bg { height: 240px; }
         }
+        .header-link {
+        text-decoration: none;
+        color: inherit;
+        display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -273,11 +278,15 @@
     <header class="header">
         <div class="header-left">
             <div class="header-eyebrow">Am thuc · Kham pha · 3D Experience</div>
-            <h1 class="header-title">
-                Dac <em>San</em><br>
-                <span class="outline">An Giang</span>
-            </h1>
+
+            <a th:href="@{/tour3d}" class="header-link">
+                <h1 class="header-title">
+                    Dac <em>San</em><br>
+                    <span class="outline">An Giang</span>
+                </h1>
+            </a>
         </div>
+
         <div class="header-right">
             <p class="header-desc">
                 Trai nghiem am thuc dac trung mien Tay qua mo hinh 3D tuong tac.
@@ -285,7 +294,7 @@
             </p>
             <div class="header-stat">
                 <div class="stat-dot"></div>
-                3D Interactive &middot; AR Ready
+                3D Interactive · AR Ready
             </div>
         </div>
     </header>

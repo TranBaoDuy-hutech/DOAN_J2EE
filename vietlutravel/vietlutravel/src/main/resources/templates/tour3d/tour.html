@@ -465,6 +465,11 @@
             .viewer-wrap { height: 60vh; }
             .hud { display: none; }
         }
+        .header-logo {
+        text-decoration: none;
+        color: inherit;
+        font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -474,11 +479,15 @@
 
 <!-- Header -->
 <header class="header">
-    <div class="header-logo">An <span>Giang</span></div>
+    <a th:href="@{/tour3d}" class="header-logo">
+        An <span>Giang</span>
+    </a>
+
     <div class="header-title">
         <h1>Virtual <em>Tour</em></h1>
         <p>360° Immersive Experience · An Giang Province</p>
     </div>
+
     <div class="header-badge">
         <div class="badge-dot"></div>
         Live · 9 Địa Điểm

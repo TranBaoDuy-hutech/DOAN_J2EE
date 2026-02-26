@@ -666,6 +666,12 @@
             background: linear-gradient(to right, transparent, var(--glass-border), transparent);
             margin: 0 60px;
         }
+        .nav-logo,
+        .nav-logo:hover,
+        .nav-logo:visited {
+            text-decoration: none;
+            color: inherit;
+        }
     </style>
 </head>
 <body>
@@ -681,7 +687,9 @@
 
     <!-- Nav -->
     <nav>
-        <div class="nav-logo">An <span>Giang</span></div>
+        <a th:href="@{/}" class="nav-logo">
+            An <span>Giang</span>
+        </a>
         <div class="nav-line"></div>
         <div class="nav-badge">Tour 3D · VR Experience</div>
     </nav>

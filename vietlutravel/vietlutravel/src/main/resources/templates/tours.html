@@ -116,49 +116,106 @@
             animation: fadeUp 0.6s ease 0.3s both;
         }
 
-        /* ── Search card (pulled up) ── */
-        .search-pull {
+        /* ── Search float (pulled up) ── */
+        .search-float {
             margin-top: -36px;
             position: relative;
             z-index: 10;
             margin-bottom: 3rem;
+            animation: fadeUp 0.6s ease 0.4s both;
         }
 
-        /* FIX: đổi class từ search-inner → search-card cho đúng với CSS */
+        .search-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--sand);
+            color: var(--ink);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 50px 50px 0 0;
+            margin-bottom: 0;
+        }
+
         .search-card {
             background: var(--white);
-            border-radius: 18px;
+            border-radius: 0 18px 18px 18px;
             box-shadow: var(--shadow-lg);
             border: 1px solid var(--gray-3);
-            display: flex;
             overflow: hidden;
         }
 
-        .search-field {
+        /* ── Tabs ── */
+        .search-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-3);
+            background: var(--gray-1);
+        }
+
+        .search-tab {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 0.75rem 1.4rem;
+            font-family: var(--font-b);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+
+        .search-tab.active {
+            color: var(--sea);
+            border-bottom-color: var(--sea);
+            background: var(--white);
+        }
+
+        .search-tab:hover:not(.active) {
+            color: var(--ink);
+        }
+
+        /* ── Search body / fields ── */
+        .search-body {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .sf {
             flex: 1;
-            padding: 1.2rem 1.5rem;
+            padding: 1rem 1.4rem;
             border-right: 1px solid var(--gray-3);
             display: flex;
             flex-direction: column;
             gap: 3px;
             transition: background 0.2s;
+            min-width: 0;
         }
 
-        .search-field:focus-within {
+        .sf:focus-within {
             background: var(--gray-1);
         }
 
-        .search-field label {
-            font-size: 0.68rem;
+        .sf-label {
+            font-size: 0.65rem;
             font-weight: 700;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             color: var(--muted);
-            cursor: default;
+            display: flex;
+            align-items: center;
+            gap: 5px;
             user-select: none;
         }
 
-        .search-field input {
+        .sf-input {
             border: none;
             outline: none;
             font-family: var(--font-b);
@@ -166,52 +223,88 @@
             color: var(--ink);
             background: transparent;
             width: 100%;
+            padding: 0;
         }
 
-        .search-field input::placeholder { color: #94a3b8; }
+        .sf-input::placeholder { color: #94a3b8; }
 
-        /* Nút reset */
-        .search-reset {
-            background: none;
-            border: none;
-            border-right: 1px solid var(--gray-3);
-            color: var(--muted);
-            padding: 0 1rem;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: color 0.2s, background 0.2s;
-            flex-shrink: 0;
+        .sf-input option { color: var(--ink); }
+
+        .sf-hint {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        /* ── CTA button in search ── */
+        .search-cta {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-family: var(--font-b);
-            font-size: 0.82rem;
+            padding: 0.8rem 1.2rem;
+            flex-shrink: 0;
         }
 
-        .search-reset:hover {
-            background: var(--gray-2);
-            color: var(--ink);
-        }
-
-        .search-go {
+        .btn-search-go {
             background: linear-gradient(135deg, var(--sand), #b8943c);
             color: var(--ink);
             border: none;
-            padding: 0 2rem;
+            border-radius: 12px;
+            padding: 0.8rem 1.6rem;
             font-family: var(--font-b);
             font-weight: 700;
             font-size: 0.88rem;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
             transition: all 0.3s;
-            flex-shrink: 0;
             white-space: nowrap;
         }
 
-        .search-go:hover {
+        .btn-search-go:hover {
             background: linear-gradient(135deg, #b8943c, #9a7a2e);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(200,169,110,0.4);
+        }
+
+        /* ── Popular chips ── */
+        .search-chips {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0.85rem 1.4rem;
+            border-top: 1px solid var(--gray-3);
+            background: var(--gray-1);
+        }
+
+        .chips-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-right: 4px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--white);
+            border: 1px solid var(--gray-3);
+            border-radius: 50px;
+            padding: 4px 12px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--ink);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: var(--sea-pale);
+            border-color: var(--sea-light);
+            color: var(--sea);
         }
 
         /* ── Section heading ── */
@@ -490,12 +583,16 @@
 
         /* ── Responsive ── */
         @media (max-width: 768px) {
-            .search-card { flex-direction: column; }
-            .search-field { border-right: none; border-bottom: 1px solid var(--gray-3); }
-            .search-reset { border-right: none; border-bottom: 1px solid var(--gray-3); flex-direction: row; justify-content: center; padding: 0.8rem; }
-            .search-go { padding: 1rem; justify-content: center; }
-            .tours-grid { grid-template-columns: 1fr; }
             .page-top { padding: 2.5rem 0 4.5rem; }
+
+            .search-body { flex-direction: column; }
+            .sf { border-right: none; border-bottom: 1px solid var(--gray-3); }
+            .search-cta { padding: 1rem; }
+            .btn-search-go { width: 100%; justify-content: center; }
+            .search-tabs { overflow-x: auto; }
+            .search-tab { font-size: 0.78rem; padding: 0.65rem 1rem; }
+
+            .tours-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -514,47 +611,109 @@
             <h1 class="page-title">
                 Danh sách <em>Tour Du Lịch</em>
             </h1>
-            <p class="page-subtitle">Khám phá hàng trăm hành trình tuyệt vời tại An Giang &amp; Miền Tây</p>
+            <p class="page-subtitle">Khám phá hàng trăm hành trình tuyệt vời tại An Giang &amp; Kiên Giang</p>
         </div>
     </div>
 
     <div class="container">
 
-        <!-- ── Search pull-up ── -->
-        <div class="search-pull">
-            <!-- FIX: đổi class="search-inner" → class="search-card" -->
-            <form class="search-card" th:action="@{/tours}" method="get">
+        <!-- ── Search float ── -->
+        <div class="search-float">
 
-                <!-- Field: Tìm kiếm -->
-                <div class="search-field">
-                    <label for="keyword"><i class="bi bi-search"></i> Tìm kiếm</label>
-                    <input type="text"
-                           id="keyword"
-                           name="keyword"
-                           placeholder="Tên tour, địa điểm..."
-                           th:value="${keyword}">
+            <div class="search-eyebrow">
+                <span>Tìm kiếm hành trình</span>
+            </div>
+
+            <div class="search-card">
+
+                <!-- Tab bar -->
+                <div class="search-tabs" id="searchTabs">
+                    <button class="search-tab active" type="button">
+                        <i class="bi bi-airplane-fill"></i> Tour trọn gói
+                    </button>
+                    <button class="search-tab" type="button">
+                        <i class="bi bi-geo-alt-fill"></i> Theo điểm đến
+                    </button>
+                    <button class="search-tab" type="button">
+                        <i class="bi bi-calendar3"></i> Theo ngày
+                    </button>
                 </div>
 
-                <!-- Field: Ngày khởi hành -->
-                <div class="search-field">
-                    <label for="date"><i class="bi bi-calendar3"></i> Ngày khởi hành</label>
-                    <input type="date"
-                           id="date"
-                           name="date"
-                           th:value="${date}">
+                <!-- Search fields -->
+                <form class="search-body" th:action="@{/tours}" method="get">
+
+                    <!-- Field: Keyword -->
+                    <div class="sf">
+                        <div class="sf-label">
+                            <i class="bi bi-search"></i> Tìm kiếm
+                        </div>
+                        <input class="sf-input"
+                               type="text"
+                               name="keyword"
+                               placeholder="Tên tour, địa điểm..."
+                               th:value="${keyword}">
+                        <div class="sf-hint">Nhập tên tour hoặc điểm đến</div>
+                    </div>
+
+                    <!-- Field: Destination -->
+                    <div class="sf">
+                        <div class="sf-label">
+                            <i class="bi bi-geo-alt-fill"></i> Điểm đến
+                        </div>
+                        <select class="sf-input" name="destination">
+                            <option value="">Tất cả điểm đến</option>
+                            <option value="An Giang">An Giang</option>
+                            <option value="Núi Sam">Núi Sam</option>
+                            <option value="Rừng Tràm Trà Sư">Rừng Tràm Trà Sư</option>
+                            <option value="Hồ Tà Pạ">Hồ Tà Pạ</option>
+                            <option value="Châu Đốc">Châu Đốc</option>
+                            <option value="Long Xuyên">Long Xuyên</option>
+                        </select>
+                        <div class="sf-hint">Chọn khu vực bạn muốn đến</div>
+                    </div>
+
+                    <!-- Field: Date -->
+                    <div class="sf" style="border-right:none;">
+                        <div class="sf-label">
+                            <i class="bi bi-calendar-event"></i> Ngày khởi hành
+                        </div>
+                        <input class="sf-input"
+                               type="date"
+                               name="date"
+                               th:value="${date}">
+                        <div class="sf-hint">Chọn ngày phù hợp</div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="search-cta">
+                        <button type="submit" class="btn-search-go">
+                            <i class="bi bi-search"></i> Tìm ngay
+                        </button>
+                    </div>
+
+                </form>
+
+                <!-- Popular chips -->
+                <div class="search-chips">
+                    <span class="chips-label">Phổ biến:</span>
+                    <a href="/tours?keyword=Núi+Sam" class="chip">
+                        <i class="bi bi-geo-fill"></i> Núi Sam
+                    </a>
+                    <a href="/tours?keyword=Trà+Sư" class="chip">
+                        <i class="bi bi-tree-fill"></i> Rừng Trà Sư
+                    </a>
+                    <a href="/tours?keyword=Tà+Pạ" class="chip">
+                        <i class="bi bi-water"></i> Hồ Tà Pạ
+                    </a>
+                    <a href="/tours?keyword=Châu+Đốc" class="chip">
+                        <i class="bi bi-building"></i> Châu Đốc
+                    </a>
+                    <a href="/tours?keyword=cuoi+tuan" class="chip">
+                        <i class="bi bi-sun-fill"></i> Cuối tuần
+                    </a>
                 </div>
 
-                <!-- Nút reset -->
-                <a href="/tours" class="search-reset" title="Xóa bộ lọc">
-                    <i class="bi bi-x-circle"></i> Xóa
-                </a>
-
-                <!-- Nút tìm -->
-                <button type="submit" class="search-go">
-                    <i class="bi bi-search"></i> Tìm ngay
-                </button>
-
-            </form>
+            </div>
         </div>
 
         <!-- ── Section heading ── -->
@@ -622,5 +781,14 @@
 <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Tab switching
+    document.querySelectorAll('.search-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        });
+    });
+</script>
 </body>
 </html>

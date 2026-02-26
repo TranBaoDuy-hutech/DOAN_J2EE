@@ -19,6 +19,9 @@
             --accent-glow: rgba(59,91,219,0.15);
             --border: #e2e5f0;
             --danger: #e03131;
+            --success: #1a7a2e;
+            --success-bg: #d3f9d8;
+            --success-border: #b2f2bb;
             --shadow: 0 2px 24px rgba(15,17,23,0.07);
             --radius: 16px;
         }
@@ -134,6 +137,9 @@
         tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: #f8f9ff; }
+        /* Row đã phản hồi có nền xanh nhạt */
+        tbody tr.replied-row { background: #f6fef7; }
+        tbody tr.replied-row:hover { background: #edfaf0; }
         td { padding: 0.9rem 1.25rem; font-size: 0.875rem; color: var(--ink); vertical-align: middle; }
 
         /* Sender cell */
@@ -147,6 +153,16 @@
         .sender-name { font-weight: 500; line-height: 1.2; }
         .text-sub { font-size: 0.75rem; color: var(--ink-light); }
 
+        /* Badge đã phản hồi */
+        .badge-replied {
+            display: inline-flex; align-items: center; gap: 0.25rem;
+            font-size: 0.68rem; font-weight: 600; font-family: 'Sora', sans-serif;
+            background: var(--success-bg); color: var(--success);
+            border: 1px solid var(--success-border);
+            border-radius: 6px; padding: 0.15rem 0.5rem;
+            margin-top: 0.25rem; letter-spacing: 0.02em;
+        }
+
         /* Message preview */
         .msg-preview {
             max-width: 260px;
@@ -158,14 +174,12 @@
             cursor: pointer;
             position: relative;
         }
-
-        /* Expand message on row hover */
         tbody tr:hover .msg-preview {
             white-space: normal;
             overflow: visible;
         }
 
-        /* Message modal overlay */
+        /* Modal overlay shared */
         .msg-modal-overlay {
             display: none;
             position: fixed; inset: 0;
@@ -175,13 +189,16 @@
             align-items: center; justify-content: center;
         }
         .msg-modal-overlay.open { display: flex; }
+
+        @keyframes popIn { from { opacity:0; transform: scale(0.95); } to { opacity:1; transform: scale(1); } }
+
+        /* View message modal */
         .msg-modal {
             background: white; border-radius: 16px;
             padding: 2rem; max-width: 520px; width: 90%;
             box-shadow: 0 24px 80px rgba(0,0,0,0.2);
             animation: popIn 0.2s cubic-bezier(0.16,1,0.3,1);
         }
-        @keyframes popIn { from { opacity:0; transform: scale(0.95); } to { opacity:1; transform: scale(1); } }
         .msg-modal h4 { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--ink); }
         .msg-modal .meta { font-size: 0.78rem; color: var(--ink-light); margin-bottom: 1rem; }
         .msg-modal .body { font-size: 0.875rem; color: var(--ink-mid); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
@@ -194,6 +211,63 @@
         }
         .msg-modal-close:hover { background: var(--bg); }
 
+        /* Reply modal */
+        .reply-modal {
+            background: white; border-radius: 16px;
+            padding: 2rem; max-width: 560px; width: 90%;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+            animation: popIn 0.2s cubic-bezier(0.16,1,0.3,1);
+        }
+        .reply-modal h4 {
+            font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 600;
+            color: var(--ink); margin-bottom: 0.3rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .reply-modal h4 i { color: var(--accent); }
+        .reply-modal .meta { font-size: 0.78rem; color: var(--ink-light); margin-bottom: 1.25rem; }
+
+        .form-group { margin-bottom: 0.85rem; }
+        .form-group label {
+            display: block; font-size: 0.8rem; font-weight: 600;
+            color: var(--ink-mid); margin-bottom: 0.35rem;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%; padding: 0.6rem 0.85rem;
+            border: 1.5px solid var(--border); border-radius: 8px;
+            font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+            color: var(--ink); background: #fafbfe; outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .form-group textarea { resize: vertical; min-height: 130px; }
+
+        .reply-actions { display: flex; gap: 0.6rem; margin-top: 1.25rem; }
+        .btn-primary {
+            flex: 1; padding: 0.65rem; border-radius: 8px;
+            border: none; cursor: pointer;
+            background: linear-gradient(135deg, #3b5bdb, #4263eb);
+            color: white; font-family: 'Sora', sans-serif;
+            font-size: 0.82rem; font-weight: 600;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+            box-shadow: 0 4px 14px rgba(59,91,219,0.3);
+            transition: all 0.2s;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,91,219,0.4); }
+        .btn-cancel {
+            padding: 0.65rem 1.2rem; border-radius: 8px;
+            border: 1.5px solid var(--border); background: transparent;
+            font-family: 'Sora', sans-serif; font-size: 0.82rem;
+            font-weight: 500; color: var(--ink-mid); cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover { background: var(--bg); }
+
         /* Date */
         .date-cell { font-size: 0.8rem; color: var(--ink-light); white-space: nowrap; }
 
@@ -204,20 +278,23 @@
             color: var(--ink-mid); display: inline-flex; align-items: center;
             justify-content: center; font-size: 0.8rem; cursor: pointer;
             text-decoration: none; transition: all 0.18s ease;
+            margin-right: 0.3rem;
         }
         .icon-btn:hover { transform: translateY(-1px); }
+        .icon-btn.reply:hover { background: #eff6ff; border-color: var(--accent); color: var(--accent); }
+        /* Nút reply khi đã phản hồi */
+        .icon-btn.replied-done {
+            background: var(--success-bg);
+            border-color: var(--success-border);
+            color: var(--success);
+            cursor: default;
+        }
+        .icon-btn.replied-done:hover { transform: none; background: var(--success-bg); border-color: var(--success-border); color: var(--success); }
         .icon-btn.del:hover { background: #fff5f5; border-color: var(--danger); color: var(--danger); }
         .icon-btn button {
             background: none; border: none; padding: 0; display: flex;
             align-items: center; justify-content: center;
             color: inherit; cursor: pointer; width: 100%; height: 100%; font-size: inherit;
-        }
-
-        /* Read indicator */
-        .unread-dot {
-            width: 7px; height: 7px; border-radius: 50%;
-            background: var(--accent); flex-shrink: 0;
-            box-shadow: 0 0 0 2px var(--accent-soft);
         }
 
         /* Empty */
@@ -291,11 +368,12 @@
                     <th>SĐT</th>
                     <th>Nội dung</th>
                     <th>Ngày gửi</th>
-                    <th>Xóa</th>
+                    <th>Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="contact : ${contacts}" class="contact-row"
+                <tr th:each="contact : ${contacts}"
+                    th:classappend="${contact.replied} ? 'contact-row replied-row' : 'contact-row'"
                     th:attr="data-name=${contact.name},data-email=${contact.email},data-phone=${contact.phone},data-msg=${contact.message}">
 
                     <!-- Sender -->
@@ -309,6 +387,10 @@
                             <div>
                                 <div class="sender-name" th:text="${contact.name}">Nguyễn Văn A</div>
                                 <div class="text-sub" th:text="${contact.email}">email@example.com</div>
+                                <!-- Badge đã phản hồi hiện dưới tên -->
+                                <span th:if="${contact.replied}" class="badge-replied">
+                                    <i class="bi bi-check-circle-fill"></i> Đã phản hồi
+                                </span>
                             </div>
                         </div>
                     </td>
@@ -328,15 +410,28 @@
                     <!-- Date -->
                     <td class="date-cell" th:text="${contact.createdAt}">01/01/2025</td>
 
-                    <!-- Delete -->
+                    <!-- Actions -->
                     <td>
-                            <span class="icon-btn del" title="Xóa">
-                                <form th:action="@{/admin/contacts/{id}/delete(id=${contact.id})}"
-                                      method="post"
-                                      onsubmit="return confirm('Xóa liên hệ này?');">
-                                    <button type="submit"><i class="bi bi-trash3"></i></button>
-                                </form>
-                            </span>
+                        <!-- Nút reply: xanh lá nếu đã phản hồi, bình thường nếu chưa -->
+                        <span th:if="${!contact.replied}"
+                              class="icon-btn reply" title="Phản hồi"
+                              th:attr="data-email=${contact.email}, data-name=${contact.name}, data-id=${contact.id}"
+                              onclick="openReply(this)">
+                            <i class="bi bi-reply-fill"></i>
+                        </span>
+                        <span th:if="${contact.replied}"
+                              class="icon-btn replied-done" title="Đã phản hồi">
+                            <i class="bi bi-check-lg"></i>
+                        </span>
+
+                        <!-- Delete button -->
+                        <span class="icon-btn del" title="Xóa">
+                            <form th:action="@{/admin/contacts/{id}/delete(id=${contact.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('Xóa liên hệ này?');">
+                                <button type="submit"><i class="bi bi-trash3"></i></button>
+                            </form>
+                        </span>
                     </td>
                 </tr>
                 </tbody>
@@ -353,7 +448,7 @@
 
 </div>
 
-<!-- Message modal -->
+<!-- View message modal -->
 <div class="msg-modal-overlay" id="msgOverlay" onclick="closeMsg(event)">
     <div class="msg-modal">
         <h4 id="modalName">Nguyễn Văn A</h4>
@@ -362,6 +457,36 @@
         <button class="msg-modal-close" onclick="document.getElementById('msgOverlay').classList.remove('open')">
             <i class="bi bi-x-lg"></i> Đóng
         </button>
+    </div>
+</div>
+
+<!-- Reply modal -->
+<div class="msg-modal-overlay" id="replyOverlay" onclick="closeReply(event)">
+    <div class="reply-modal">
+        <h4><i class="bi bi-reply-fill"></i> Phản hồi khách hàng</h4>
+        <div class="meta" id="replyMeta">Gửi đến: email@example.com</div>
+
+        <form th:action="@{/admin/contact/reply}" method="post" id="replyForm">
+            <input type="hidden" name="contactId" id="replyContactId">
+            <input type="hidden" name="email" id="replyEmail">
+            <input type="hidden" name="toName" id="replyName">
+
+            <div class="form-group">
+                <label>Nội dung phản hồi</label>
+                <textarea name="messageReply" id="replyBody"
+                          placeholder="Nhập nội dung phản hồi..."></textarea>
+            </div>
+
+            <div class="reply-actions">
+                <button type="button" class="btn-cancel"
+                        onclick="document.getElementById('replyOverlay').classList.remove('open')">
+                    <i class="bi bi-x-lg"></i> Hủy
+                </button>
+                <button type="submit" class="btn-primary">
+                    <i class="bi bi-send-fill"></i> Gửi phản hồi
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -391,7 +516,7 @@
     searchInput.addEventListener('input', filterTable);
     filterTable();
 
-    // Message modal
+    // View message modal
     function openMsg(el) {
         document.getElementById('modalName').textContent  = el.dataset.name  || '';
         document.getElementById('modalEmail').textContent = el.dataset.email || '';
@@ -402,6 +527,26 @@
     function closeMsg(e) {
         if (e.target === document.getElementById('msgOverlay')) {
             document.getElementById('msgOverlay').classList.remove('open');
+        }
+    }
+
+    // Reply modal
+    function openReply(el) {
+        const email = el.dataset.email || '';
+        const name  = el.dataset.name  || '';
+        const id    = el.dataset.id    || '';
+        document.getElementById('replyContactId').value  = id;
+        document.getElementById('replyEmail').value      = email;
+        document.getElementById('replyName').value       = name;
+        document.getElementById('replyMeta').textContent = 'Gửi đến: ' + (name ? name + ' <' + email + '>' : email);
+        document.getElementById('replyBody').value       = '';
+        document.getElementById('replyOverlay').classList.add('open');
+        setTimeout(() => document.getElementById('replyBody').focus(), 200);
+    }
+
+    function closeReply(e) {
+        if (e.target === document.getElementById('replyOverlay')) {
+            document.getElementById('replyOverlay').classList.remove('open');
         }
     }
 </script>

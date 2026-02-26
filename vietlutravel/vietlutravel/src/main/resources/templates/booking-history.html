@@ -303,12 +303,18 @@
         @media (max-width: 500px) {
             .summary-row { grid-template-columns: 1fr; }
         }
+        .nav-logo,
+        .nav-logo:hover,
+        .nav-logo:visited {
+            text-decoration: none;
+            color: inherit;
+        }
     </style>
 </head>
 <body>
 
 <nav class="topbar">
-    <a href="#" class="logo">
+    <a th:href="@{/}" class="logo">
         <span class="logo-dot"></span>
         Viet Lu Travel
     </a>
@@ -444,9 +450,9 @@
             <div class="empty-icon"><i class="fas fa-suitcase-rolling"></i></div>
             <h4>Chua co chuyen di nao</h4>
             <p>Hay kham pha va dat tour dau tien cua ban cung Viet Lu Travel!</p>
-            <a href="#" class="btn-explore">
+            <a th:href="@{/tours}" class="btn-explore">
                 <i class="fas fa-compass"></i>
-                <span>Kham pha tour ngay</span>
+                <span>Khám phá tour ngay</span>
             </a>
         </div>
     </div>

@@ -1,487 +1,877 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng ký | Việt Lữ Travel</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Include Header CSS -->
-    <th:block th:replace="~{fragments/header :: header-css}"></th:block>
-
-    <!-- Include Footer CSS -->
-    <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --ocean-blue: #0891b2;
-            --ocean-blue-dark: #0e7490;
-            --ocean-blue-light: #06b6d4;
+            --sea:         #0369a1;
+            --sea-mid:     #0284c7;
+            --sea-pale:    #e0f2fe;
+            --ink:         #0c1f35;
+            --sand:        #c8a96e;
+            --sand-light:  #e8cfa0;
+            --white:       #ffffff;
+            --gray-1:      #f8fafc;
+            --gray-2:      #f1f5f9;
+            --gray-3:      #e2e8f0;
+            --muted:       #64748b;
+            --success:     #059669;
+            --danger:      #dc2626;
+            --font-h:      'Playfair Display', Georgia, serif;
+            --font-b:      'DM Sans', system-ui, sans-serif;
+            --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
         }
 
-        body {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-b);
+        }
+
+        /* ═══ LAYOUT ═══ */
+        .page-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             min-height: 100vh;
+        }
+
+        /* ═══ LEFT VISUAL PANEL ═══ */
+        .visual-panel {
+            position: relative;
+            background: var(--ink);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            padding: 3rem 3.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
         }
 
-        .main-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            padding: 3rem 0;
+        .visual-panel::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 15% 15%,  rgba(56,189,248,0.16) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 70% at 85% 85%,  rgba(200,169,110,0.13) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 65% 35%,  rgba(3,105,161,0.18)  0%, transparent 60%);
+            pointer-events: none;
         }
 
-        .register-container {
-            max-width: 500px;
-            margin: 0 auto;
-            width: 100%;
+        .visual-panel::after {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
         }
 
-        .register-card {
-            background: white;
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: 0 15px 50px rgba(8, 145, 178, 0.2);
-            border: 2px solid #e0f2fe;
-        }
-
-        .register-header {
-            background: linear-gradient(135deg, var(--ocean-blue-dark), var(--ocean-blue));
-            color: white;
-            padding: 3rem 2rem 2rem;
-            text-align: center;
-            position: relative;
-        }
-
-        .register-icon {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .register-icon i {
-            font-size: 2.5rem;
-            color: var(--ocean-blue);
-        }
-
-        .register-header h2 {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .register-header p {
-            margin: 0;
-            opacity: 0.9;
-        }
-
-        .register-form {
-            padding: 2.5rem;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: var(--ocean-blue-dark);
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        .input-group-custom {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .input-icon {
+        .deco-ring {
             position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--ocean-blue);
-            font-size: 1.2rem;
-            z-index: 10;
+            width: 520px; height: 520px;
+            border-radius: 50%;
+            border: 1px solid rgba(200,169,110,0.1);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: spinRing 50s linear infinite;
         }
 
-        .form-control {
-            border: 2px solid #e0f2fe;
+        .deco-ring::before {
+            content: '';
+            position: absolute;
+            width: 340px; height: 340px;
+            border-radius: 50%;
+            border: 1px solid rgba(56,189,248,0.08);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .deco-ring::after {
+            content: '';
+            position: absolute;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            border: 1px dashed rgba(200,169,110,0.15);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spinRing { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+        .floating-badge {
+            position: absolute; top: 2.5rem; right: 2.5rem; z-index: 3;
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px;
+            padding: 0.5rem 1rem;
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: rgba(255,255,255,0.55);
+        }
+
+        .floating-badge .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #4ade80; box-shadow: 0 0 8px #4ade80;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%,100% { opacity:1; transform:scale(1); }
+            50%      { opacity:0.4; transform:scale(0.75); }
+        }
+
+        .vp-logo {
+            position: relative; z-index: 2;
+            display: flex; align-items: center; gap: 12px;
+            animation: slideFromLeft 0.6s ease both;
+        }
+
+        .vp-logo-icon {
+            width: 46px; height: 46px; border-radius: 13px;
+            background: linear-gradient(135deg, var(--sand), #b8943c);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 24px rgba(200,169,110,0.28);
+        }
+
+        .vp-logo-icon i { font-size: 1.25rem; color: var(--ink); }
+        .vp-logo-name { font-family: var(--font-h); font-size: 1.25rem; color: #fff; font-weight: 700; }
+        .vp-logo-name span { color: var(--sand); font-style: italic; }
+
+        .vp-hero {
+            position: relative; z-index: 2;
+            animation: slideFromLeft 0.7s 0.1s ease both;
+        }
+
+        .vp-tagline {
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.22em; text-transform: uppercase;
+            color: var(--sand); margin-bottom: 1.2rem;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .vp-tagline::before {
+            content: ''; display: inline-block;
+            width: 32px; height: 1px; background: var(--sand);
+        }
+
+        .vp-heading {
+            font-family: var(--font-h);
+            font-size: clamp(2.2rem, 3.2vw, 3rem);
+            font-weight: 900; color: #fff;
+            line-height: 1.06; margin-bottom: 1.3rem;
+        }
+
+        .vp-heading em { font-style: italic; color: #4ade80; }
+
+        .vp-desc {
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.48);
+            line-height: 1.72; max-width: 340px;
+        }
+
+        /* Benefits list */
+        .benefits-list {
+            position: relative; z-index: 2;
+            display: flex; flex-direction: column; gap: 10px;
+            animation: slideFromLeft 0.7s 0.15s ease both;
+        }
+
+        .benefit-item {
+            display: flex; align-items: center; gap: 12px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 12px;
-            padding: 0.9rem 1rem 0.9rem 3rem;
-            transition: all 0.3s;
+            padding: 0.85rem 1.1rem;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .benefit-item:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(200,169,110,0.25);
+        }
+
+        .benefit-icon {
+            width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
             font-size: 1rem;
         }
 
-        .form-control:focus {
-            border-color: var(--ocean-blue);
-            box-shadow: 0 0 0 0.25rem rgba(8, 145, 178, 0.15);
+        .benefit-icon.blue  { background: rgba(56,189,248,0.15); color: #38bdf8; }
+        .benefit-icon.gold  { background: rgba(200,169,110,0.15); color: var(--sand-light); }
+        .benefit-icon.green { background: rgba(74,222,128,0.15); color: #4ade80; }
+
+        .benefit-text { font-size: 0.82rem; color: rgba(255,255,255,0.65); line-height: 1.4; }
+        .benefit-text strong { color: rgba(255,255,255,0.9); font-weight: 600; display: block; font-size: 0.86rem; }
+
+        @keyframes slideFromLeft {
+            from { opacity: 0; transform: translateX(-24px); }
+            to   { opacity: 1; transform: none; }
         }
 
-        .form-control::placeholder {
-            color: #94a3b8;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: var(--ocean-blue);
-            z-index: 10;
-        }
-
-        .btn-register {
-            background: linear-gradient(135deg, var(--ocean-blue), var(--ocean-blue-light));
-            border: none;
-            color: white;
-            padding: 1rem;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            width: 100%;
-            margin-top: 1rem;
-        }
-
-        .btn-register:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(8, 145, 178, 0.4);
-        }
-
-        .divider {
-            text-align: center;
-            margin: 1.5rem 0;
-            position: relative;
-        }
-
-        .divider::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 50%;
-            width: 100%;
-            height: 1px;
-            background: #e0f2fe;
-        }
-
-        .divider span {
-            background: white;
-            padding: 0 1rem;
-            position: relative;
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        .login-link {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #64748b;
-        }
-
-        .login-link a {
-            color: var(--ocean-blue);
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .login-link a:hover {
-            color: var(--ocean-blue-dark);
-            text-decoration: underline;
-        }
-
-        .required-star {
-            color: #dc3545;
-            margin-left: 2px;
-        }
-
-        .social-register {
+        /* ═══ RIGHT FORM PANEL ═══ */
+        .form-panel {
+            background: var(--white);
             display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
+            flex-direction: column;
+            overflow-y: auto;
         }
+
+        .form-accent {
+            height: 3px;
+            background: linear-gradient(90deg, var(--sand), #4ade80, var(--sand));
+            flex-shrink: 0;
+            position: sticky; top: 0; z-index: 10;
+        }
+
+        .form-inner {
+            flex: 1;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 2.5rem 3.5rem;
+            max-width: 520px; margin: 0 auto; width: 100%;
+            animation: slideFromRight 0.6s 0.1s ease both;
+        }
+
+        @keyframes slideFromRight {
+            from { opacity: 0; transform: translateX(24px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* Progress steps */
+        .step-progress {
+            display: flex; align-items: center; gap: 0;
+            margin-bottom: 2rem;
+        }
+
+        .step-dot {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .step-dot.active {
+            background: var(--sand); color: var(--ink);
+            box-shadow: 0 4px 12px rgba(200,169,110,0.35);
+        }
+
+        .step-dot.done {
+            background: var(--success); color: white;
+        }
+
+        .step-dot.pending {
+            background: var(--gray-2); color: var(--muted);
+            border: 1.5px solid var(--gray-3);
+        }
+
+        .step-line {
+            flex: 1; height: 2px;
+            background: var(--gray-3);
+            transition: background 0.4s;
+        }
+
+        .step-line.done { background: var(--success); }
+
+        .form-eyebrow {
+            font-size: 0.68rem; font-weight: 600;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--sea-mid); margin-bottom: 0.5rem;
+        }
+
+        .form-title {
+            font-family: var(--font-h);
+            font-size: 2.2rem; font-weight: 700;
+            color: var(--ink); line-height: 1.1; margin-bottom: 0.45rem;
+        }
+
+        .form-title em { font-style: italic; color: #059669; }
+        .form-subtitle { font-size: 0.87rem; color: var(--muted); margin-bottom: 1.6rem; line-height: 1.55; }
+
+        /* Alerts */
+        .auth-alert {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 0.88rem 1.1rem; border-radius: 12px;
+            font-size: 0.855rem; margin-bottom: 1.3rem;
+        }
+        .auth-alert i { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+        .auth-alert.error   { background: #fef2f2; border: 1px solid #fecaca; color: var(--danger); }
+        .auth-alert.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: var(--success); }
+
+        /* Field grid */
+        .fields-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 1.1rem;
+        }
+
+        .field-full { grid-column: 1 / -1; }
+
+        .field-item { display: flex; flex-direction: column; gap: 5px; margin-bottom: 1.1rem; }
+
+        .field-label {
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        .field-label .req { color: var(--danger); }
+
+        .field-wrap { position: relative; }
+
+        .field-icon {
+            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+            color: #94a3b8; font-size: 1rem; pointer-events: none; transition: color 0.25s;
+        }
+
+        .field-wrap:focus-within .field-icon { color: var(--sea-mid); }
+
+        .field-input {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.9rem;
+            border: 1.5px solid var(--gray-3); border-radius: 12px;
+            font-family: var(--font-b); font-size: 0.93rem;
+            color: var(--ink); background: var(--gray-1); outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+        }
+
+        .field-input::placeholder { color: #94a3b8; }
+
+        .field-input:focus {
+            border-color: var(--sea);
+            box-shadow: 0 0 0 3px rgba(2,132,199,0.1);
+            background: var(--white);
+        }
+
+        .field-input.valid {
+            border-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        /* Toggle PW */
+        .toggle-pw {
+            position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: #94a3b8;
+            cursor: pointer; font-size: 1rem; transition: color 0.2s; padding: 0;
+        }
+        .toggle-pw:hover { color: var(--sea); }
+        .has-toggle { padding-right: 2.8rem; }
+
+        /* Password strength */
+        .pw-strength-bar {
+            display: flex; gap: 4px; margin-top: 7px;
+        }
+
+        .pw-seg {
+            flex: 1; height: 3px; border-radius: 100px;
+            background: var(--gray-3);
+            transition: background 0.3s;
+        }
+
+        .pw-seg.weak   { background: #ef4444; }
+        .pw-seg.fair   { background: #f97316; }
+        .pw-seg.good   { background: #eab308; }
+        .pw-seg.strong { background: var(--success); }
+
+        .pw-requirements {
+            margin-top: 8px;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 4px 8px;
+        }
+
+        .pw-req-item {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 0.73rem; color: var(--muted);
+            transition: color 0.2s;
+        }
+
+        .pw-req-item i { font-size: 0.7rem; transition: color 0.2s; }
+
+        .pw-req-item.met { color: var(--success); }
+        .pw-req-item.met i { color: var(--success); }
+        .pw-req-item.unmet i { color: #cbd5e1; }
+
+        /* Terms */
+        .terms-check {
+            display: flex; align-items: flex-start; gap: 10px;
+            margin-bottom: 1.1rem; margin-top: 0.3rem;
+        }
+
+        .terms-check input[type="checkbox"] {
+            width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px;
+            accent-color: var(--sea); cursor: pointer;
+        }
+
+        .terms-check label {
+            font-size: 0.82rem; color: var(--muted); cursor: pointer; line-height: 1.5;
+        }
+
+        .terms-check label a { color: var(--sea); font-weight: 600; text-decoration: none; }
+        .terms-check label a:hover { text-decoration: underline; }
+
+        /* Main button */
+        .btn-main {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; padding: 0.95rem;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white; font-family: var(--font-b); font-weight: 700; font-size: 0.97rem;
+            border: none; border-radius: 50px; cursor: pointer;
+            transition: all 0.35s var(--ease-spring);
+            box-shadow: 0 8px 24px rgba(34,197,94,0.28);
+            margin-bottom: 1.2rem;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 14px 32px rgba(34,197,94,0.44);
+        }
+
+        /* Divider */
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 1.1rem;
+        }
+
+        .divider-line { flex: 1; height: 1px; background: var(--gray-3); }
+
+        .divider-text {
+            font-size: 0.75rem; color: var(--muted); font-weight: 500;
+            white-space: nowrap; letter-spacing: 0.04em;
+        }
+
+        /* Social buttons */
+        .social-row { display: flex; gap: 10px; margin-bottom: 1.3rem; }
 
         .social-btn {
-            flex: 1;
-            padding: 0.8rem;
-            border: 2px solid #e0f2fe;
-            border-radius: 10px;
-            background: white;
-            color: #64748b;
-            font-weight: 500;
-            transition: all 0.3s;
-            cursor: pointer;
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 0.78rem 1rem;
+            border: 1.5px solid var(--gray-3); border-radius: 12px;
+            background: var(--white); color: var(--muted);
+            font-family: var(--font-b); font-size: 0.87rem; font-weight: 600;
+            text-decoration: none; transition: all 0.25s; cursor: pointer;
         }
 
         .social-btn:hover {
-            border-color: var(--ocean-blue);
-            color: var(--ocean-blue);
-            background: #f0f9ff;
+            border-color: var(--sea);
+            color: var(--sea); background: var(--sea-pale);
         }
 
-        .social-btn i {
-            margin-right: 0.5rem;
+        .social-btn i { font-size: 1.05rem; }
+
+        /* Bottom row */
+        .bottom-row {
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 0.845rem; color: var(--muted);
         }
 
-        .terms-text {
-            font-size: 0.85rem;
-            color: #64748b;
+        .bottom-row a { color: var(--sea); font-weight: 600; text-decoration: none; }
+        .bottom-row a:hover { text-decoration: underline; }
+
+        .security-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 0.42rem 0.9rem;
+            border: 1.5px solid #bbf7d0; border-radius: 100px;
+            font-size: 0.78rem; color: var(--success); font-weight: 500;
+            background: #f0fdf4;
+        }
+
+        /* Form footer */
+        .form-footer {
             text-align: center;
-            margin-top: 1rem;
+            padding: 1rem 3.5rem 1.4rem;
+            border-top: 1px solid var(--gray-2);
+            font-size: 0.82rem; color: var(--muted); flex-shrink: 0;
         }
 
-        .terms-text a {
-            color: var(--ocean-blue);
-            text-decoration: none;
+        .form-footer a { color: var(--sea); font-weight: 600; text-decoration: none; }
+        .form-footer a:hover { text-decoration: underline; }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 900px) {
+            .page-wrap { grid-template-columns: 1fr; }
+            .visual-panel { position: relative; height: auto; min-height: 200px; padding: 2rem; }
+            .vp-hero { display: none; }
+            .benefits-list { display: none; }
+            .form-inner { padding: 2rem 1.8rem; }
+            .fields-grid { grid-template-columns: 1fr; }
+            .field-full { grid-column: 1; }
+            .form-footer { padding: 1rem 1.8rem; }
         }
 
-        .terms-text a:hover {
-            text-decoration: underline;
-        }
-
-        .success-message {
-            background: #d1fae5;
-            border: 1px solid #10b981;
-            color: #065f46;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            display: none;
-        }
-
-        .error-message {
-            background: #fee2e2;
-            border: 1px solid #ef4444;
-            color: #991b1b;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-        }
-
-        /* THÊM STYLE CHO YÊU CẦU MẬT KHẨU */
-        .password-requirements {
-            font-size: 0.9rem;
-            color: #64748b;
-            margin-top: 0.6rem;
-            padding: 0.8rem 1rem;
-            background: #f0f9ff;
-            border-radius: 8px;
-            border: 1px solid #bae6fd;
-        }
-
-        .password-requirements ul {
-            margin: 0.5rem 0 0 1.2rem;
-            padding: 0;
-            list-style-type: disc;
-        }
-
-        .password-requirements li {
-            margin-bottom: 0.4rem;
-        }
-
-        .password-requirements .met {
-            color: #10b981;
-            text-decoration: line-through;
-        }
-
-        .password-requirements .not-met {
-            color: #ef4444;
+        @media (max-width: 480px) {
+            .pw-requirements { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-
 <body>
 
-<!-- ========== INCLUDE HEADER ========== -->
-<th:block th:replace="~{fragments/header :: header}"></th:block>
+<div class="page-wrap">
 
-<!-- ========== MAIN CONTENT ========== -->
-<main class="main-content">
-    <div class="register-container">
+    <!-- ══════════════════════════
+         LEFT — VISUAL PANEL
+    ══════════════════════════ -->
+    <div class="visual-panel">
+        <div class="deco-ring"></div>
 
-        <div class="register-card">
+        <div class="floating-badge">
+            <span class="dot"></span>
+            Đăng ký miễn phí
+        </div>
 
-            <!-- Register Header -->
-            <div class="register-header">
-                <div class="register-icon">
-                    <i class="bi bi-person-plus-fill"></i>
+        <!-- Logo -->
+        <div class="vp-logo">
+            <div class="vp-logo-icon"><i class="bi bi-compass-fill"></i></div>
+            <div class="vp-logo-name">Việt Lữ <span>Travel</span></div>
+        </div>
+
+        <!-- Hero -->
+        <div class="vp-hero">
+            <div class="vp-tagline">Thành viên mới</div>
+            <h1 class="vp-heading">
+                Khám phá<br>
+                An Giang - Kiên Giang<br>
+                <em>cùng chúng tôi</em>
+            </h1>
+            <p class="vp-desc">
+                Tạo tài khoản để nhận ưu đãi độc quyền,
+                đặt tour dễ dàng và theo dõi hành trình
+                của bạn mọi lúc, mọi nơi.
+            </p>
+        </div>
+
+        <!-- Benefits -->
+        <div class="benefits-list">
+            <div class="benefit-item">
+                <div class="benefit-icon blue"><i class="bi bi-gift-fill"></i></div>
+                <div class="benefit-text">
+                    <strong>Ưu đãi thành viên</strong>
+                    Giảm đến 15% cho đơn đặt tour đầu tiên
                 </div>
-                <h2>Tạo tài khoản</h2>
-                <p>Bắt đầu hành trình khám phá cùng Việt Lữ Travel</p>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon gold"><i class="bi bi-map-fill"></i></div>
+                <div class="benefit-text">
+                    <strong>Quản lý hành trình</strong>
+                    Theo dõi tour, lịch trình và vé điện tử
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon green"><i class="bi bi-shield-check-fill"></i></div>
+                <div class="benefit-text">
+                    <strong>Bảo mật tuyệt đối</strong>
+                    Thông tin cá nhân được mã hóa và bảo vệ
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════
+         RIGHT — FORM PANEL
+    ══════════════════════════ -->
+    <div class="form-panel">
+        <div class="form-accent"></div>
+
+        <div class="form-inner">
+
+            <!-- Step progress -->
+            <div class="step-progress" style="margin-bottom: 1.8rem;">
+                <div class="step-dot active">1</div>
+                <div class="step-line"></div>
+                <div class="step-dot pending">2</div>
+                <div class="step-line"></div>
+                <div class="step-dot pending">3</div>
             </div>
 
-            <!-- Register Form -->
-            <div class="register-form">
+            <div class="form-eyebrow">Tạo tài khoản mới</div>
+            <h2 class="form-title">Đăng <em>ký</em></h2>
+            <p class="form-subtitle">Điền thông tin để bắt đầu hành trình cùng chúng tôi</p>
 
-                <!-- Success/Error Message (nếu có) -->
-                <div class="success-message" th:if="${success}">
-                    <i class="bi bi-check-circle-fill"></i>
-                    <span th:text="${success}"></span>
-                </div>
+            <!-- Alerts -->
+            <div id="alertError" class="auth-alert error" style="display:none;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span id="alertErrorText"></span>
+            </div>
+            <div id="alertSuccess" class="auth-alert success" style="display:none;">
+                <i class="bi bi-check-circle-fill"></i>
+                <span id="alertSuccessText"></span>
+            </div>
 
-                <div class="error-message" th:if="${error}">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <span th:text="${error}"></span>
-                </div>
+            <form id="registerForm">
 
-                <form th:action="@{/register}" method="post" th:object="${customer}">
+                <div class="fields-grid">
 
                     <!-- Tên người dùng -->
-                    <div class="input-group-custom">
-                        <label class="form-label">
-                            <i class="bi bi-person-fill"></i> Tên người dùng
-                            <span class="required-star">*</span>
+                    <div class="field-item field-full">
+                        <label class="field-label" for="userName">
+                            Tên người dùng <span class="req">*</span>
                         </label>
-                        <i class="input-icon bi bi-person"></i>
-                        <input th:field="*{userName}" type="text" class="form-control"
-                               placeholder="Nhập tên người dùng" required>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="input-group-custom">
-                        <label class="form-label">
-                            <i class="bi bi-envelope-fill"></i> Email
-                            <span class="required-star">*</span>
-                        </label>
-                        <i class="input-icon bi bi-envelope"></i>
-                        <input th:field="*{email}" type="email" class="form-control" placeholder="example@email.com"
-                               required>
-                    </div>
-
-                    <!-- Số điện thoại -->
-                    <div class="input-group-custom">
-                        <label class="form-label">
-                            <i class="bi bi-telephone-fill"></i> Số điện thoại
-                            <span class="required-star">*</span>
-                        </label>
-                        <i class="input-icon bi bi-telephone"></i>
-                        <input th:field="*{phone}" type="tel" class="form-control" placeholder="090 123 4567"
-                               required>
-                    </div>
-
-                    <!-- Mật khẩu + Yêu cầu mật khẩu -->
-                    <div class="input-group-custom">
-                        <label class="form-label">
-                            <i class="bi bi-lock-fill"></i> Mật khẩu
-                            <span class="required-star">*</span>
-                        </label>
-                        <i class="input-icon bi bi-lock"></i>
-                        <input th:field="*{passwordHash}" type="password" id="password" class="form-control"
-                               placeholder="Nhập mật khẩu" required>
-                        <i class="password-toggle bi bi-eye" id="togglePassword"></i>
-
-                        <!-- THÊM PHẦN YÊU CẦU MẬT KHẨU NGAY DƯỚI Ô NÀY -->
-                        <div class="password-requirements">
-                            <strong>Yêu cầu mật khẩu:</strong>
-                            <ul>
-                                <li id="length" class="not-met">Ít nhất 6 ký tự</li>
-                                <li id="uppercase" class="not-met">Ít nhất 1 chữ cái in hoa</li>
-                                <li id="lowercase" class="not-met">Ít nhất 1 chữ cái thường</li>
-                                <li id="number" class="not-met">Ít nhất 1 chữ số</li>
-                                <li id="special" class="not-met">Ít nhất 1 ký tự đặc biệt (ví dụ: ! @ # $ %)</li>
-                            </ul>
+                        <div class="field-wrap">
+                            <i class="bi bi-person field-icon"></i>
+                            <input type="text" id="userName" name="userName"
+                                   class="field-input"
+                                   placeholder="Nhập họ và tên"
+                                   required autocomplete="name">
                         </div>
                     </div>
 
-                    <!-- Terms and Conditions -->
-                    <div class="terms-text">
-                        Bằng việc đăng ký, bạn đồng ý với
-                        <a href="/terms">Điều khoản sử dụng</a> và
-                        <a href="/privacy">Chính sách bảo mật</a>
+                    <!-- Email -->
+                    <div class="field-item field-full">
+                        <label class="field-label" for="email">
+                            Email <span class="req">*</span>
+                        </label>
+                        <div class="field-wrap">
+                            <i class="bi bi-envelope field-icon"></i>
+                            <input type="email" id="email" name="email"
+                                   class="field-input"
+                                   placeholder="example@email.com"
+                                   required autocomplete="email">
+                        </div>
                     </div>
 
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-register">
-                        <i class="bi bi-check-circle-fill"></i> Đăng ký ngay
-                    </button>
+                    <!-- Số điện thoại -->
+                    <div class="field-item field-full">
+                        <label class="field-label" for="phone">
+                            Số điện thoại <span class="req">*</span>
+                        </label>
+                        <div class="field-wrap">
+                            <i class="bi bi-telephone field-icon"></i>
+                            <input type="tel" id="phone" name="phone"
+                                   class="field-input"
+                                   placeholder="090 123 4567"
+                                   required autocomplete="tel">
+                        </div>
+                    </div>
 
-                </form>
+                    <!-- Mật khẩu -->
+                    <div class="field-item field-full">
+                        <label class="field-label" for="password">
+                            Mật khẩu <span class="req">*</span>
+                        </label>
+                        <div class="field-wrap">
+                            <i class="bi bi-lock field-icon"></i>
+                            <input type="password" id="password" name="passwordHash"
+                                   class="field-input has-toggle"
+                                   placeholder="Tạo mật khẩu mạnh"
+                                   required autocomplete="new-password">
+                            <button type="button" class="toggle-pw" id="togglePassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <!-- Strength bar -->
+                        <div class="pw-strength-bar">
+                            <div class="pw-seg" id="seg1"></div>
+                            <div class="pw-seg" id="seg2"></div>
+                            <div class="pw-seg" id="seg3"></div>
+                            <div class="pw-seg" id="seg4"></div>
+                        </div>
+                        <!-- Requirements -->
+                        <div class="pw-requirements">
+                            <div class="pw-req-item unmet" id="req-length">
+                                <i class="bi bi-circle"></i> Ít nhất 6 ký tự
+                            </div>
+                            <div class="pw-req-item unmet" id="req-upper">
+                                <i class="bi bi-circle"></i> Chữ hoa (A-Z)
+                            </div>
+                            <div class="pw-req-item unmet" id="req-lower">
+                                <i class="bi bi-circle"></i> Chữ thường (a-z)
+                            </div>
+                            <div class="pw-req-item unmet" id="req-number">
+                                <i class="bi bi-circle"></i> Chữ số (0-9)
+                            </div>
+                            <div class="pw-req-item unmet" id="req-special">
+                                <i class="bi bi-circle"></i> Ký tự đặc biệt (!@#$)
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Divider -->
-                <div class="divider">
-                    <span>hoặc đăng ký với</span>
+                    <!-- Xác nhận mật khẩu -->
+                    <div class="field-item field-full">
+                        <label class="field-label" for="confirmPassword">
+                            Xác nhận mật khẩu <span class="req">*</span>
+                        </label>
+                        <div class="field-wrap">
+                            <i class="bi bi-lock-fill field-icon"></i>
+                            <input type="password" id="confirmPassword"
+                                   class="field-input has-toggle"
+                                   placeholder="Nhập lại mật khẩu"
+                                   required autocomplete="new-password">
+                            <button type="button" class="toggle-pw" id="toggleConfirm">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div id="matchMsg" style="font-size:0.75rem;margin-top:5px;display:none;"></div>
+                    </div>
+
                 </div>
 
-                <!-- Social Register Buttons -->
-                <div class="social-register">
-                    <a href="/oauth2/authorization/google"
-                       class="social-btn text-decoration-none d-flex justify-content-center align-items-center">
-                        <i class="bi bi-google"></i> Google
-                    </a>
-                    <a href="/oauth2/authorization/facebook"
-                       class="social-btn text-decoration-none d-flex justify-content-center align-items-center">
-                        <i class="bi bi-facebook"></i> Facebook
-                    </a>
+                <!-- Terms -->
+                <div class="terms-check">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">
+                        Tôi đồng ý với <a href="/terms">Điều khoản sử dụng</a>
+                        và <a href="/privacy">Chính sách bảo mật</a> của Việt Lữ Travel
+                    </label>
                 </div>
 
-                <!-- Login Link -->
-                <div class="login-link">
-                    Đã có tài khoản?
-                    <a href="/login">Đăng nhập ngay</a>
+                <!-- Submit -->
+                <button type="submit" class="btn-main">
+                    <i class="bi bi-person-check-fill"></i> Tạo tài khoản ngay
+                </button>
 
-                </div>
+            </form>
 
+            <!-- Divider -->
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-text">hoặc đăng ký với</span>
+                <div class="divider-line"></div>
             </div>
 
-            <!-- Help Text -->
-            <div class="text-center mt-4">
-                <p class="text-muted">
-                    <i class="bi bi-shield-check"></i>
-                    Thông tin của bạn được bảo mật tuyệt đối
-                </p>
+            <!-- Social -->
+            <div class="social-row">
+                <a href="/oauth2/authorization/google" class="social-btn">
+                    <i class="bi bi-google"></i> Google
+                </a>
+                <a href="/oauth2/authorization/facebook" class="social-btn">
+                    <i class="bi bi-facebook"></i> Facebook
+                </a>
+            </div>
+
+            <!-- Bottom row -->
+            <div class="bottom-row">
+                <span>Đã có tài khoản? <a href="/login"><i class="bi bi-box-arrow-in-right"></i> Đăng nhập</a></span>
+                <span class="security-chip"><i class="bi bi-shield-check-fill"></i> Bảo mật SSL</span>
             </div>
 
         </div>
-</main>
 
-<!-- ========== INCLUDE FOOTER ========== -->
-<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+        <div class="form-footer">
+            <i class="bi bi-headset"></i> Cần hỗ trợ? &nbsp;
+            <a href="tel:0901234567">090 123 4567</a>
+        </div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</div>
 
 <script>
-    // Toggle password visibility
-    const togglePassword = document.getElementById('togglePassword');
-    const password = document.getElementById('password');
+    /* ── Toggle password visibility ── */
+    function setupToggle(btnId, inputId) {
+        const btn = document.getElementById(btnId);
+        const inp = document.getElementById(inputId);
+        if (!btn || !inp) return;
+        btn.addEventListener('click', () => {
+            const hidden = inp.type === 'password';
+            inp.type = hidden ? 'text' : 'password';
+            btn.querySelector('i').className = hidden ? 'bi bi-eye-slash' : 'bi bi-eye';
+        });
+    }
+    setupToggle('togglePassword', 'password');
+    setupToggle('toggleConfirm',  'confirmPassword');
 
-    togglePassword.addEventListener('click', function () {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
+    /* ── Password strength & requirements ── */
+    const pwInput = document.getElementById('password');
 
-        // Toggle icon
-        this.classList.toggle('bi-eye');
-        this.classList.toggle('bi-eye-slash');
+    function checkReq(id, condition) {
+        const el = document.getElementById(id);
+        if (condition) {
+            el.className = 'pw-req-item met';
+            el.querySelector('i').className = 'bi bi-check-circle-fill';
+        } else {
+            el.className = 'pw-req-item unmet';
+            el.querySelector('i').className = 'bi bi-circle';
+        }
+        return condition;
+    }
+
+    function setStrength(score) {
+        const classes = ['', 'weak', 'fair', 'good', 'strong'];
+        for (let i = 1; i <= 4; i++) {
+            const seg = document.getElementById('seg' + i);
+            seg.className = 'pw-seg ' + (i <= score ? classes[score] : '');
+        }
+    }
+
+    pwInput.addEventListener('input', function () {
+        const v = this.value;
+        const r = [
+            checkReq('req-length',  v.length >= 6),
+            checkReq('req-upper',   /[A-Z]/.test(v)),
+            checkReq('req-lower',   /[a-z]/.test(v)),
+            checkReq('req-number',  /[0-9]/.test(v)),
+            checkReq('req-special', /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(v)),
+        ];
+        const score = r.filter(Boolean).length > 4 ? 4
+                    : r.filter(Boolean).length > 3 ? 3
+                    : r.filter(Boolean).length > 1 ? 2
+                    : r.filter(Boolean).length > 0 ? 1 : 0;
+        setStrength(score);
+        checkMatch();
     });
 
-    // Real-time check yêu cầu mật khẩu
-    password.addEventListener('input', function () {
-        const pwd = this.value;
+    /* ── Confirm password match ── */
+    const confirmInput = document.getElementById('confirmPassword');
+    const matchMsg     = document.getElementById('matchMsg');
 
-        // Độ dài
-        document.getElementById('length').className = pwd.length >= 6 ? 'met' : 'not-met';
+    function checkMatch() {
+        if (!confirmInput.value) { matchMsg.style.display = 'none'; return; }
+        const ok = pwInput.value === confirmInput.value;
+        matchMsg.style.display = 'block';
+        matchMsg.style.color   = ok ? '#059669' : '#dc2626';
+        matchMsg.innerHTML = ok
+            ? '<i class="bi bi-check-circle-fill"></i> Mật khẩu khớp'
+            : '<i class="bi bi-x-circle-fill"></i> Mật khẩu không khớp';
+        confirmInput.style.borderColor = ok ? '#059669' : '#dc2626';
+    }
 
-        // Chữ hoa
-        document.getElementById('uppercase').className = /[A-Z]/.test(pwd) ? 'met' : 'not-met';
+    confirmInput.addEventListener('input', checkMatch);
 
-        // Chữ thường
-        document.getElementById('lowercase').className = /[a-z]/.test(pwd) ? 'met' : 'not-met';
+    /* ── Inline validation feedback on blur ── */
+    document.querySelectorAll('.field-input').forEach(inp => {
+        inp.addEventListener('blur', function () {
+            if (this.value && this.checkValidity()) {
+                this.style.borderColor = '#059669';
+            } else if (this.value) {
+                this.style.borderColor = '#dc2626';
+            }
+        });
+        inp.addEventListener('focus', function () {
+            this.style.borderColor = '';
+        });
+    });
 
-        // Số
-        document.getElementById('number').className = /[0-9]/.test(pwd) ? 'met' : 'not-met';
+    /* ── Form submit (demo) ── */
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        e.preventDefault();
 
-        // Ký tự đặc biệt
-        document.getElementById('special').className = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) ? 'met' : 'not-met';
+        const pw  = document.getElementById('password').value;
+        const cpw = document.getElementById('confirmPassword').value;
+
+        if (pw !== cpw) {
+            const el = document.getElementById('alertError');
+            document.getElementById('alertErrorText').textContent = 'Mật khẩu xác nhận không khớp!';
+            el.style.display = 'flex';
+            document.getElementById('alertSuccess').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('alertError').style.display = 'none';
+        const ok = document.getElementById('alertSuccess');
+        document.getElementById('alertSuccessText').textContent = 'Đăng ký thành công! Đang chuyển hướng...';
+        ok.style.display = 'flex';
+        ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 </script>
-
 </body>
-
 </html>
