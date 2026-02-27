@@ -77,9 +77,6 @@ public class HomeController {
         return "privacy";
     }
 
-    //
-
-
     // Lưu liên hệ
     @PostMapping("/contact")
     @Transactional

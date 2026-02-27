@@ -1,10 +1,547 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${vanHoa.tieuDe} + ' — Văn Hóa An Giang'">Chi tiết Văn Hóa — An Giang</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gold: #c9a84c;
+            --gold-glow: rgba(201,168,76,0.18);
+            --teal: #2a9d8f;
+            --teal-glow: rgba(42,157,143,0.2);
+            --deep: #04060d;
+            --dark1: #080b16;
+            --dark2: #0e1220;
+            --dark3: #141828;
+            --glass: rgba(255,255,255,0.035);
+            --glass-border: rgba(255,255,255,0.07);
+            --text: #f0ead8;
+            --text-dim: rgba(240,234,216,0.5);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--deep);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* ─── CURSOR ─── */
+        #cur { position: fixed; width: 7px; height: 7px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.1s; mix-blend-mode: difference; }
+        #curR { position: fixed; width: 28px; height: 28px; border: 1px solid rgba(201,168,76,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transition: all 0.14s ease; }
+
+        /* ─── BG CANVAS ─── */
+        #bgc { position: fixed; inset: 0; z-index: 0; opacity: 0.55; pointer-events: none; }
+        body::after {
+            content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+        }
+
+        .page { position: relative; z-index: 2; }
+
+        /* ─── NAVBAR ─── */
+        nav {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 70px;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(4,6,13,0.85);
+            backdrop-filter: blur(20px);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .nav-logo {
+            font-family: 'Space Mono', monospace; font-size: 0.6rem;
+            letter-spacing: 4px; color: var(--gold); text-decoration: none;
+            text-transform: uppercase;
+        }
+        .nav-links { display: flex; gap: 0; }
+        .nav-link {
+            font-family: 'Rajdhani', sans-serif; font-size: 0.8rem;
+            letter-spacing: 2px; color: var(--text-dim); text-decoration: none;
+            text-transform: uppercase; padding: 8px 18px;
+            border-bottom: 2px solid transparent; transition: all 0.3s;
+        }
+        .nav-link:hover { color: var(--text); }
+        .nav-link.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+        /* ─── HERO ─── */
+        .hero {
+            position: relative; height: 70vh; min-height: 500px;
+            overflow: hidden;
+        }
+        .hero-img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.45) saturate(0.7);
+            transform: scale(1.05);
+            animation: heroZoom 8s ease-out forwards;
+        }
+        @keyframes heroZoom { to { transform: scale(1); } }
+
+        .hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, var(--deep) 0%, rgba(4,6,13,0.5) 50%, transparent 100%);
+        }
+
+        .hero-content {
+            position: absolute; bottom: 60px; left: 70px; right: 70px;
+            animation: fadeUp 0.9s ease both;
+        }
+        @keyframes fadeUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
+
+        .hero-eyebrow {
+            font-family: 'Space Mono', monospace; font-size: 0.55rem;
+            letter-spacing: 5px; color: var(--gold); text-transform: uppercase;
+            display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+        }
+        .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--gold); opacity: 0.6; }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 300;
+            line-height: 1.05; letter-spacing: -1px; margin-bottom: 20px;
+        }
+
+        .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(4,6,13,0.7); backdrop-filter: blur(10px);
+            padding: 7px 14px;
+            font-family: 'Space Mono', monospace; font-size: 0.5rem;
+            letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase;
+        }
+        .badge-dot { width: 5px; height: 5px; background: var(--teal); border-radius: 50%; }
+        .badge-dot-gold { width: 5px; height: 5px; background: var(--gold); border-radius: 50%; }
+
+        /* ─── BREADCRUMB ─── */
+        .breadcrumb {
+            padding: 20px 70px;
+            font-family: 'Space Mono', monospace; font-size: 0.5rem;
+            letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase;
+            display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .breadcrumb a { color: var(--text-dim); text-decoration: none; transition: color 0.3s; }
+        .breadcrumb a:hover { color: var(--gold); }
+        .breadcrumb-sep { color: var(--glass-border); }
+        .breadcrumb-current { color: var(--gold); }
+
+        /* ─── MAIN CONTENT ─── */
+        .main { max-width: 1400px; margin: 0 auto; padding: 60px 70px; }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 60px;
+            align-items: start;
+        }
+
+        /* ─── VIDEO BLOCK ─── */
+        .video-block { margin-bottom: 48px; }
+        .block-label {
+            font-family: 'Space Mono', monospace; font-size: 0.55rem;
+            letter-spacing: 5px; color: var(--gold); text-transform: uppercase;
+            display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+        }
+        .block-label::after { content: ''; flex: 1; height: 1px; background: var(--glass-border); }
+
+        .video-container {
+            position: relative;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+        .video-container::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.012) 2px, rgba(0,0,0,0.012) 4px);
+        }
+        .video-ratio { position: relative; padding-bottom: 56.25%; height: 0; }
+        .video-ratio iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+        }
+
+        /* Video shield */
+        .video-shield {
+            position: absolute; inset: 0; z-index: 10; cursor: none;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(to bottom, transparent 50%, rgba(4,6,13,0.6));
+            transition: opacity 0.4s;
+        }
+        .play-btn {
+            width: 72px; height: 72px;
+            border: 1px solid rgba(201,168,76,0.6); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gold); font-size: 1.6rem;
+            background: rgba(4,6,13,0.75); backdrop-filter: blur(12px);
+            transition: all 0.35s; padding-left: 4px;
+        }
+        .video-shield:hover .play-btn { background: var(--gold); color: var(--deep); border-color: var(--gold); transform: scale(1.08); }
+        .video-shield.hidden { opacity: 0; pointer-events: none; }
+
+        /* ─── MO TA BLOCK ─── */
+        .mota-block { margin-bottom: 48px; }
+        .mota-text {
+            font-size: 1.05rem; line-height: 1.9; color: rgba(240,234,216,0.75);
+            font-weight: 300;
+            border-left: 2px solid var(--gold);
+            padding-left: 24px;
+        }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar { display: flex; flex-direction: column; gap: 24px; }
+
+        .sidebar-box {
+            border: 1px solid var(--glass-border);
+            background: var(--dark1);
+            overflow: hidden;
+        }
+        .sidebar-box-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--glass-border);
+            font-family: 'Space Mono', monospace; font-size: 0.5rem;
+            letter-spacing: 4px; color: var(--gold); text-transform: uppercase;
+        }
+
+        /* Info list */
+        .info-list { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+        .info-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .info-key {
+            font-family: 'Space Mono', monospace; font-size: 0.48rem;
+            letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; flex-shrink: 0;
+        }
+        .info-val {
+            font-family: 'Rajdhani', sans-serif; font-size: 0.9rem;
+            color: var(--text); text-align: right; font-weight: 500;
+        }
+        .info-val.highlight { color: var(--gold); }
+
+        /* Back button */
+        .back-btn {
+            display: flex; align-items: center; gap: 10px;
+            padding: 16px 20px;
+            font-family: 'Space Mono', monospace; font-size: 0.5rem;
+            letter-spacing: 3px; color: var(--text-dim); text-decoration: none;
+            text-transform: uppercase; transition: all 0.3s;
+            border-top: 1px solid var(--glass-border);
+        }
+        .back-btn:hover { color: var(--gold); background: var(--dark2); }
+        .back-btn i { font-size: 0.9rem; }
+
+        /* ─── RELATED ─── */
+        .related-section { margin-top: 80px; }
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2px;
+            margin-top: 28px;
+        }
+
+        .rel-card {
+            background: var(--dark1); overflow: hidden;
+            display: flex; flex-direction: column; cursor: none;
+            text-decoration: none; color: inherit;
+            opacity: 0; transform: translateY(24px);
+            transition: background 0.3s;
+            position: relative;
+        }
+        .rel-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            transform: scaleX(0); transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); z-index: 5;
+        }
+        .rel-card:hover::before { transform: scaleX(1); }
+        .rel-card:hover { background: var(--dark2); }
+
+        .rel-thumb { position: relative; height: 180px; overflow: hidden; flex-shrink: 0; }
+        .rel-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.6) saturate(0.8);
+            transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.4s;
+        }
+        .rel-card:hover .rel-thumb img { transform: scale(1.06); filter: brightness(0.75) saturate(1.1); }
+        .rel-thumb-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(4,6,13,0.85) 0%, transparent 60%); }
+        .rel-cat {
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(4,6,13,0.8); backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border); padding: 4px 9px;
+            font-family: 'Space Mono', monospace; font-size: 0.45rem;
+            letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase;
+        }
+
+        .rel-info { padding: 18px 20px; border-top: 1px solid var(--glass-border); }
+        .rel-tag {
+            font-family: 'Space Mono', monospace; font-size: 0.48rem;
+            letter-spacing: 3px; color: var(--teal); text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .rel-info h4 {
+            font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;
+            font-weight: 600; color: var(--text); line-height: 1.2; transition: color 0.3s;
+        }
+        .rel-card:hover .rel-info h4 { color: var(--gold); }
+
+        /* ─── FOOTER ─── */
+        footer {
+            padding: 40px 70px; margin-top: 80px;
+            border-top: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 300; letter-spacing: 4px; color: var(--gold); }
+        .footer-copy { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 2px; color: var(--text-dim); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1024px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .sidebar { flex-direction: row; flex-wrap: wrap; }
+            .sidebar-box { flex: 1; min-width: 280px; }
+        }
+        @media (max-width: 768px) {
+            nav { padding: 12px 20px; }
+            .hero-content { left: 24px; right: 24px; bottom: 40px; }
+            .breadcrumb { padding: 16px 24px; }
+            .main { padding: 40px 24px; }
+            .related-grid { grid-template-columns: 1fr; }
+            footer { padding: 30px 24px; flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
 </head>
 <body>
 
+<div id="cur"></div>
+<div id="curR"></div>
+<canvas id="bgc"></canvas>
+
+<div class="page">
+
+    <!-- Navbar -->
+    <nav>
+        <a th:href="@{/tour3d}" class="nav-logo">← AN GIANG 3D</a>
+        <div class="nav-links">
+            <a th:href="@{/tour3d/tour}" class="nav-link">Tour 360°</a>
+            <a th:href="@{/tour3d/food}" class="nav-link">Ẩm thực</a>
+            <a th:href="@{/tour3d/culture}" class="nav-link active">Văn hóa</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <img th:src="${vanHoa.hinhAnh}"
+             th:alt="${vanHoa.tieuDe}"
+             class="hero-img"
+             onerror="this.src='/image/t1.jpg'">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-eyebrow" th:text="${vanHoa.danhMuc}">Lễ hội</div>
+            <h1 class="hero-title" th:text="${vanHoa.tieuDe}">Tiêu đề</h1>
+            <div class="hero-badges">
+                <div class="badge"><div class="badge-dot"></div><span th:text="${vanHoa.danhMuc}">Danh mục</span></div>
+                <div class="badge" th:if="${vanHoa.videoUrl != null}"><div class="badge-dot-gold"></div>Video</div>
+                <div class="badge"><div class="badge-dot"></div>An Giang</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a th:href="@{/tour3d}">Trang chủ</a>
+        <span class="breadcrumb-sep">/</span>
+        <a th:href="@{/tour3d/culture}">Văn hóa</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current" th:text="${vanHoa.tieuDe}">Chi tiết</span>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="content-grid">
+
+            <!-- LEFT: Video + Mô tả -->
+            <div class="left-col">
+
+                <!-- Video -->
+                <div class="video-block" th:if="${vanHoa.videoUrl != null and !#strings.isEmpty(vanHoa.videoUrl)}">
+                    <div class="block-label">Video tư liệu</div>
+                    <div class="video-container">
+                        <div class="video-ratio">
+                            <iframe th:src="${vanHoa.videoUrl}"
+                                    th:title="${vanHoa.tieuDe}"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+                        </div>
+                        <div class="video-shield" id="vShield">
+                            <div class="play-btn"><i class="bi bi-play-fill"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mô tả -->
+                <div class="mota-block">
+                    <div class="block-label">Giới thiệu</div>
+                    <p class="mota-text" th:text="${vanHoa.moTa}">Mô tả chi tiết...</p>
+                </div>
+
+            </div>
+
+            <!-- RIGHT: Sidebar -->
+            <aside class="sidebar">
+
+                <!-- Thông tin -->
+                <div class="sidebar-box">
+                    <div class="sidebar-box-header">Thông tin</div>
+                    <div class="info-list">
+                        <div class="info-row">
+                            <span class="info-key">Danh mục</span>
+                            <span class="info-val highlight" th:text="${vanHoa.danhMuc}">—</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-key">Địa điểm</span>
+                            <span class="info-val">An Giang</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-key">Video</span>
+                            <span class="info-val"
+                                  th:text="${vanHoa.videoUrl != null ? 'Có' : 'Không'}">Có</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-key">Mã số</span>
+                            <span class="info-val" th:text="'#' + ${vanHoa.id}">#1</span>
+                        </div>
+                    </div>
+                    <a th:href="@{/tour3d/culture}" class="back-btn">
+                        <i class="bi bi-arrow-left"></i> Quay lại danh sách
+                    </a>
+                </div>
+
+            </aside>
+        </div>
+
+        <!-- Related -->
+        <div class="related-section" th:if="${relatedVanHoa != null and !relatedVanHoa.isEmpty()}">
+            <div class="block-label">Khám phá thêm</div>
+            <div class="related-grid">
+                <a th:each="rel : ${relatedVanHoa}"
+                   th:href="@{/tour3d/culture/{id}(id=${rel.id})}"
+                   class="rel-card">
+                    <div class="rel-thumb">
+                        <img th:src="${rel.hinhAnh}"
+                             th:alt="${rel.tieuDe}"
+                             onerror="this.src='/image/t1.jpg'">
+                        <div class="rel-thumb-overlay"></div>
+                        <div class="rel-cat" th:text="${rel.danhMuc}">Lễ hội</div>
+                    </div>
+                    <div class="rel-info">
+                        <div class="rel-tag" th:text="${rel.danhMuc}"></div>
+                        <h4 th:text="${rel.tieuDe}">Tiêu đề</h4>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="footer-logo">AN GIANG</div>
+        <div class="footer-copy">© 2025 Văn Hóa 360° · An Giang Cultural Heritage</div>
+    </footer>
+
+</div>
+
+<script>
+    // ─── Cursor ───
+    const cur = document.getElementById('cur');
+    const curR = document.getElementById('curR');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cur.style.left = (mx - 3.5) + 'px';
+        cur.style.top  = (my - 3.5) + 'px';
+    });
+    (function loop() {
+        rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+        curR.style.left = (rx - 14) + 'px';
+        curR.style.top  = (ry - 14) + 'px';
+        requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cur.style.transform = 'scale(3)';
+            curR.style.transform = 'scale(1.4)';
+            curR.style.borderColor = 'rgba(201,168,76,1)';
+        });
+        el.addEventListener('mouseleave', () => {
+            cur.style.transform = 'scale(1)';
+            curR.style.transform = 'scale(1)';
+            curR.style.borderColor = 'rgba(201,168,76,0.5)';
+        });
+    });
+
+    // ─── BG Canvas ───
+    const c = document.getElementById('bgc');
+    const ctx = c.getContext('2d');
+    function rsz() { c.width = window.innerWidth; c.height = window.innerHeight; }
+    rsz(); window.addEventListener('resize', rsz);
+    const pts = Array.from({length: 40}, () => ({
+        x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+        r: Math.random() * 1.2 + 0.3,
+        vx: (Math.random() - .5) * 0.22, vy: (Math.random() - .5) * 0.22,
+        o: Math.random() * 0.35 + 0.1
+    }));
+    function draw() {
+        ctx.clearRect(0, 0, c.width, c.height);
+        const g1 = ctx.createRadialGradient(c.width*.15, c.height*.25, 0, c.width*.15, c.height*.25, c.width*.5);
+        g1.addColorStop(0, 'rgba(42,157,143,0.06)'); g1.addColorStop(1, 'rgba(4,6,13,0)');
+        ctx.fillStyle = g1; ctx.fillRect(0, 0, c.width, c.height);
+        const g2 = ctx.createRadialGradient(c.width*.85, c.height*.7, 0, c.width*.85, c.height*.7, c.width*.5);
+        g2.addColorStop(0, 'rgba(201,168,76,0.05)'); g2.addColorStop(1, 'rgba(4,6,13,0)');
+        ctx.fillStyle = g2; ctx.fillRect(0, 0, c.width, c.height);
+        pts.forEach((p, i) => {
+            p.x += p.vx; p.y += p.vy;
+            if (p.x < 0) p.x = c.width;  if (p.x > c.width)  p.x = 0;
+            if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(201,168,76,${p.o})`; ctx.fill();
+            for (let j = i + 1; j < pts.length; j++) {
+                const q = pts[j], d = Math.hypot(p.x - q.x, p.y - q.y);
+                if (d < 100) {
+                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+                    ctx.strokeStyle = `rgba(42,157,143,${0.03*(1-d/100)})`;
+                    ctx.lineWidth = 0.5; ctx.stroke();
+                }
+            }
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
+
+    // ─── Video shield ───
+    const shield = document.getElementById('vShield');
+    if (shield) shield.addEventListener('click', () => shield.classList.add('hidden'));
+
+    // ─── Reveal related cards ───
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+                e.target.style.opacity = '1';
+                e.target.style.transform = 'translateY(0)';
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.rel-card').forEach((card, i) => {
+        card.style.transitionDelay = i * 0.1 + 's';
+        io.observe(card);
+    });
+</script>
 </body>
 </html>
