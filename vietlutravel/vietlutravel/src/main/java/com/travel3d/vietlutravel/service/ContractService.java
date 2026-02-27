@@ -49,19 +49,7 @@ public class ContractService {
     private static final DeviceRgb RGB_GOLD    = new DeviceRgb(200, 169, 110);
     private static final DeviceRgb RGB_WHITE   = new DeviceRgb(255, 255, 255);
 
-    /**
-     * Load font hỗ trợ tiếng Việt từ resources.
-     *
-     * ⚠️  BẮT BUỘC: Đặt 2 file sau vào src/main/resources/fonts/
-     *      - DejaVuSans.ttf       (regular)
-     *      - DejaVuSans-Bold.ttf  (bold)
-     *
-     * Tải miễn phí tại: https://dejavu-fonts.github.io/
-     * Hoặc dùng bất kỳ .ttf nào hỗ trợ Unicode (Arial, Roboto, NotoSans...)
-     *
-     * FIX: Bỏ fallback Helvetica (không hỗ trợ tiếng Việt).
-     *      Ném exception rõ ràng để dễ debug.
-     */
+
     private PdfFont loadFont(String filename) throws Exception {
         // Ưu tiên 1: font trong resources/fonts/
         InputStream is = getClass().getResourceAsStream("/fonts/" + filename);

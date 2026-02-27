@@ -1,17 +1,19 @@
 package com.travel3d.vietlutravel.service;
 
-import com.travel3d.vietlutravel.model.Booking;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
+import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.text.NumberFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+import com.travel3d.vietlutravel.model.Booking;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
@@ -211,7 +213,7 @@ public class EmailService {
                                     %s
                                 </div>
                                 <p style="color:#64748b; font-size:13px; margin:8px 0 0;">
-                                    Mã có hiệu lực trong <b>10 phút</b>
+                                    Mã có hiệu lực trong <b>3 phút</b>
                                 </p>
                             </div>
 
@@ -239,6 +241,80 @@ public class EmailService {
 
             mailSender.send(message);
             System.out.println("Gửi OTP tới " + toEmail + " thành công!");
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ===============================
+    // 4. EMAIL XÁC NHẬN ĐỔI MẬT KHẨU
+    // ===============================
+    public void sendPasswordChangedEmail(String toEmail) {
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
+
+            // Lấy thời điểm thay đổi theo giờ VN
+            java.time.ZonedDateTime now = java.time.ZonedDateTime.now(
+                    java.time.ZoneId.of("Asia/Ho_Chi_Minh"));
+            String changedAt = now.format(
+                    java.time.format.DateTimeFormatter.ofPattern("HH:mm - dd/MM/yyyy"));
+
+            String htmlContent = """
+                    <div style="font-family:Arial; max-width:560px; margin:auto; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden;">
+
+                        <div style="background:#0c2340; padding:24px; text-align:center;">
+                            <h2 style="color:#e8d5a3; margin:0; font-size:22px;">
+                                🛡️ Việt Lữ Travel
+                            </h2>
+                        </div>
+
+                        <div style="padding:32px 28px;">
+                            <h3 style="color:#059669; margin-top:0;">✅ Mật khẩu đã được thay đổi thành công</h3>
+
+                            <p style="color:#475569;">
+                                Mật khẩu tài khoản <b>%s</b> vừa được đặt lại thành công vào lúc:
+                            </p>
+
+                            <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:16px; text-align:center; margin:20px 0;">
+                                <span style="font-size:18px; font-weight:bold; color:#065f46;">
+                                    🕐 %s
+                                </span>
+                            </div>
+
+                            <p style="color:#475569;">
+                                Bạn có thể đăng nhập lại bằng mật khẩu mới ngay bây giờ.
+                            </p>
+
+                            <div style="background:#fef9ec; border:1px solid #fde68a; border-radius:10px; padding:16px; margin:20px 0;">
+                                <p style="color:#92400e; font-size:13px; margin:0;">
+                                    ⚠️ <b>Không phải bạn thực hiện?</b> Nếu bạn không yêu cầu thay đổi mật khẩu,
+                                    hãy liên hệ ngay với chúng tôi để được hỗ trợ bảo mật tài khoản.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="background:#f8fafc; padding:16px; text-align:center; border-top:1px solid #e2e8f0;">
+                            <p style="color:#94a3b8; font-size:12px; margin:0;">
+                                Hotline: <b>096 123 4567</b> &nbsp;|&nbsp; vietlutravell@gmail.com
+                            </p>
+                            <p style="color:#cbd5e1; font-size:11px; margin:6px 0 0;">
+                                © Việt Lữ Travel
+                            </p>
+                        </div>
+                    </div>
+                    """.formatted(toEmail, changedAt);
+
+            helper.setTo(toEmail);
+            helper.setSubject("Mật khẩu đã được thay đổi - Việt Lữ Travel");
+            helper.setText(htmlContent, true);
+            helper.setFrom("vietlutravell@gmail.com");
+
+            mailSender.send(message);
+            System.out.println("Gửi xác nhận đổi mật khẩu tới " + toEmail + " thành công!");
 
         } catch (MessagingException e) {
             e.printStackTrace();

@@ -1,19 +1,27 @@
 package com.travel3d.vietlutravel.controller;
 
-import com.travel3d.vietlutravel.model.Customer;
-import com.travel3d.vietlutravel.service.AuthService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.travel3d.vietlutravel.model.Customer;
+import com.travel3d.vietlutravel.service.AuthService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AuthController {
 
     @Autowired
     private AuthService authService;
+
+    // Thời gian sống OTP = 3 phút
+    private static final long OTP_EXPIRATION_TIME = 3 * 60 * 1000;
 
     // ================= REGISTER =================
     @GetMapping("/register")
@@ -95,14 +103,13 @@ public class AuthController {
     }
 
     // ================= FORGOT PASSWORD =================
-
     @GetMapping("/forgot-password")
     public String forgotPasswordForm(Model model) {
-        model.addAttribute("otpSent", false);   // ← tránh null trong Thymeleaf
+        model.addAttribute("otpSent", false);
         return "forgot-password";
     }
 
-    /** Bước 1 — Gửi OTP */
+    // ================= GỬI OTP =================
     @PostMapping(value = "/forgot-password", params = "action=sendOtp")
     public String sendOtp(
             @RequestParam("email") String email,
@@ -123,17 +130,23 @@ public class AuthController {
             return "forgot-password";
         }
 
+        // Lưu OTP + thời gian tạo
+        long otpTime = System.currentTimeMillis();
+        long otpExpiresAt = otpTime + OTP_EXPIRATION_TIME;
+
         session.setAttribute("otp", otp);
         session.setAttribute("resetEmail", email.trim());
+        session.setAttribute("otpTime", otpTime);
 
         model.addAttribute("otpSent", true);
         model.addAttribute("email", email.trim());
+        model.addAttribute("otpExpiresAt", otpExpiresAt);  // <-- truyền xuống HTML
         model.addAttribute("successMessage", "Mã OTP đã được gửi tới " + email.trim());
 
         return "forgot-password";
     }
 
-    /** Bước 2 — Đặt lại mật khẩu */
+    // ================= RESET PASSWORD =================
     @PostMapping(value = "/forgot-password", params = "action=resetPassword")
     public String resetPassword(
             @RequestParam("otp") String otp,
@@ -143,27 +156,44 @@ public class AuthController {
             RedirectAttributes redirectAttributes) {
 
         String sessionOtp = (String) session.getAttribute("otp");
-        String email      = (String) session.getAttribute("resetEmail");
+        String email = (String) session.getAttribute("resetEmail");
+        Long otpTime = (Long) session.getAttribute("otpTime");
 
-        // Phiên hết hạn → bước 1
-        if (sessionOtp == null || email == null) {
+        // Session hết hạn
+        if (sessionOtp == null || email == null || otpTime == null) {
             model.addAttribute("otpSent", false);
             model.addAttribute("errorMessage", "Phiên làm việc hết hạn, vui lòng nhập lại email");
             return "forgot-password";
         }
 
-        // OTP sai → ở lại bước 2
+        // Kiểm tra OTP hết hạn (3 phút)
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - otpTime > OTP_EXPIRATION_TIME) {
+            session.removeAttribute("otp");
+            session.removeAttribute("resetEmail");
+            session.removeAttribute("otpTime");
+
+            model.addAttribute("otpSent", false);
+            model.addAttribute("errorMessage", "OTP đã hết hạn (3 phút). Vui lòng gửi lại.");
+            return "forgot-password";
+        }
+
+        // OTP sai — giữ nguyên bước 2, truyền lại otpExpiresAt để đồng hồ không reset
         if (!sessionOtp.equals(otp.trim())) {
+            long otpExpiresAt = otpTime + OTP_EXPIRATION_TIME;  // <-- tính lại từ session
             model.addAttribute("otpSent", true);
             model.addAttribute("email", email);
+            model.addAttribute("otpExpiresAt", otpExpiresAt);   // <-- truyền xuống HTML
             model.addAttribute("errorMessage", "Mã OTP không đúng, vui lòng kiểm tra lại");
             return "forgot-password";
         }
 
-        // Mật khẩu không hợp lệ → ở lại bước 2
+        // Kiểm tra mật khẩu
         if (newPassword == null || newPassword.trim().length() < 6) {
+            long otpExpiresAt = otpTime + OTP_EXPIRATION_TIME;
             model.addAttribute("otpSent", true);
             model.addAttribute("email", email);
+            model.addAttribute("otpExpiresAt", otpExpiresAt);
             model.addAttribute("errorMessage", "Mật khẩu phải có ít nhất 6 ký tự");
             return "forgot-password";
         }
@@ -171,14 +201,18 @@ public class AuthController {
         boolean updated = authService.updatePasswordByEmail(email, newPassword.trim());
 
         if (!updated) {
+            long otpExpiresAt = otpTime + OTP_EXPIRATION_TIME;
             model.addAttribute("otpSent", true);
             model.addAttribute("email", email);
+            model.addAttribute("otpExpiresAt", otpExpiresAt);
             model.addAttribute("errorMessage", "Mật khẩu không hợp lệ (cần chữ hoa, số, ký tự đặc biệt)");
             return "forgot-password";
         }
 
+        // Xóa OTP sau khi dùng
         session.removeAttribute("otp");
         session.removeAttribute("resetEmail");
+        session.removeAttribute("otpTime");
 
         redirectAttributes.addFlashAttribute("successMessage", "Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
         return "redirect:/login";

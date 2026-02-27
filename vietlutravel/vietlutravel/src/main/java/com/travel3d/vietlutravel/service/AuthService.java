@@ -137,6 +137,10 @@ public class AuthService {
 
             customer.setPasswordHash(newPassword.trim());
             entityManager.merge(customer);
+
+            // Gửi mail xác nhận đổi mật khẩu thành công
+            emailService.sendPasswordChangedEmail(email);
+
             return true;
 
         } catch (NoResultException e) {
