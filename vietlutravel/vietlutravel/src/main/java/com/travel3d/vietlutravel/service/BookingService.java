@@ -21,14 +21,24 @@ public class BookingService {
 
     @Autowired
     private EmailService emailService;
+
     /**
      * Đặt tour mới + gửi mail xác nhận
      */
     @Transactional
-    public Booking bookTour(int tourID, int customerID, int numberOfPeople) {
+    public Booking bookTour(int tourID, int customerID, int numberOfPeople,
+                            LocalDate travelDate, String specialRequests) {
 
         if (numberOfPeople <= 0) {
             throw new IllegalArgumentException("Số người phải lớn hơn 0");
+        }
+
+        if (travelDate == null) {
+            throw new IllegalArgumentException("Vui lòng chọn ngày khởi hành");
+        }
+
+        if (travelDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Ngày khởi hành không được là ngày trong quá khứ");
         }
 
         Tours tour = entityManager.find(Tours.class, tourID);
@@ -41,24 +51,24 @@ public class BookingService {
         Booking booking = new Booking();
         booking.setTourID(tourID);
         booking.setCustomerID(customerID);
-        booking.setBookingDate(LocalDate.now());
+        booking.setBookingDate(LocalDate.now());        // ngày đặt = hôm nay
+        booking.setTravelDate(travelDate);              // ngày khởi hành do khách chọn
         booking.setNumberOfPeople(numberOfPeople);
         booking.setTotalPrice(tour.getPrice().doubleValue() * numberOfPeople);
         booking.setStatus("Pending");
+        booking.setSpecialRequests(specialRequests);
 
         entityManager.persist(booking);
-        entityManager.flush(); // có ID
+        entityManager.flush();
 
-        // 🔥 QUAN TRỌNG NHẤT
-        // GÁN TAY OBJECT vào booking để gửi mail được
         booking.setTour(tour);
         booking.setCustomer(customer);
 
-        // Gửi mail
         emailService.sendBookingConfirmation(booking);
 
         return booking;
     }
+
     /**
      * Hủy booking (đúng luật 7 ngày)
      */
@@ -72,11 +82,16 @@ public class BookingService {
 
         if (!"Pending".equals(booking.getStatus())) return false;
 
-        Tours tour = entityManager.find(Tours.class, booking.getTourID());
-        if (tour == null || tour.getStartDate() == null) return false;
+        // Tính theo travelDate thay vì startDate của tour
+        LocalDate departureDate = booking.getTravelDate() != null
+                ? booking.getTravelDate()
+                : (entityManager.find(Tours.class, booking.getTourID()) != null
+                ? entityManager.find(Tours.class, booking.getTourID()).getStartDate()
+                : null);
 
-        long daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), tour.getStartDate());
+        if (departureDate == null) return false;
 
+        long daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), departureDate);
         if (daysLeft < 7) return false;
 
         booking.setStatus("Cancelled");

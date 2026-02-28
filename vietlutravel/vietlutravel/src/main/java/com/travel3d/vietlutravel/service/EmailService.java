@@ -107,7 +107,7 @@ public class EmailService {
                     booking.getCustomer().getUserName(),
                     booking.getBookingID(),
                     booking.getTour().getTourName(),
-                    booking.getTour().getStartDate().format(dateFormat),
+                    booking.getTravelDate().format(dateFormat),
                     booking.getNumberOfPeople(),
                     totalPrice,
                     booking.getBookingDate().format(dateFormat)

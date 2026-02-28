@@ -783,6 +783,20 @@
                         </div>
                         <div class="field-group">
 
+                            <!-- Ngày khởi hành -->
+                            <div class="field-item">
+                                <label class="field-label" for="travelDate">
+                                    Ngày khởi hành <span class="req">*</span>
+                                </label>
+                                <div class="field-wrap">
+                                    <i class="bi bi-calendar3 field-icon"></i>
+                                    <input type="date" id="travelDate" name="travelDate"
+                                           class="field-input"
+                                           th:min="${today}"
+                                           required>
+                                </div>
+                            </div>
+
                             <!-- Số người -->
                             <div class="field-item">
                                 <label class="field-label">
@@ -986,6 +1000,7 @@
 function previewContract() {
 
     const tourID = document.querySelector("input[name='tourID']").value;
+    const travelDate = document.getElementById("travelDate").value;
     const people = document.getElementById("numberOfPeople").value;
     const name   = document.getElementById("name").value;
     const phone  = document.getElementById("phone").value;
@@ -999,6 +1014,7 @@ function previewContract() {
 
     const url =
         `/preview-contract?tourID=${tourID}`
+        + `&travelDate=${travelDate}`
         + `&numberOfPeople=${people}`
         + `&name=${encodeURIComponent(name)}`
         + `&phone=${encodeURIComponent(phone)}`

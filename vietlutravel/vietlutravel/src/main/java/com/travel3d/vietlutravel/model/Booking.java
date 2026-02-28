@@ -11,14 +11,15 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookingID;
 
-    // GIỮ NGUYÊN CỘT
     @Column(name = "customerID")
     private int customerID;
 
     @Column(name = "tourID")
     private int tourID;
 
-    private LocalDate bookingDate;
+    private LocalDate bookingDate;   // ngày đặt (tự động)
+    private LocalDate travelDate;    // ngày khởi hành (khách chọn) ← MỚI
+
     private int numberOfPeople;
     private double totalPrice;
     private String status;
@@ -32,7 +33,6 @@ public class Booking {
     @JoinColumn(name = "tourID", insertable = false, updatable = false)
     private Tours tour;
 
-    // getter setter đầy đủ
     public int getBookingID() { return bookingID; }
     public void setBookingID(int bookingID) { this.bookingID = bookingID; }
 
@@ -44,6 +44,9 @@ public class Booking {
 
     public LocalDate getBookingDate() { return bookingDate; }
     public void setBookingDate(LocalDate bookingDate) { this.bookingDate = bookingDate; }
+
+    public LocalDate getTravelDate() { return travelDate; }
+    public void setTravelDate(LocalDate travelDate) { this.travelDate = travelDate; }
 
     public int getNumberOfPeople() { return numberOfPeople; }
     public void setNumberOfPeople(int numberOfPeople) { this.numberOfPeople = numberOfPeople; }
@@ -58,14 +61,8 @@ public class Booking {
     public void setSpecialRequests(String specialRequests) { this.specialRequests = specialRequests; }
 
     public Customer getCustomer() { return customer; }
+    public void setCustomer(Customer customer) { this.customer = customer; }
+
     public Tours getTour() { return tour; }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public void setTour(Tours tour) {
-        this.tour = tour;
-    }
-
+    public void setTour(Tours tour) { this.tour = tour; }
 }

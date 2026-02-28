@@ -109,8 +109,7 @@ public class ContractService {
             String customerEmail = safe(booking.getCustomer() != null ? booking.getCustomer().getEmail()    : null);
             String tourName      = safe(booking.getTour()     != null ? booking.getTour().getTourName()     : null);
             String tourLocation  = safe(booking.getTour()     != null ? booking.getTour().getLocation()     : null);
-            String startDate     = (booking.getTour() != null && booking.getTour().getStartDate() != null)
-                    ? booking.getTour().getStartDate().format(dateFmt) : "N/A";
+            String startDate     = booking.getTravelDate()    != null ? booking.getTravelDate().format(dateFmt) : "N/A";
             String bookingDate   = booking.getBookingDate() != null
                     ? booking.getBookingDate().format(dateFmt) : "N/A";
             String totalPrice    = numFmt.format(booking.getTotalPrice()) + " VNĐ";

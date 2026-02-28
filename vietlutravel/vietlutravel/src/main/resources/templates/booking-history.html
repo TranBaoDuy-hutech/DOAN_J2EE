@@ -399,7 +399,7 @@
                     <td>
                         <div class="meta">
                             <i class="far fa-calendar"></i>
-                            <span th:text="${b.tour.startDate}">01/01/2025</span>
+                            <span th:text="${#temporals.format(b.travelDate, 'dd/MM/yyyy')}">
                         </div>
                     </td>
                     <td>
@@ -424,7 +424,9 @@
                             </span>
                     </td>
                     <td>
-                        <form th:if="${b.status == 'Pending' and T(java.time.temporal.ChronoUnit).DAYS.between(today, b.tour.startDate) >= 7}"
+
+                        <!-- ĐƯỢC HỦY -->
+                        <form th:if="${b.status == 'Pending' and b.travelDate != null and T(java.time.temporal.ChronoUnit).DAYS.between(today, b.travelDate) >= 7}"
                               th:action="@{/booking/cancel/{id}(id=${b.bookingID})}"
                               method="post"
                               onsubmit="return confirm('Ban co chac chan muon huy tour nay?');"
@@ -433,10 +435,13 @@
                                 <i class="fas fa-times-circle"></i>Huy tour
                             </button>
                         </form>
-                        <span th:if="${b.status != 'Pending' or T(java.time.temporal.ChronoUnit).DAYS.between(today, b.tour.startDate) < 7}"
+
+                        <!-- KHÔNG ĐƯỢC HỦY -->
+                        <span th:if="${b.status != 'Pending' or b.travelDate == null or T(java.time.temporal.ChronoUnit).DAYS.between(today, b.travelDate) < 7}"
                               class="locked">
-                                <i class="fas fa-lock"></i>Khong the huy
-                            </span>
+                            <i class="fas fa-lock"></i>Khong the huy
+                        </span>
+
                     </td>
                 </tr>
                 </tbody>
