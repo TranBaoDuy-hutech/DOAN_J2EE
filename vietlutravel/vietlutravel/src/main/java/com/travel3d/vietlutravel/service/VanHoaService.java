@@ -1,13 +1,14 @@
 package com.travel3d.vietlutravel.service;
 
-import com.travel3d.vietlutravel.model.VanHoa;
-import com.travel3d.vietlutravel.repository.VanHoaRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.travel3d.vietlutravel.model.VanHoa;
+import com.travel3d.vietlutravel.repository.VanHoaRepository;
 
 @Service
 public class VanHoaService {
@@ -119,6 +120,10 @@ public class VanHoaService {
         if (!vanHoaRepository.existsById(id))
             throw new RuntimeException("Không tìm thấy VanHoa với id: " + id);
         vanHoaRepository.deleteById(id);
+    }
+
+    public VanHoa save(VanHoa vanHoa) {
+        return vanHoaRepository.save(vanHoa);
     }
 
     public long count() { return vanHoaRepository.count(); }

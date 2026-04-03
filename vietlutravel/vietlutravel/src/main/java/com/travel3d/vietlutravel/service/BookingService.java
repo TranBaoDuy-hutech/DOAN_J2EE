@@ -142,4 +142,16 @@ public class BookingService {
             entityManager.remove(booking);
         }
     }
+
+    /**
+     * Admin cập nhật chung (Gán HDV, ngày đi)
+     */
+    @Transactional
+    public void saveBooking(Booking booking) {
+        if (booking.getBookingID() == 0) {
+            entityManager.persist(booking);
+        } else {
+            entityManager.merge(booking);
+        }
+    }
 }

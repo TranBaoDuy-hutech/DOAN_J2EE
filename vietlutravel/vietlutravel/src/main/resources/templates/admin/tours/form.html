@@ -264,6 +264,9 @@
         </div>
 
         <div class="form-body">
+            <!-- Hiển thị thông báo lỗi nếu có -->
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+            <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
             <form th:action="@{/admin/tours/save}" th:object="${tour}" method="post">
                 <!-- Hidden ID Field -->
                 <input type="hidden" th:field="*{tourID}" />

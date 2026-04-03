@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Quản lý Ẩm thực 3D'">Quản lý Ẩm thực 3D</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --ink: #0f1117;
+            --ink-mid: #4a4f63;
+            --ink-light: #9399b0;
+            --bg: #f0f2f8;
+            --surface: #ffffff;
+            --accent: #3b5bdb;
+            --accent-soft: #eef1fd;
+            --accent-glow: rgba(59,91,219,0.15);
+            --border: #e2e5f0;
+            --danger: #e03131;
+            --warning: #f59f00;
+            --info: #1c7ed6;
+            --success: #2f9e44;
+            --shadow: 0 2px 24px rgba(15,17,23,0.07);
+            --radius: 16px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 40% at 15% 5%, rgba(59,91,219,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 90% 90%, rgba(100,60,220,0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(59,91,219,0.1) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+
+        /* Top bar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+            flex-wrap: wrap;
+        }
+        .page-heading { display: flex; align-items: center; gap: 0.85rem; }
+        .heading-icon {
+            width: 46px; height: 46px;
+            background: linear-gradient(135deg, #3b5bdb, #4263eb);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.25rem;
+            box-shadow: 0 4px 14px rgba(59,91,219,0.35);
+            flex-shrink: 0;
+        }
+        .heading-text h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.4rem; font-weight: 700;
+            color: var(--ink); line-height: 1.2;
+        }
+        .heading-text p { font-size: 0.8rem; color: var(--ink-light); margin-top: 0.1rem; }
+
+        .topbar-actions { display: flex; align-items: center; gap: 0.6rem; }
+
+        /* Buttons */
+        .btn {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.82rem; font-weight: 500;
+            padding: 0.55rem 1.1rem;
+            border-radius: 8px; border: none;
+            cursor: pointer;
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            letter-spacing: 0.01em; white-space: nowrap;
+        }
+        .btn-primary { background: var(--accent); color: white; box-shadow: 0 3px 10px rgba(59,91,219,0.3); }
+        .btn-primary:hover { background: #364fc7; transform: translateY(-1px); box-shadow: 0 5px 16px rgba(59,91,219,0.4); }
+        .btn-ghost { background: var(--surface); color: var(--ink-mid); border: 1.5px solid var(--border); }
+        .btn-ghost:hover { background: var(--bg); color: var(--ink); border-color: #c5cbdf; }
+
+        /* Alert */
+        .alert {
+            padding: 0.85rem 1.2rem;
+            border-radius: 10px; font-size: 0.875rem;
+            margin-bottom: 1.25rem;
+            display: flex; align-items: center; gap: 0.6rem;
+            border: 1px solid transparent;
+        }
+        .alert-success { background: #d3f9d8; color: #1a7a2e; border-color: #b2f2bb; }
+        .alert-danger  { background: #ffe3e3; color: #9b1c1c; border-color: #ffc9c9; }
+
+        /* Stats */
+        .stats-bar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .stat-chip {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 10px; padding: 0.55rem 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+            font-size: 0.82rem; color: var(--ink-mid);
+            box-shadow: var(--shadow);
+        }
+        .stat-chip strong {
+            font-family: 'Sora', sans-serif; font-weight: 700;
+            color: var(--ink); font-size: 1rem;
+        }
+
+        /* Card & Table */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .filter-bar {
+            padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+        }
+        .search-wrap { position: relative; flex: 1; min-width: 200px; }
+        .search-wrap i { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--ink-light); font-size: 0.9rem; }
+        .search-wrap input {
+            width: 100%; padding: 0.55rem 0.85rem 0.55rem 2.4rem;
+            font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+            border: 1.5px solid var(--border); border-radius: 8px;
+            color: var(--ink); background: #fafbfe; outline: none; transition: all 0.2s;
+        }
+        .search-wrap input:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px var(--accent-glow); }
+
+        .filter-count { font-size: 0.8rem; color: var(--ink-light); margin-left: auto; white-space: nowrap; }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--ink-light);
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            background: #fafbfe; text-align: left; white-space: nowrap;
+        }
+        tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+        tbody tr:hover { background: #f8f9ff; }
+        td { padding: 1rem 1.25rem; font-size: 0.875rem; color: var(--ink); vertical-align: middle; }
+
+        .food-thumb {
+            width: 48px; height: 48px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+        .food-thumb-placeholder {
+            width: 48px; height: 48px; border-radius: 10px;
+            background: var(--accent-soft);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--accent); font-size: 1.1rem;
+        }
+
+        .title-cell { display: flex; align-items: center; gap: 0.85rem; }
+        .item-title { font-weight: 500; color: var(--ink); line-height: 1.2; }
+
+        .price-tag {
+            font-family: 'Sora', sans-serif;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .rating-badge {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            padding: 0.28rem 0.65rem;
+            border-radius: 99px;
+            background: #fff9db; color: #7c4a00;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.75rem; font-weight: 600;
+        }
+
+        .actions { display: flex; gap: 0.4rem; align-items: center; }
+        .icon-btn {
+            width: 32px; height: 32px; border-radius: 7px;
+            border: 1.5px solid var(--border);
+            background: var(--surface); color: var(--ink-mid);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; cursor: pointer;
+            transition: all 0.18s ease;
+        }
+        .icon-btn:hover { transform: translateY(-1px); }
+        .icon-btn.view:hover { background: #e7f5ff; border-color: var(--info); color: var(--info); }
+        .icon-btn.edit:hover { background: #fff9db; border-color: var(--warning); color: var(--warning); }
+        .icon-btn.del:hover  { background: #fff5f5; border-color: var(--danger); color: var(--danger); }
+
+        .empty-state { padding: 5rem 2rem; text-align: center; color: var(--ink-light); }
+        .empty-state i { font-size: 3.5rem; display: block; margin-bottom: 1rem; opacity: 0.4; }
+        .empty-state h4 { font-family: 'Sora', sans-serif; color: var(--ink-mid); font-size: 1rem; margin-bottom: 0.3rem; }
+        .empty-state p { font-size: 0.85rem; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 1000;
+            background: rgba(15,17,23,0.45); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: var(--surface); border-radius: var(--radius);
+            box-shadow: 0 24px 80px rgba(15,17,23,0.2);
+            width: 100%; max-width: 420px; margin: 1rem;
+            overflow: hidden; animation: popIn 0.25s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes popIn { from { opacity:0; transform: scale(0.93); } to { opacity:1; transform: scale(1); } }
+        .modal-head {
+            padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        .modal-head-icon {
+            width: 36px; height: 36px; border-radius: 9px;
+            background: #fff5f5; color: var(--danger);
+            display: flex; align-items: center; justify-content: center; font-size: 1rem;
+        }
+        .modal-head h5 { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 600; color: var(--ink); margin: 0; }
+        .modal-body-inner { padding: 1.25rem 1.5rem; }
+        .modal-body-inner p { font-size: 0.9rem; color: var(--ink-mid); margin-bottom: 0.5rem; }
+        .modal-body-inner .warn { font-size: 0.82rem; color: var(--danger); display: flex; align-items: center; gap: 0.4rem; }
+        .modal-foot {
+            padding: 1rem 1.5rem; border-top: 1px solid var(--border);
+            display: flex; gap: 0.6rem; justify-content: flex-end; background: #fafbfe;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="fragments/admin-header :: adminHeader"></div>
+
+<div class="page">
+
+    <!-- Top bar -->
+    <div class="topbar">
+        <div class="page-heading">
+            <div class="heading-icon"><i class="bi bi-egg-fried"></i></div>
+            <div class="heading-text">
+                <h1>Ẩm thực An Giang 3D</h1>
+                <p>Quản lý nội dung ẩm thực & định giá</p>
+            </div>
+        </div>
+        <div class="topbar-actions">
+            <a th:href="@{/admin}" class="btn btn-ghost">
+                <i class="bi bi-layout-sidebar"></i> Dashboard
+            </a>
+            <a href="/admin/food3d/create" class="btn btn-primary">
+                <i class="bi bi-plus-circle-fill"></i> Thêm mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    <div th:if="${successMessage}" class="alert alert-success">
+        <i class="bi bi-check-circle-fill"></i>
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar" th:if="${foods != null and !#lists.isEmpty(foods)}">
+        <div class="stat-chip">
+            <strong th:text="${#lists.size(foods)}">0</strong> tổng món ẩm thực
+        </div>
+    </div>
+
+    <!-- Table card -->
+    <div class="card" th:if="${foods != null and !#lists.isEmpty(foods)}">
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+            <div class="search-wrap">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchInput" placeholder="Tìm theo tên món, mô tả...">
+            </div>
+            <span class="filter-count" id="filterCount"></span>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table id="foodTable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                <!--    <th>Hình ảnh</th> -->
+                    <th>Tên Ẩm thực</th>
+                    <th>Mô tả</th>
+                    <th>Giá</th>
+                    <th>Rating</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="food : ${foods}" class="food-row"
+                    th:attr="data-name=${food.name},data-desc=${food.description}">
+
+                    <td><span class="text-muted-sm" th:text="${food.id}"></span></td>
+
+                    <!-- Hình ảnh
+                    <td>
+                        <img th:if="${food.posterPath != null}" th:src="${food.posterPath}"
+                             class="food-thumb" alt="Ẩm thực"
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/48?text=Food';">
+                        <div th:unless="${food.posterPath != null}" class="food-thumb-placeholder">
+                            <i class="bi bi-image"></i>
+                        </div>
+                    </td> -->
+
+                    <td>
+                        <div class="title-cell">
+                            <div class="item-title" th:text="${food.name}"></div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <span class="text-muted-sm" th:text="${#strings.abbreviate(food.description, 60)}"></span>
+                    </td>
+
+                    <td>
+                        <span class="price-tag" th:text="${food.price != null ? food.price : '—'}"></span>
+                    </td>
+
+                    <td>
+                        <span th:if="${food.rating}" class="rating-badge">
+                            <i class="bi bi-star-fill"></i>
+                            <span th:text="${#numbers.formatDecimal(food.rating, 1, 1)}"></span>
+                        </span>
+                        <span th:unless="${food.rating}" class="text-muted-sm">—</span>
+                    </td>
+
+                    <td>
+                        <div class="actions">
+                            <a th:href="@{/admin/food3d/{id}(id=${food.id})}" class="icon-btn view" title="Xem">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a th:href="@{/admin/food3d/edit/{id}(id=${food.id})}" class="icon-btn edit" title="Sửa">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <span class="icon-btn del"
+                                  th:data-food-id="${food.id}"
+                                  th:data-food-name="${food.name}"
+                                  onclick="showDeleteModal(this)">
+                                <i class="bi bi-trash3"></i>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div th:if="${foods == null or #lists.isEmpty(foods)}" class="card empty-state">
+        <i class="bi bi-egg-fried"></i>
+        <h4>Chưa có món ẩm thực nào</h4>
+        <p>Nhấn "Thêm mới" để bắt đầu thêm nội dung ẩm thực.</p>
+    </div>
+
+</div>
+
+<div th:replace="fragments/admin-footer :: adminFooter"></div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <div class="modal-head-icon"><i class="bi bi-trash3-fill"></i></div>
+            <h5>Xác nhận xóa</h5>
+        </div>
+        <div class="modal-body-inner">
+            <p>Bạn chắc chắn muốn xóa <strong id="deleteFoodName"></strong>?</p>
+            <p class="warn"><i class="bi bi-exclamation-triangle-fill"></i> Hành động này không thể hoàn tác!</p>
+        </div>
+        <div class="modal-foot">
+            <button class="btn btn-ghost" onclick="closeDeleteModal()">
+                <i class="bi bi-x-lg"></i> Hủy
+            </button>
+            <form id="deleteForm" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger-soft">
+                    <i class="bi bi-trash3"></i> Xóa
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filter
+    const searchInput = document.getElementById('searchInput');
+    const rows = document.querySelectorAll('.food-row');
+    const countEl = document.getElementById('filterCount');
+
+    function filterTable() {
+        const q = searchInput.value.toLowerCase();
+        let visible = 0;
+
+        rows.forEach(row => {
+            const name = (row.dataset.name || '').toLowerCase();
+            const desc = (row.dataset.desc || '').toLowerCase();
+            const show = !q || name.includes(q) || desc.includes(q);
+            row.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        countEl.textContent = `Hiển thị ${visible} / ${rows.length} mục`;
+    }
+
+    searchInput.addEventListener('input', filterTable);
+    filterTable();
+
+    // Modal
+    function showDeleteModal(btn) {
+        document.getElementById('deleteFoodName').textContent = btn.dataset.foodName;
+        document.getElementById('deleteForm').action = '/admin/food3d/' + btn.dataset.foodId + '/delete';
+        document.getElementById('deleteModal').classList.add('open');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('open');
+    }
+
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteModal();
+    });
+</script>
+
+</body>
+</html>

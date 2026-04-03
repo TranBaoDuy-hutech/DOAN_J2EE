@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Hướng Dẫn Viên</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --ink: #0f1117;
+            --ink-mid: #4a4f63;
+            --ink-light: #9399b0;
+            --bg: #f0f2f8;
+            --surface: #ffffff;
+            --accent: #3b5bdb;
+            --accent-soft: #eef1fd;
+            --accent-glow: rgba(59,91,219,0.15);
+            --border: #e2e5f0;
+            --danger: #e03131;
+            --warning: #f59f00;
+            --info: #1c7ed6;
+            --success: #2f9e44;
+            --shadow: 0 2px 24px rgba(15,17,23,0.07);
+            --radius: 16px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+
+            padding: 2rem 1.5rem;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 40% at 15% 5%, rgba(59,91,219,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 90% 90%, rgba(100,60,220,0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(59,91,219,0.1) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Top bar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+            flex-wrap: wrap;
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+        .heading-icon {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, #3b5bdb, #4263eb);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 14px rgba(59,91,219,0.35);
+            flex-shrink: 0;
+        }
+        .heading-text h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+        .heading-text p {
+            font-size: 0.8rem;
+            color: var(--ink-light);
+            margin-top: 0.1rem;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        /* Buttons */
+        .btn {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            padding: 0.55rem 1.1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 3px 10px rgba(59,91,219,0.3);
+        }
+        .btn-primary:hover { background: #364fc7; transform: translateY(-1px); box-shadow: 0 5px 16px rgba(59,91,219,0.4); }
+        .btn-ghost {
+            background: var(--surface);
+            color: var(--ink-mid);
+            border: 1.5px solid var(--border);
+        }
+        .btn-ghost:hover { background: var(--bg); color: var(--ink); border-color: #c5cbdf; }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .stat-chip {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.55rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            color: var(--ink-mid);
+            box-shadow: var(--shadow);
+        }
+        .stat-chip strong {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 1rem;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 0.85rem 1.2rem;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border: 1px solid transparent;
+        }
+        .alert-success { background: #d3f9d8; color: #1a7a2e; border-color: #b2f2bb; }
+        .alert-danger  { background: #ffe3e3; color: #9b1c1c; border-color: #ffc9c9; }
+
+        /* Card */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        /* Search / filter bar */
+        .filter-bar {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+        .search-wrap i {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink-light);
+            font-size: 0.9rem;
+        }
+        .search-wrap input {
+            width: 100%;
+            padding: 0.55rem 0.85rem 0.55rem 2.4rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            color: var(--ink);
+            background: #fafbfe;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .search-wrap input:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px var(--accent-glow); }
+        .filter-select {
+            padding: 0.55rem 2rem 0.55rem 0.85rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            color: var(--ink-mid);
+            background: #fafbfe url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%239399b0' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 0.7rem center;
+            appearance: none;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .filter-select:focus { border-color: var(--accent); }
+        .filter-count {
+            font-size: 0.8rem;
+            color: var(--ink-light);
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink-light);
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            background: #fafbfe;
+            text-align: left;
+            white-space: nowrap;
+        }
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #f8f9ff; }
+        td {
+            padding: 1rem 1.25rem;
+            font-size: 0.875rem;
+            color: var(--ink);
+            vertical-align: middle;
+        }
+
+        /* Avatar + name cell */
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            color: white;
+        }
+        .user-name {
+            font-weight: 500;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+        /* Info text */
+        .text-muted-sm {
+            font-size: 0.78rem;
+            color: var(--ink-light);
+        }
+
+        /* Status badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 99px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .status-badge.available   { background: #d3f9d8; color: #1a7a2e; }
+        .status-badge.unavailable { background: #ffe3e3; color: #9b1c1c; }
+
+        /* Action buttons */
+        .actions { display: flex; gap: 0.4rem; align-items: center; }
+        .icon-btn {
+            width: 32px; height: 32px;
+            border-radius: 7px;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--ink-mid);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.18s ease;
+        }
+        .icon-btn:hover { transform: translateY(-1px); }
+        .icon-btn.edit:hover  { background: #fff9db; border-color: var(--warning); color: var(--warning); }
+        .icon-btn.del:hover   { background: #fff5f5; border-color: var(--danger);  color: var(--danger); }
+        .icon-btn form { margin: 0; }
+        .icon-btn button {
+            background: none; border: none; padding: 0;
+            display: flex; align-items: center; justify-content: center;
+            color: inherit; cursor: pointer; width: 100%; height: 100%;
+            font-size: inherit;
+        }
+
+        /* Empty state */
+        .empty-state {
+            padding: 5rem 2rem;
+            text-align: center;
+            color: var(--ink-light);
+        }
+        .empty-state i { font-size: 3.5rem; display: block; margin-bottom: 1rem; opacity: 0.4; }
+        .empty-state h4 { font-family: 'Sora', sans-serif; color: var(--ink-mid); font-size: 1rem; margin-bottom: 0.3rem; }
+        .empty-state p { font-size: 0.85rem; }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .topbar { flex-direction: column; align-items: flex-start; }
+            thead th:nth-child(4), td:nth-child(4),
+            thead th:nth-child(5), td:nth-child(5) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="fragments/admin-header :: adminHeader"></div>
+
+<div class="page">
+
+    <!-- Top bar -->
+    <div class="topbar">
+        <div class="page-heading">
+            <div class="heading-icon"><i class="bi bi-person-badge-fill"></i></div>
+            <div class="heading-text">
+                <h1>Hướng dẫn viên</h1>
+                <p>Quản lý danh sách & trạng thái HDV</p>
+            </div>
+        </div>
+        <div class="topbar-actions">
+            <a th:href="@{/admin}" href="#" class="btn btn-ghost">
+                <i class="bi bi-layout-sidebar"></i> Dashboard
+            </a>
+            <a th:href="@{/admin/tour-guides/create}" href="#" class="btn btn-primary">
+                <i class="bi bi-person-plus-fill"></i> Thêm Hướng dẫn viên
+            </a>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    <div th:if="${successMessage}" class="alert alert-success">
+        <i class="bi bi-check-circle-fill"></i>
+        <span th:text="${successMessage}">Thao tác thành công.</span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <span th:text="${errorMessage}">Có lỗi xảy ra.</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar" th:if="${guides != null and !guides.isEmpty()}">
+        <div class="stat-chip">
+            <strong th:text="${guides.size()}">0</strong> tổng hướng dẫn viên
+        </div>
+    </div>
+
+    <!-- Table card -->
+    <div class="card" th:if="${guides != null and !guides.isEmpty()}">
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+            <div class="search-wrap">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchInput" placeholder="Tìm theo tên, email, SĐT, ngôn ngữ...">
+            </div>
+            <select class="filter-select" id="statusFilter">
+                <option value="">Tất cả trạng thái</option>
+                <option value="AVAILABLE">Sẵn sàng</option>
+                <option value="UNAVAILABLE">Không rảnh</option>
+            </select>
+            <span class="filter-count" id="filterCount"></span>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table id="guideTable">
+                <thead>
+                <tr>
+                    <th>Hướng dẫn viên</th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Năm KN</th>
+                    <th>Ngoại ngữ</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="guide : ${guides}" class="guide-row"
+                    th:attr="data-name=${guide.fullName},data-email=${guide.email},data-phone=${guide.phone},data-language=${guide.language},data-status=${guide.status}">
+
+                    <!-- Name -->
+                    <td>
+                        <div class="user-cell">
+                            <div class="avatar"
+                                 th:style="'background: hsl(' + (${guide.guideId} * 53 % 360) + ', 55%, 52%);'"
+                                 style="background: hsl(160,55%,42%)">
+                                <span th:text="${#strings.toUpperCase(#strings.substring(guide.fullName,0,1))}">A</span>
+                            </div>
+                            <div>
+                                <div class="user-name" th:text="${guide.fullName}">Nguyễn Văn A</div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Email -->
+                    <td th:text="${guide.email}">guide@email.com</td>
+
+                    <!-- Phone -->
+                    <td>
+                        <span th:text="${guide.phone}" class="text-muted-sm">0901234567</span>
+                        <span th:if="${guide.phone == null or guide.phone.isEmpty()}" class="text-muted-sm">—</span>
+                    </td>
+
+                    <!-- Experience -->
+                    <td>
+                        <span th:text="${guide.experienceYears + ' năm'}">5 năm</span>
+                    </td>
+
+                    <!-- Language -->
+                    <td>
+                        <span th:text="${guide.language}" class="text-muted-sm">Tiếng Việt</span>
+                    </td>
+
+                    <!-- Status -->
+                    <td>
+                        <span class="status-badge"
+                              th:classappend="${guide.status == 'AVAILABLE'} ? 'available' : 'unavailable'">
+                            <i class="bi"
+                               th:classappend="${guide.status == 'AVAILABLE'} ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"></i>
+                            <span th:text="${guide.status == 'AVAILABLE'} ? 'Sẵn sàng' : 'Không rảnh'">Sẵn sàng</span>
+                        </span>
+                    </td>
+
+                    <!-- Actions -->
+                    <td>
+                        <div class="actions">
+                            <a th:href="@{/admin/tour-guides/edit/{id}(id=${guide.guideId})}"
+                               href="#" class="icon-btn edit" title="Chỉnh sửa">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <span class="icon-btn del" title="Xóa">
+                                <form th:action="@{/admin/tour-guides/delete/{id}(id=${guide.guideId})}"
+                                      method="post"
+                                      onsubmit="return confirm('Xóa hướng dẫn viên này?');">
+                                    <button type="submit"><i class="bi bi-trash3"></i></button>
+                                </form>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div th:if="${guides == null or guides.isEmpty()}" class="card empty-state">
+        <i class="bi bi-person-badge"></i>
+        <h4>Chưa có hướng dẫn viên nào</h4>
+        <p>Hướng dẫn viên sẽ xuất hiện ở đây sau khi được thêm vào.</p>
+    </div>
+
+</div>
+
+<div th:replace="fragments/admin-footer :: adminFooter"></div>
+
+<script>
+    const searchInput  = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const rows         = document.querySelectorAll('.guide-row');
+    const countEl      = document.getElementById('filterCount');
+
+    function filterTable() {
+        const q      = searchInput.value.toLowerCase();
+        const status = statusFilter.value.toUpperCase();
+        let visible  = 0;
+
+        rows.forEach(row => {
+            const name     = (row.dataset.name     || '').toLowerCase();
+            const email    = (row.dataset.email    || '').toLowerCase();
+            const phone    = (row.dataset.phone    || '').toLowerCase();
+            const language = (row.dataset.language || '').toLowerCase();
+            const s        = (row.dataset.status   || '').toUpperCase();
+
+            const matchSearch = !q || name.includes(q) || email.includes(q) || phone.includes(q) || language.includes(q);
+            const matchStatus = !status || s === status;
+
+            const show = matchSearch && matchStatus;
+            row.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        countEl.textContent = `Hiển thị ${visible} / ${rows.length} hướng dẫn viên`;
+    }
+
+    searchInput.addEventListener('input', filterTable);
+    statusFilter.addEventListener('change', filterTable);
+    filterTable();
+</script>
+
+</body>
+</html>

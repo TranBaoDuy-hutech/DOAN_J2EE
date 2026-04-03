@@ -4,9 +4,11 @@ import com.travel3d.vietlutravel.model.Tours;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -46,14 +48,15 @@ public class AdminTourController {
     // ===== Lưu (thêm + sửa) =====
     @PostMapping("/save")
     @Transactional
-    public String save(@ModelAttribute Tours tour) {
+    public String save(@ModelAttribute Tours tour, RedirectAttributes redirectAttributes) {
 
-        if (tour.getTourID() == 0) {
+        if (tour.getTourID() == null || tour.getTourID() == 0) {
             entityManager.persist(tour);
         } else {
             entityManager.merge(tour);
         }
 
+        redirectAttributes.addFlashAttribute("successMessage", "Lưu Tour thành công!");
         return "redirect:/admin/tours";
     }
 

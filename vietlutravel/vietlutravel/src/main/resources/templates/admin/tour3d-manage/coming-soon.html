@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${pageTitle}">Tour 3D</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --ink: #0f1117;
+            --ink-mid: #4a4f63;
+            --ink-light: #9399b0;
+            --bg: #f0f2f8;
+            --surface: #ffffff;
+            --accent: #3b5bdb;
+            --accent-soft: #eef1fd;
+            --accent-glow: rgba(59, 91, 219, 0.15);
+            --border: #e2e5f0;
+            --shadow: 0 2px 24px rgba(15, 17, 23, 0.07);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 40% at 15% 5%, rgba(59, 91, 219, 0.07), transparent),
+                radial-gradient(ellipse 50% 50% at 90% 90%, rgba(100, 60, 220, 0.05), transparent);
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(59, 91, 219, 0.1) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+
+        .page {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: auto;
+            width: 100%;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.7rem;
+            flex-wrap: wrap;
+            animation: slideDown 0.5s ease both;
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .heading-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3b5bdb, #4263eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 14px rgba(59, 91, 219, 0.35);
+        }
+
+        .heading-text h1 {
+            font-family: 'Sora';
+            font-size: 1.4rem;
+        }
+
+        .heading-text p {
+            font-size: 0.8rem;
+            color: var(--ink-light);
+        }
+
+        /* CARD */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            padding: 3rem 2.5rem;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+            animation: fadeUp 0.6s ease 0.1s both;
+        }
+
+        /* Animated background glow inside card */
+        .card::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 91, 219, 0.06) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulseGlow 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        /* ===== 3D SCENE ===== */
+        .scene-wrapper {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 2rem;
+            perspective: 600px;
+        }
+
+        /* Floating orbs behind the cube */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.18;
+            animation: floatOrb 4s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            top: 10px;
+            left: 10px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 40px;
+            height: 40px;
+            background: #7c3aed;
+            bottom: 20px;
+            right: 5px;
+            animation-delay: 1.3s;
+        }
+
+        .orb-3 {
+            width: 25px;
+            height: 25px;
+            background: #0ea5e9;
+            top: 40px;
+            right: 25px;
+            animation-delay: 2.1s;
+        }
+
+        /* CSS 3D Cube */
+        .cube-scene {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform-style: preserve-3d;
+            animation: rotateCube 8s linear infinite;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(59, 91, 219, 0.4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .face-front {
+            background: rgba(59, 91, 219, 0.08);
+            transform: translateZ(50px);
+        }
+
+        .face-back {
+            background: rgba(59, 91, 219, 0.06);
+            transform: rotateY(180deg) translateZ(50px);
+        }
+
+        .face-right {
+            background: rgba(99, 91, 219, 0.07);
+            transform: rotateY(90deg) translateZ(50px);
+        }
+
+        .face-left {
+            background: rgba(99, 91, 219, 0.05);
+            transform: rotateY(-90deg) translateZ(50px);
+        }
+
+        .face-top {
+            background: rgba(59, 130, 219, 0.07);
+            transform: rotateX(90deg) translateZ(50px);
+        }
+
+        .face-bottom {
+            background: rgba(59, 130, 219, 0.05);
+            transform: rotateX(-90deg) translateZ(50px);
+        }
+
+        /* Shadow under cube */
+        .cube-shadow {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 12px;
+            background: radial-gradient(ellipse, rgba(59, 91, 219, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: shadowPulse 8s linear infinite;
+        }
+
+        /* Orbit ring */
+        .orbit-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150px;
+            height: 150px;
+            border: 1.5px dashed rgba(59, 91, 219, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) rotateX(75deg);
+            animation: spinRing 6s linear infinite;
+        }
+
+        .orbit-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 8px rgba(59, 91, 219, 0.5);
+        }
+
+        /* ===== TEXT CONTENT ===== */
+        .badge-wip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(234, 179, 8, 0.1);
+            border: 1px solid rgba(234, 179, 8, 0.25);
+            color: #b45309;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.3rem 0.75rem;
+            border-radius: 99px;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            animation: fadeUp 0.5s ease 0.3s both;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            background: #f59e0b;
+            border-radius: 50%;
+            animation: blinkDot 1.4s ease-in-out infinite;
+        }
+
+        .title {
+            font-family: 'Sora';
+            font-size: 1.35rem;
+            margin-bottom: 0.6rem;
+            color: var(--ink);
+            animation: fadeUp 0.5s ease 0.35s both;
+        }
+
+        .desc {
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            margin-bottom: 2rem;
+            max-width: 440px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            animation: fadeUp 0.5s ease 0.4s both;
+        }
+
+        /* Progress bar */
+        .progress-wrap {
+            max-width: 320px;
+            margin: 0 auto 2rem;
+            animation: fadeUp 0.5s ease 0.45s both;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--ink-light);
+            margin-bottom: 0.4rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b5bdb, #7c3aed);
+            border-radius: 99px;
+            width: 0;
+            animation: fillBar 1.2s ease 0.8s forwards;
+        }
+
+        /* BUTTONS */
+        .btn-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            animation: fadeUp 0.5s ease 0.5s both;
+        }
+
+        .btn {
+            font-family: 'Sora';
+            font-size: 0.82rem;
+            padding: 0.55rem 1.1rem;
+            border-radius: 8px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 14px rgba(59, 91, 219, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(59, 91, 219, 0.4);
+        }
+
+        .btn-ghost {
+            background: white;
+            border: 1.5px solid var(--border);
+            color: var(--ink-mid);
+        }
+
+        .btn-soft {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        /* ===== KEYFRAMES ===== */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes rotateCube {
+            from {
+                transform: rotateX(-20deg) rotateY(0deg);
+            }
+
+            to {
+                transform: rotateX(-20deg) rotateY(360deg);
+            }
+        }
+
+        @keyframes spinRing {
+            from {
+                transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg);
+            }
+        }
+
+        @keyframes floatOrb {
+
+            0%,
+            100% {
+                transform: translateY(0px) scale(1);
+            }
+
+            50% {
+                transform: translateY(-10px) scale(1.1);
+            }
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes shadowPulse {
+
+            0%,
+            100% {
+                transform: translateX(-50%) scaleX(1);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: translateX(-50%) scaleX(0.7);
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes blinkDot {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        @keyframes fillBar {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 62%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div th:replace="fragments/admin-header :: adminHeader"></div>
+
+    <div class="page">
+
+        <!-- TOP -->
+        <div class="topbar">
+            <div class="page-heading">
+                <div class="heading-icon">
+                    <i class="bi bi-map"></i>
+                </div>
+                <div class="heading-text">
+                    <h1>Tour 3D</h1>
+                    <p>Quản lý tour thực tế ảo</p>
+                </div>
+            </div>
+
+            <a href="/admin" class="btn btn-ghost">
+                <i class="bi bi-arrow-left"></i> Dashboard
+            </a>
+        </div>
+
+        <!-- CONTENT CARD -->
+        <div class="card">
+
+            <!-- 3D Animated Scene -->
+            <div class="scene-wrapper">
+                <div class="orb orb-1"></div>
+                <div class="orb orb-2"></div>
+                <div class="orb orb-3"></div>
+
+                <div class="orbit-ring">
+                    <div class="orbit-dot"></div>
+                </div>
+
+                <div class="cube-scene">
+                    <div class="cube-face face-front">🗺️</div>
+                    <div class="cube-face face-back">🌐</div>
+                    <div class="cube-face face-right">📍</div>
+                    <div class="cube-face face-left">🏔️</div>
+                    <div class="cube-face face-top">✨</div>
+                    <div class="cube-face face-bottom">🛤️</div>
+                </div>
+
+                <div class="cube-shadow"></div>
+            </div>
+
+            <!-- Badge -->
+            <div class="badge-wip">
+                <div class="badge-dot"></div>
+                Đang phát triển
+            </div>
+
+            <div class="title">Tính năng đang phát triển</div>
+
+            <div class="desc" th:text="${infoMessage}">
+                Chức năng Tour 3D đang được phát triển. Vui lòng quay lại sau.
+            </div>
+
+            <!-- Progress -->
+            <div class="progress-wrap">
+                <div class="progress-label">
+                    <span>Tiến độ phát triển</span>
+                    <span>62%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-row">
+                <a href="/admin" class="btn btn-primary">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a href="/admin/food3d" class="btn btn-soft">
+                    🍽 Food 3D
+                </a>
+                <a href="/admin/vanhoa3d" class="btn btn-soft">
+                    🏛 Văn hóa 3D
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div th:replace="fragments/admin-footer :: adminFooter"></div>
+</body>
+
+</html>

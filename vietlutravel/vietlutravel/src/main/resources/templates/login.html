@@ -537,13 +537,13 @@
             <p class="form-subtitle">Nhập thông tin để tiếp tục hành trình của bạn</p>
 
             <!-- Alerts -->
-            <div th:if="${error}" class="auth-alert error">
+            <div th:if="${errorMessage}" class="auth-alert error">
                 <i class="bi bi-exclamation-triangle-fill"></i>
-                <span th:text="${error}">Email hoặc mật khẩu không đúng!</span>
+                <span th:text="${errorMessage}">Email hoặc mật khẩu không đúng!</span>
             </div>
-            <div th:if="${success}" class="auth-alert success">
+            <div th:if="${successMessage}" class="auth-alert success">
                 <i class="bi bi-check-circle-fill"></i>
-                <span th:text="${success}">Đăng ký thành công! Vui lòng đăng nhập.</span>
+                <span th:text="${successMessage}">Đăng ký thành công! Vui lòng đăng nhập.</span>
             </div>
 
             <form th:action="@{/login}" method="post">

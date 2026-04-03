@@ -13,9 +13,6 @@
     <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
 
     <style>
-        /* ════════════════════════════════════════
-           TOKENS
-        ════════════════════════════════════════ */
         :root {
             --sea:         #0369a1;
             --sea-mid:     #0284c7;
@@ -58,9 +55,6 @@
 
         .main-content { flex: 1; }
 
-        /* ════════════════════════════════════════
-           PAGE HEADER BANNER
-        ════════════════════════════════════════ */
         .page-banner {
             background: var(--ink);
             position: relative;
@@ -77,7 +71,6 @@
                 radial-gradient(ellipse 50% 80% at 0% 100%, rgba(200,169,110,0.1) 0%, transparent 60%);
         }
 
-        /* subtle grid lines */
         .page-banner::after {
             content: '';
             position: absolute;
@@ -159,9 +152,6 @@
 
         .banner-tour-tag i { color: var(--sand); }
 
-        /* ════════════════════════════════════════
-           STEP INDICATOR
-        ════════════════════════════════════════ */
         .steps-bar {
             background: var(--white);
             border-bottom: 1px solid var(--gray-3);
@@ -229,9 +219,6 @@
 
         .step.done { color: var(--success); }
 
-        /* ════════════════════════════════════════
-           MAIN LAYOUT
-        ════════════════════════════════════════ */
         .booking-layout {
             display: grid;
             grid-template-columns: 1fr 340px;
@@ -241,9 +228,6 @@
             padding: 2.5rem 5% 5rem;
         }
 
-        /* ════════════════════════════════════════
-           FORM CARD
-        ════════════════════════════════════════ */
         .form-card {
             background: var(--white);
             border-radius: var(--r-lg);
@@ -288,11 +272,8 @@
             margin: 0;
         }
 
-        /* Field groups */
         .field-group { display: flex; flex-direction: column; gap: 18px; }
-
         .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
         .field-item { display: flex; flex-direction: column; gap: 5px; }
 
         .field-label {
@@ -328,12 +309,9 @@
         }
 
         .field-input.no-icon { padding-left: 1rem; }
-
         .field-input::placeholder { color: #94a3b8; }
 
-        .field-wrap {
-            position: relative;
-        }
+        .field-wrap { position: relative; }
 
         .field-wrap .field-icon {
             position: absolute;
@@ -356,7 +334,6 @@
             padding-top: 0.8rem;
         }
 
-        /* People counter */
         .counter-wrap {
             display: flex;
             align-items: center;
@@ -400,10 +377,9 @@
             font-weight: 600;
             color: var(--ink);
             background: transparent;
-            width: 0; /* flex will handle */
+            width: 0;
         }
 
-        /* Info note */
         .info-note {
             display: flex;
             gap: 10px;
@@ -417,7 +393,6 @@
 
         .info-note i { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
 
-        /* Submit button */
         .btn-submit {
             display: block;
             width: 100%;
@@ -458,9 +433,6 @@
 
         .security-note i { color: var(--success); }
 
-        /* ════════════════════════════════════════
-           RIGHT COLUMN — SUMMARY CARD
-        ════════════════════════════════════════ */
         .summary-card {
             background: var(--white);
             border-radius: var(--r-lg);
@@ -536,7 +508,6 @@
         .summary-row-label i { color: var(--sea-light); font-size: 0.9rem; }
         .summary-row-value { font-weight: 600; color: var(--ink); font-size: 0.88rem; }
 
-        /* Price total */
         .summary-total {
             padding: 1.4rem 1.6rem;
             border-bottom: 1px solid var(--gray-2);
@@ -572,12 +543,8 @@
             margin-top: 2px;
         }
 
-        /* Dynamic total (JS) */
-        #dynamicTotal {
-            transition: all 0.3s;
-        }
+        #dynamicTotal { transition: all 0.3s; }
 
-        /* Guarantee list */
         .guarantee-list {
             padding: 1.4rem 1.6rem;
             display: flex;
@@ -595,7 +562,6 @@
 
         .guarantee-item i { color: var(--success); font-size: 0.9rem; flex-shrink: 0; }
 
-        /* Hotline */
         .hotline-box {
             margin: 0 1.6rem 1.6rem;
             background: var(--gray-1);
@@ -631,9 +597,6 @@
         }
         .hotline-number:hover { color: var(--sea-mid); }
 
-        /* ════════════════════════════════════════
-           ANIMATIONS
-        ════════════════════════════════════════ */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 1; transform: none; }
@@ -644,9 +607,6 @@
             to   { opacity: 1; transform: none; }
         }
 
-        /* ════════════════════════════════════════
-           RESPONSIVE
-        ════════════════════════════════════════ */
         @media (max-width: 900px) {
             .booking-layout {
                 grid-template-columns: 1fr;
@@ -670,7 +630,7 @@
 
 <main class="main-content">
 
-    <!-- ════ PAGE BANNER ════ -->
+    <!-- PAGE BANNER -->
     <div class="page-banner">
         <div class="page-banner-inner">
             <div class="banner-breadcrumb">
@@ -695,7 +655,7 @@
         </div>
     </div>
 
-    <!-- ════ STEPS ════ -->
+    <!-- STEPS -->
     <div class="steps-bar">
         <div class="steps">
             <div class="step active">
@@ -713,67 +673,15 @@
         </div>
     </div>
 
-    <!-- ════ LAYOUT ════ -->
+    <!-- LAYOUT -->
     <div class="booking-layout">
 
-        <!-- ── FORM ── -->
+        <!-- FORM -->
         <div class="form-col">
             <form action="/booking-tour" method="post" id="bookingForm">
                 <input type="hidden" name="tourID" th:value="${tour.tourID}">
 
                 <div class="form-card">
-
-                    <!-- Contact info -->
-                    <div class="form-section">
-                        <div class="form-section-title">
-                            <div class="form-section-icon"><i class="bi bi-person-fill"></i></div>
-                            <h5>Thông tin liên hệ</h5>
-                        </div>
-                        <div class="field-group">
-                            <div class="field-row">
-                                <!-- Full name -->
-                                <div class="field-item">
-                                    <label class="field-label" for="name">
-                                        Họ và tên <span class="req">*</span>
-                                    </label>
-                                    <div class="field-wrap">
-                                        <i class="bi bi-person field-icon"></i>
-                                        <input type="text" id="name" name="name"
-                                               class="field-input"
-                                               placeholder="Nguyễn Văn A"
-                                               required autocomplete="name">
-                                    </div>
-                                </div>
-                                <!-- Phone -->
-                                <div class="field-item">
-                                    <label class="field-label" for="phone">
-                                        Số điện thoại <span class="req">*</span>
-                                    </label>
-                                    <div class="field-wrap">
-                                        <i class="bi bi-telephone field-icon"></i>
-                                        <input type="tel" id="phone" name="phone"
-                                               class="field-input"
-                                               placeholder="090 123 4567"
-                                               required autocomplete="tel">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Email -->
-                            <div class="field-item">
-                                <label class="field-label" for="email">
-                                    Email <span class="req">*</span>
-                                </label>
-                                <div class="field-wrap">
-                                    <i class="bi bi-envelope field-icon"></i>
-                                    <input type="email" id="email" name="email"
-                                           class="field-input"
-                                           placeholder="example@email.com"
-                                           required autocomplete="email">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Tour options -->
                     <div class="form-section">
@@ -865,7 +773,7 @@
             </form>
         </div>
 
-        <!-- ── SUMMARY ── -->
+        <!-- SUMMARY -->
         <div class="summary-col">
             <div class="summary-card">
 
@@ -998,32 +906,19 @@
     })();
 
 function previewContract() {
-
     const tourID = document.querySelector("input[name='tourID']").value;
     const travelDate = document.getElementById("travelDate").value;
     const people = document.getElementById("numberOfPeople").value;
-    const name   = document.getElementById("name").value;
-    const phone  = document.getElementById("phone").value;
-    const email  = document.getElementById("email").value;
     const note   = document.getElementById("note").value;
-
-    if (!name || !phone || !email) {
-        alert("Vui lòng nhập đầy đủ thông tin trước khi xem hợp đồng");
-        return;
-    }
 
     const url =
         `/preview-contract?tourID=${tourID}`
         + `&travelDate=${travelDate}`
         + `&numberOfPeople=${people}`
-        + `&name=${encodeURIComponent(name)}`
-        + `&phone=${encodeURIComponent(phone)}`
-        + `&email=${encodeURIComponent(email)}`
         + `&note=${encodeURIComponent(note)}`;
 
     window.open(url, "_blank");
 }
-
 </script>
 
 </body>

@@ -599,6 +599,15 @@
             <p class="form-subtitle">Điền thông tin để bắt đầu hành trình cùng chúng tôi</p>
 
             <!-- Alerts -->
+            <div th:if="${errorMessage}" class="auth-alert error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span th:text="${errorMessage}"></span>
+            </div>
+            <div th:if="${successMessage}" class="auth-alert success">
+                <i class="bi bi-check-circle-fill"></i>
+                <span th:text="${successMessage}"></span>
+            </div>
+            
             <div id="alertError" class="auth-alert error" style="display:none;">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span id="alertErrorText"></span>
@@ -608,7 +617,7 @@
                 <span id="alertSuccessText"></span>
             </div>
 
-            <form id="registerForm">
+            <form id="registerForm" th:action="@{/register}" th:object="${customer}" method="POST">
 
                 <div class="fields-grid">
 
@@ -851,14 +860,13 @@
         });
     });
 
-    /* ── Form submit (demo) ── */
+    /* ── Form submit ── */
     document.getElementById('registerForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-
         const pw  = document.getElementById('password').value;
         const cpw = document.getElementById('confirmPassword').value;
 
         if (pw !== cpw) {
+            e.preventDefault();
             const el = document.getElementById('alertError');
             document.getElementById('alertErrorText').textContent = 'Mật khẩu xác nhận không khớp!';
             el.style.display = 'flex';
@@ -866,11 +874,9 @@
             return;
         }
 
+        // Form submits to Java backend automatically if passwords match.
         document.getElementById('alertError').style.display = 'none';
-        const ok = document.getElementById('alertSuccess');
-        document.getElementById('alertSuccessText').textContent = 'Đăng ký thành công! Đang chuyển hướng...';
-        ok.style.display = 'flex';
-        ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('alertSuccess').style.display = 'none';
     });
 </script>
 </body>

@@ -241,6 +241,7 @@
             <a th:href="@{/admin}" href="#" class="btn btn-ghost">
                 <i class="bi bi-layout-sidebar"></i> Dashboard
             </a>
+
             <a href="/admin/tours/create" class="btn btn-primary">
                 <i class="bi bi-plus-lg"></i> Thêm tour mới
             </a>
@@ -282,6 +283,7 @@
                     <th>Điểm đến</th>
                     <th>Giá</th>
                     <th>Thời gian</th>
+
                     <th>Trạng thái</th>
                     <th>Hành động</th>
                 </tr>
@@ -318,6 +320,8 @@
                                 <span th:text="${tour.durationDays} + ' ngày'">0 ngày</span>
                             </span>
                     </td>
+
+
 
                     <!-- Status -->
                     <td>

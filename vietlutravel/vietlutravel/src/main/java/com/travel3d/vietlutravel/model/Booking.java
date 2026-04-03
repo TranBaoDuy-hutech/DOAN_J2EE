@@ -33,6 +33,10 @@ public class Booking {
     @JoinColumn(name = "tourID", insertable = false, updatable = false)
     private Tours tour;
 
+    @ManyToOne
+    @JoinColumn(name = "GuideID")
+    private TourGuide tourGuide;
+
     public int getBookingID() { return bookingID; }
     public void setBookingID(int bookingID) { this.bookingID = bookingID; }
 
@@ -65,4 +69,7 @@ public class Booking {
 
     public Tours getTour() { return tour; }
     public void setTour(Tours tour) { this.tour = tour; }
+
+    public TourGuide getTourGuide() { return tourGuide; }
+    public void setTourGuide(TourGuide tourGuide) { this.tourGuide = tourGuide; }
 }

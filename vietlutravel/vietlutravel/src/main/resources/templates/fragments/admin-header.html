@@ -87,6 +87,11 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
+
+            flex-wrap: nowrap;        /* ❗ không cho xuống dòng */
+            white-space: nowrap;      /* ❗ giữ text 1 dòng */
+            overflow-x: auto;         /* ❗ tràn thì scroll */
+            max-width: 60%;           /* ❗ tránh đè avatar */
         }
 
         .adm-nav-link {
@@ -206,6 +211,25 @@
         <nav class="adm-nav">
             <a th:href="@{/admin}" href="#" class="adm-nav-link">
                 <i class="bi bi-grid-1x2"></i> Dashboard
+            </a>
+            <a th:href="@{/admin/tours}" href="#" class="adm-nav-link">
+                <i class="bi bi-globe2"></i> Tours
+            </a>
+
+            <!-- THÊM Ở ĐÂY -->
+            <a th:href="@{/admin/tour3d}" href="#" class="adm-nav-link">
+                <i class="bi bi-badge-3d"></i> Tour 3D
+            </a>
+            <a th:href="@{/admin/food3d}" href="#" class="adm-nav-link">
+                <i class="bi bi-egg-fried"></i> Food
+            </a>
+            <a th:href="@{/admin/vanhoa3d}" href="#" class="adm-nav-link">
+                <i class="bi bi-bank"></i> Văn hóa
+            </a>
+            <!-- END -->
+
+            <a th:href="@{/admin/tour-guides}" href="#" class="adm-nav-link">
+                <i class="bi bi-person-badge"></i> Hướng dẫn viên
             </a>
             <a th:href="@{/admin/customers}" href="#" class="adm-nav-link">
                 <i class="bi bi-people"></i> Người dùng

@@ -1,15 +1,17 @@
 package com.travel3d.vietlutravel.service;
 
-import com.travel3d.vietlutravel.model.Food;
-import com.travel3d.vietlutravel.repository.FoodRepository;
-import jakarta.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.travel3d.vietlutravel.model.Food;
+import com.travel3d.vietlutravel.repository.FoodRepository;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class FoodService {
@@ -197,5 +199,19 @@ public class FoodService {
         food.setRating(rating);
         food.setReviewsCount(reviewsCount);
         return food;
+    }
+
+    @Transactional
+    public void saveFood(Food food) {
+        if (food.getId() == null) {
+            foodRepository.save(food);
+        } else {
+            foodRepository.save(food);
+        }
+    }
+
+    @Transactional
+    public void deleteFood(Long id) {
+        foodRepository.deleteById(id);
     }
 }

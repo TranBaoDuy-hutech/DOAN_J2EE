@@ -25,7 +25,7 @@ public class EmailService {
     private ContractService contractService;
 
     // ===============================
-    // 1. EMAIL XÁC NHẬN ĐẶT TOUR
+    // 1. EMAIL XÁC NHẬN ĐẶT TOUR (KHÔNG GỬI CONTRACT)
     // ===============================
     public void sendBookingConfirmation(Booking booking) {
 
@@ -45,7 +45,7 @@ public class EmailService {
 
             String htmlContent = """
                     <div style="font-family: Arial; max-width:700px; margin:auto; border:1px solid #ddd; border-radius:10px; padding:20px">
-                        
+
                         <h2 style="text-align:center; color:#2b7cff;">
                             XÁC NHẬN ĐẶT TOUR
                         </h2>
@@ -53,7 +53,7 @@ public class EmailService {
                         <p>Xin chào <strong>%s</strong>,</p>
                         <p>Bạn đã đặt tour thành công tại <b>Việt Lữ Travel</b>.</p>
 
-                        <h3>Thông tin hợp đồng tour</h3>
+                        <h3>Thông tin đặt tour</h3>
 
                         <table style="width:100%%; border-collapse: collapse;">
                             <tr style="background:#f2f2f2;">
@@ -61,7 +61,7 @@ public class EmailService {
                                 <th style="padding:10px;border:1px solid #ddd;">Chi tiết</th>
                             </tr>
                             <tr>
-                                <td style="padding:10px;border:1px solid #ddd;">Mã hợp đồng</td>
+                                <td style="padding:10px;border:1px solid #ddd;">Mã đặt tour</td>
                                 <td style="padding:10px;border:1px solid #ddd;">#%d</td>
                             </tr>
                             <tr>
@@ -88,8 +88,8 @@ public class EmailService {
                             </tr>
                         </table>
 
-                        <p style="margin-top:20px">
-                            Hợp đồng tour đã được đính kèm trong email này.
+                        <p style="margin-top:20px; color:#666;">
+                            <b>Lưu ý:</b> Hợp đồng tour sẽ được gửi qua email sau khi admin xác nhận hướng dẫn viên và duyệt booking.
                         </p>
 
                         <hr>
@@ -118,14 +118,12 @@ public class EmailService {
             helper.setText(htmlContent, true);
             helper.setFrom("vietlutravell@gmail.com");
 
-            byte[] pdfFile = contractService.generateContract(booking);
-            helper.addAttachment(
-                    "HopDongTour_" + booking.getBookingID() + ".pdf",
-                    new ByteArrayResource(pdfFile)
-            );
+            // REMOVED: Không gửi contract PDF ngay lúc đặt tour
+            // byte[] pdfFile = contractService.generateContract(booking);
+            // helper.addAttachment("HopDongTour_" + booking.getBookingID() + ".pdf", new ByteArrayResource(pdfFile));
 
             mailSender.send(message);
-            System.out.println("Gửi email + PDF thành công!");
+            System.out.println("Gửi email xác nhận đặt tour thành công!");
 
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -133,7 +131,119 @@ public class EmailService {
     }
 
     // ===============================
-    // 2. EMAIL PHẢN HỒI LIÊN HỆ
+    // 1.5. EMAIL GỬI HỢP ĐỒNG TOUR (SAU KHI CONFIRMED)
+    // ===============================
+    public void sendContract(Booking booking) {
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
+
+            DateTimeFormatter dateFormat =
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            NumberFormat currencyFormat =
+                    NumberFormat.getInstance(new Locale("vi", "VN"));
+
+            String totalPrice =
+                    currencyFormat.format(booking.getTotalPrice());
+
+            String guideName = booking.getTourGuide() != null
+                    ? booking.getTourGuide().getFullName()
+                    : "Chưa phân công";
+
+            String htmlContent = """
+                    <div style="font-family: Arial; max-width:700px; margin:auto; border:1px solid #ddd; border-radius:10px; padding:20px">
+
+                        <h2 style="text-align:center; color:#28a745;">
+                            🎉 HỢP ĐỒNG TOUR ĐÃ ĐƯỢC DUYỆT
+                        </h2>
+
+                        <p>Xin chào <strong>%s</strong>,</p>
+                        <p>Booking của bạn đã được <b>admin duyệt</b> và <b>hợp đồng tour</b> đã sẵn sàng!</p>
+
+                        <h3>Thông tin hợp đồng tour</h3>
+
+                        <table style="width:100%%; border-collapse: collapse;">
+                            <tr style="background:#f2f2f2;">
+                                <th style="padding:10px;border:1px solid #ddd;">Thông tin</th>
+                                <th style="padding:10px;border:1px solid #ddd;">Chi tiết</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Mã hợp đồng</td>
+                                <td style="padding:10px;border:1px solid #ddd;">#%d</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Tên tour</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%s</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Ngày khởi hành</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%s</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Số lượng khách</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%d người</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Hướng dẫn viên</td>
+                                <td style="padding:10px;border:1px solid #ddd; font-weight:bold;">%s</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Tổng chi phí</td>
+                                <td style="padding:10px;border:1px solid #ddd; color:red; font-weight:bold;">
+                                    %s VNĐ
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="margin-top:20px">
+                            📎 <b>Hợp đồng tour chi tiết</b> đã được đính kèm trong email này.
+                            Vui lòng kiểm tra và chuẩn bị cho chuyến đi!
+                        </p>
+
+                        <hr>
+
+                        <p>
+                            Hotline: <b>096 123 4567</b><br>
+                            Email: vietlutravell@gmail.com
+                        </p>
+
+                        <p style="text-align:center; color:gray;">
+                            © Việt Lữ Travel
+                        </p>
+                    </div>
+                    """.formatted(
+                    booking.getCustomer().getUserName(),
+                    booking.getBookingID(),
+                    booking.getTour().getTourName(),
+                    booking.getTravelDate().format(dateFormat),
+                    booking.getNumberOfPeople(),
+                    guideName,
+                    totalPrice
+            );
+
+            helper.setTo(booking.getCustomer().getEmail());
+            helper.setSubject("Hợp đồng tour đã được duyệt - Việt Lữ Travel");
+            helper.setText(htmlContent, true);
+            helper.setFrom("vietlutravell@gmail.com");
+
+            // Gửi contract PDF đính kèm
+            byte[] pdfFile = contractService.generateContract(booking);
+            helper.addAttachment(
+                    "HopDongTour_" + booking.getBookingID() + ".pdf",
+                    new ByteArrayResource(pdfFile)
+            );
+
+            mailSender.send(message);
+            System.out.println("Gửi hợp đồng tour thành công cho booking #" + booking.getBookingID());
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
     // ===============================
     public void sendReplyEmail(String toEmail, String subject, String content) {
 
@@ -315,6 +425,130 @@ public class EmailService {
 
             mailSender.send(message);
             System.out.println("Gửi xác nhận đổi mật khẩu tới " + toEmail + " thành công!");
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ===============================
+    // 5. EMAIL GỬI THÔNG TIN TOUR CHO HDV
+    // ===============================
+    public void sendTourInfoToHDV(Booking booking) {
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
+
+            DateTimeFormatter dateFormat =
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            NumberFormat currencyFormat =
+                    NumberFormat.getInstance(new Locale("vi", "VN"));
+
+            String totalPrice =
+                    currencyFormat.format(booking.getTotalPrice());
+
+            String customerName = booking.getCustomer() != null
+                    ? booking.getCustomer().getUserName()
+                    : "N/A";
+
+            String customerEmail = booking.getCustomer() != null
+                    ? booking.getCustomer().getEmail()
+                    : "N/A";
+
+            String customerPhone = booking.getCustomer() != null
+                    ? booking.getCustomer().getPhone()
+                    : "N/A";
+
+            String htmlContent = """
+                    <div style="font-family: Arial; max-width:700px; margin:auto; border:1px solid #ddd; border-radius:10px; padding:20px">
+
+                        <h2 style="text-align:center; color:#17a2b8;">
+                            📋 THÔNG TIN TOUR PHÂN CÔNG
+                        </h2>
+
+                        <p>Xin chào <strong>%s</strong>,</p>
+                        <p>Bạn đã được phân công dẫn dắt tour sau:</p>
+
+                        <h3>Chi tiết tour</h3>
+
+                        <table style="width:100%%; border-collapse: collapse;">
+                            <tr style="background:#f2f2f2;">
+                                <th style="padding:10px;border:1px solid #ddd;">Thông tin</th>
+                                <th style="padding:10px;border:1px solid #ddd;">Chi tiết</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Mã Booking</td>
+                                <td style="padding:10px;border:1px solid #ddd;">#%d</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Tên tour</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%s</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Ngày khởi hành</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%s</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Số lượng khách</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%d người</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Tên khách hàng</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%s</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Email khách hàng</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%s</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">SĐT khách hàng</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%s</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd;">Tổng chi phí</td>
+                                <td style="padding:10px;border:1px solid #ddd; color:red; font-weight:bold;">
+                                    %s VNĐ
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="margin-top:20px">
+                            Vui lòng chuẩn bị kỹ lưỡng cho chuyến đi và liên hệ với khách hàng nếu cần thêm thông tin.
+                        </p>
+
+                        <hr>
+
+                        <p>
+                            Hotline: <b>096 123 4567</b><br>
+                            Email: vietlutravell@gmail.com
+                        </p>
+
+                        <p style="text-align:center; color:gray;">
+                            © Việt Lữ Travel
+                        </p>
+                    </div>
+                    """.formatted(
+                    booking.getTourGuide().getFullName(),
+                    booking.getBookingID(),
+                    booking.getTour().getTourName(),
+                    booking.getTravelDate().format(dateFormat),
+                    booking.getNumberOfPeople(),
+                    customerName,
+                    customerEmail,
+                    customerPhone,
+                    totalPrice
+            );
+
+            helper.setTo(booking.getTourGuide().getEmail());
+            helper.setSubject("Thông tin tour phân công - Việt Lữ Travel");
+            helper.setText(htmlContent, true);
+            helper.setFrom("vietlutravell@gmail.com");
+
+            mailSender.send(message);
+            System.out.println("Gửi thông tin tour cho HDV " + booking.getTourGuide().getFullName() + " thành công cho booking #" + booking.getBookingID());
 
         } catch (MessagingException e) {
             e.printStackTrace();

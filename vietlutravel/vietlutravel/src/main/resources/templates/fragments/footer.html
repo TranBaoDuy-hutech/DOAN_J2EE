@@ -32,17 +32,21 @@
                     </p>
 
                     <!-- Social -->
-                    <div class="social-row">
-                        <a href="#" class="social-btn fb" title="Facebook" aria-label="Facebook">
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61588412781504"
+                           class="social-btn fb" title="Facebook" target="_blank" rel="noopener noreferrer">
                             <i class="bi bi-facebook"></i>
                         </a>
-                        <a href="#" class="social-btn ig" title="Instagram" aria-label="Instagram">
+                        <a href="https://www.instagram.com/vietlutravel/"
+                           class="social-btn ig" title="Instagram" target="_blank" rel="noopener noreferrer">
                             <i class="bi bi-instagram"></i>
                         </a>
-                        <a href="#" class="social-btn yt" title="YouTube" aria-label="YouTube">
+                        <a href="https://www.youtube.com/channel/UC81NlSwHWlApNBQbBhf0vrw"
+                           class="social-btn yt" title="YouTube" target="_blank" rel="noopener noreferrer">
                             <i class="bi bi-youtube"></i>
                         </a>
-                        <a href="#" class="social-btn tt" title="TikTok" aria-label="TikTok">
+                        <a href="https://www.tiktok.com/@vietlutravel?_r=1&_t=ZS-93wTgVZrM8a"
+                           class="social-btn tt" title="TikTok" target="_blank" rel="noopener noreferrer">
                             <i class="bi bi-tiktok"></i>
                         </a>
                     </div>
@@ -66,7 +70,7 @@
                     <nav class="footer-nav">
                         <a href="/" class="footer-link">Trang chủ</a>
                         <a href="/tours" class="footer-link">Tour du lịch</a>
-                        <a href="/tour3d" class="footer-link">Tour 3D & 360°</a>
+                        <a href="/tour3d" class="footer-link">Tour 3D &amp; 360°</a>
                         <a href="/about" class="footer-link">Giới thiệu</a>
                         <a href="/contact" class="footer-link">Liên hệ</a>
                     </nav>
@@ -87,7 +91,6 @@
                 <!-- Contact -->
                 <div class="col-lg-4 col-md-4">
                     <div class="footer-col-label">Liên hệ</div>
-
                     <div class="contact-cards">
                         <div class="contact-card">
                             <div class="cc-icon"><i class="bi bi-geo-alt-fill"></i></div>
@@ -135,15 +138,9 @@
                     &copy; 2026 <strong>Việt Lữ Travel</strong>. All rights reserved.
                 </p>
                 <div class="footer-badges">
-                    <div class="footer-badge">
-                        <i class="bi bi-shield-check"></i> Bảo mật SSL
-                    </div>
-                    <div class="footer-badge">
-                        <i class="bi bi-award"></i> Được cấp phép
-                    </div>
-                    <div class="footer-badge">
-                        <i class="bi bi-patch-check"></i> Xác thực
-                    </div>
+                    <div class="footer-badge"><i class="bi bi-shield-check"></i> Bảo mật SSL</div>
+                    <div class="footer-badge"><i class="bi bi-award"></i> Được cấp phép</div>
+                    <div class="footer-badge"><i class="bi bi-patch-check"></i> Xác thực</div>
                 </div>
                 <p class="footer-credit">
                     Thiết kế bởi <span>Việt Lữ Travel Team</span>
@@ -159,7 +156,6 @@
 ════════════════════════════════════════ -->
 <th:block th:fragment="footer-css">
     <style>
-        /* ── tokens ── */
         :root {
             --sea:        #0369a1;
             --sea-mid:    #0284c7;
@@ -172,7 +168,6 @@
             --font-b:     'Outfit', system-ui, sans-serif;
         }
 
-        /* ── wrapper ── */
         .main-footer {
             background: var(--ink);
             color: rgba(255,255,255,0.72);
@@ -182,240 +177,180 @@
             overflow: hidden;
         }
 
-        /* Background decorations */
         .main-footer::before {
             content: '';
-            position: absolute;
-            top: -120px; right: -80px;
-            width: 480px; height: 480px;
-            border-radius: 50%;
+            position: absolute; top: -120px; right: -80px;
+            width: 480px; height: 480px; border-radius: 50%;
             background: radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 70%);
             pointer-events: none;
         }
-
         .main-footer::after {
             content: '';
-            position: absolute;
-            bottom: 40px; left: -60px;
-            width: 360px; height: 360px;
-            border-radius: 50%;
+            position: absolute; bottom: 40px; left: -60px;
+            width: 360px; height: 360px; border-radius: 50%;
             background: radial-gradient(circle, rgba(200,169,110,0.06) 0%, transparent 70%);
             pointer-events: none;
         }
 
-        .footer-body {
-            padding: 4rem 0 3rem;
-            position: relative;
-            z-index: 1;
-        }
+        .footer-body { padding: 4rem 0 3rem; position: relative; z-index: 1; }
 
         /* ── Brand ── */
         .footer-brand {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            margin-bottom: 1.4rem;
+            display: inline-flex; align-items: center; gap: 12px;
+            text-decoration: none; margin-bottom: 1.4rem;
         }
-
         .footer-brand-icon {
-            width: 42px; height: 42px;
-            border-radius: 11px;
+            width: 42px; height: 42px; border-radius: 11px;
             background: linear-gradient(135deg, var(--sand), #b8943c);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.15rem;
-            color: var(--ink);
+            font-size: 1.15rem; color: var(--ink);
             box-shadow: 0 4px 14px rgba(200,169,110,0.35);
-            flex-shrink: 0;
-            transition: transform 0.3s;
+            flex-shrink: 0; transition: transform 0.3s;
         }
-
         .footer-brand:hover .footer-brand-icon { transform: rotate(-8deg) scale(1.08); }
-
         .footer-brand-name {
-            font-family: var(--font-h);
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #fff;
-            line-height: 1;
+            font-family: var(--font-h); font-size: 1.3rem;
+            font-weight: 700; color: #fff; line-height: 1;
         }
-
         .footer-brand-sub {
-            font-size: 0.68rem;
-            font-weight: 500;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: var(--sand-light);
-            margin-top: 2px;
+            font-size: 0.68rem; font-weight: 500;
+            letter-spacing: 0.16em; text-transform: uppercase;
+            color: var(--sand-light); margin-top: 2px;
         }
 
-        /* ── Description ── */
         .footer-desc {
-            font-size: 0.875rem;
-            line-height: 1.75;
-            color: rgba(255,255,255,0.5);
-            font-weight: 300;
-            margin-bottom: 1.5rem;
-            max-width: 340px;
+            font-size: 0.875rem; line-height: 1.75;
+            color: rgba(255,255,255,0.5); font-weight: 300;
+            margin-bottom: 1.5rem; max-width: 340px;
         }
 
         /* ── Social ── */
-        .social-row {
+        .social-links {
             display: flex;
             gap: 8px;
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.25rem;
         }
 
         .social-btn {
-            width: 38px; height: 38px;
-            border-radius: 10px;
+            width: 40px; height: 40px;
+            border-radius: 11px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1rem;
-            color: rgba(255,255,255,0.65);
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.7);
             background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.12);
             text-decoration: none;
-            transition: all 0.28s;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .social-btn:hover { transform: translateY(-3px); color: #fff; }
-        .social-btn.fb:hover { background: #1877f2; border-color: #1877f2; }
-        .social-btn.ig:hover { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); border-color: transparent; }
-        .social-btn.yt:hover { background: #ff0000; border-color: #ff0000; }
-        .social-btn.tt:hover { background: #010101; border-color: #69c9d0; }
+        .social-btn::before {
+            content: '';
+            position: absolute; inset: 0;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            border-radius: inherit;
+        }
+
+        .social-btn i { position: relative; z-index: 1; }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Facebook */
+        .social-btn.fb::before { background: #1877f2; }
+        .social-btn.fb:hover::before { opacity: 1; }
+
+        /* Instagram */
+        .social-btn.ig::before {
+            background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+        .social-btn.ig:hover::before { opacity: 1; }
+
+        /* YouTube */
+        .social-btn.yt::before { background: #ff0000; }
+        .social-btn.yt:hover::before { opacity: 1; }
+        .social-btn.yt:hover { box-shadow: 0 6px 20px rgba(255,0,0,0.35); }
+
+        /* TikTok */
+        .social-btn.tt::before { background: #010101; }
+        .social-btn.tt:hover::before { opacity: 1; }
+        .social-btn.tt:hover {
+            border-color: #69c9d0 !important;
+            box-shadow: 0 6px 20px rgba(105,201,208,0.3);
+        }
 
         /* ── Rating strip ── */
         .rating-strip {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-flex; align-items: center; gap: 8px;
             background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 50px;
-            padding: 6px 14px;
+            border-radius: 50px; padding: 6px 14px;
         }
-
         .rating-stars { display: flex; gap: 2px; }
         .rating-stars i { font-size: 0.7rem; color: var(--sand); }
         .rating-text { font-size: 0.75rem; color: rgba(255,255,255,0.6); font-weight: 500; }
 
         /* ── Nav cols ── */
         .footer-col-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--sand-light);
-            margin-bottom: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--sand-light); margin-bottom: 1.1rem;
+            display: flex; align-items: center; gap: 8px;
         }
-
         .footer-col-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
+            content: ''; flex: 1; height: 1px;
             background: rgba(255,255,255,0.08);
         }
 
-        .footer-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
+        .footer-nav { display: flex; flex-direction: column; gap: 2px; }
 
         .footer-link {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            font-size: 0.875rem;
-            color: rgba(255,255,255,0.55);
-            text-decoration: none;
-            padding: 5px 0;
-            transition: all 0.2s;
-            font-weight: 400;
-            border-radius: 6px;
-            position: relative;
+            display: flex; align-items: center; gap: 0;
+            font-size: 0.875rem; color: rgba(255,255,255,0.55);
+            text-decoration: none; padding: 5px 0;
+            transition: all 0.2s; font-weight: 400;
+            border-radius: 6px; position: relative;
         }
-
         .footer-link::before {
-            content: '';
-            display: inline-block;
-            width: 0;
-            height: 1px;
-            background: var(--sand);
-            margin-right: 0;
-            transition: all 0.25s;
-            vertical-align: middle;
+            content: ''; display: inline-block;
+            width: 0; height: 1px; background: var(--sand);
+            margin-right: 0; transition: all 0.25s; vertical-align: middle;
         }
-
-        .footer-link:hover {
-            color: rgba(255,255,255,0.9);
-            padding-left: 8px;
-        }
-
-        .footer-link:hover::before {
-            width: 14px;
-            margin-right: 8px;
-        }
+        .footer-link:hover { color: rgba(255,255,255,0.9); padding-left: 8px; }
+        .footer-link:hover::before { width: 14px; margin-right: 8px; }
 
         /* ── Contact cards ── */
-        .contact-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
+        .contact-cards { display: flex; flex-direction: column; gap: 8px; }
         .contact-card {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
+            display: flex; align-items: flex-start; gap: 12px;
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 12px;
-            padding: 10px 13px;
-            transition: all 0.22s;
+            border-radius: 12px; padding: 10px 13px; transition: all 0.22s;
         }
-
         .contact-card:hover {
             background: rgba(255,255,255,0.07);
             border-color: rgba(255,255,255,0.12);
         }
-
         .cc-icon {
-            width: 30px; height: 30px;
-            border-radius: 8px;
+            width: 30px; height: 30px; border-radius: 8px;
             background: rgba(56,189,248,0.12);
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.82rem;
-            color: var(--sea-light);
-            flex-shrink: 0;
-            margin-top: 1px;
+            font-size: 0.82rem; color: var(--sea-light);
+            flex-shrink: 0; margin-top: 1px;
         }
-
         .cc-label {
-            font-size: 0.67rem;
-            font-weight: 700;
-            letter-spacing: 0.07em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.35);
-            margin-bottom: 2px;
+            font-size: 0.67rem; font-weight: 700;
+            letter-spacing: 0.07em; text-transform: uppercase;
+            color: rgba(255,255,255,0.35); margin-bottom: 2px;
         }
-
-        .cc-value {
-            font-size: 0.84rem;
-            color: rgba(255,255,255,0.72);
-            line-height: 1.45;
-            font-weight: 400;
-        }
-
-        .cc-link {
-            text-decoration: none;
-            color: rgba(255,255,255,0.72);
-            transition: color 0.2s;
-        }
-
+        .cc-value { font-size: 0.84rem; color: rgba(255,255,255,0.72); line-height: 1.45; }
+        .cc-link { text-decoration: none; color: rgba(255,255,255,0.72); transition: color 0.2s; }
         .cc-link:hover { color: var(--sand-light); }
 
         /* ── Divider ── */
@@ -427,60 +362,29 @@
                 rgba(200,169,110,0.2) 50%,
                 rgba(255,255,255,0.1) 80%,
                 transparent);
-            position: relative;
-            z-index: 1;
+            position: relative; z-index: 1;
         }
 
         /* ── Bottom bar ── */
-        .footer-bottom {
-            padding: 1.3rem 0;
-            position: relative;
-            z-index: 1;
-        }
-
+        .footer-bottom { padding: 1.3rem 0; position: relative; z-index: 1; }
         .footer-bottom-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            flex-wrap: wrap;
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 16px; flex-wrap: wrap;
         }
-
-        .footer-copy {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.35);
-            margin: 0;
-        }
-
+        .footer-copy { font-size: 0.8rem; color: rgba(255,255,255,0.35); margin: 0; }
         .footer-copy strong { color: rgba(255,255,255,0.55); font-weight: 600; }
 
-        .footer-badges {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
+        .footer-badges { display: flex; gap: 8px; flex-wrap: wrap; }
         .footer-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
+            display: inline-flex; align-items: center; gap: 5px;
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.09);
-            border-radius: 50px;
-            padding: 4px 11px;
-            font-size: 0.72rem;
-            color: rgba(255,255,255,0.42);
-            font-weight: 500;
+            border-radius: 50px; padding: 4px 11px;
+            font-size: 0.72rem; color: rgba(255,255,255,0.42); font-weight: 500;
         }
-
         .footer-badge i { font-size: 0.75rem; color: var(--sea-light); }
 
-        .footer-credit {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.3);
-            margin: 0;
-        }
-
+        .footer-credit { font-size: 0.8rem; color: rgba(255,255,255,0.3); margin: 0; }
         .footer-credit span { color: rgba(255,255,255,0.55); font-weight: 600; }
 
         /* ── Responsive ── */

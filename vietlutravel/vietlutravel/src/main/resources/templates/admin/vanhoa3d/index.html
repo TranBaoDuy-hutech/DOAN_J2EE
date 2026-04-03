@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Quản lý Văn hóa 3D</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --ink: #0f1117;
+            --ink-mid: #4a4f63;
+            --ink-light: #9399b0;
+            --bg: #f0f2f8;
+            --surface: #ffffff;
+            --accent: #3b5bdb;
+            --accent-soft: #eef1fd;
+            --accent-glow: rgba(59,91,219,0.15);
+            --border: #e2e5f0;
+            --danger: #e03131;
+            --warning: #f59f00;
+            --info: #1c7ed6;
+            --success: #2f9e44;
+            --shadow: 0 2px 24px rgba(15,17,23,0.07);
+            --radius: 16px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 40% at 15% 5%, rgba(59,91,219,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 90% 90%, rgba(100,60,220,0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(59,91,219,0.1) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+
+        /* Top bar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+            flex-wrap: wrap;
+        }
+        .page-heading { display: flex; align-items: center; gap: 0.85rem; }
+        .heading-icon {
+            width: 46px; height: 46px;
+            background: linear-gradient(135deg, #3b5bdb, #4263eb);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.25rem;
+            box-shadow: 0 4px 14px rgba(59,91,219,0.35);
+            flex-shrink: 0;
+        }
+        .heading-text h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.4rem; font-weight: 700;
+            color: var(--ink); line-height: 1.2;
+        }
+        .heading-text p { font-size: 0.8rem; color: var(--ink-light); margin-top: 0.1rem; }
+
+        .topbar-actions { display: flex; align-items: center; gap: 0.6rem; }
+
+        /* Buttons */
+        .btn {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.82rem; font-weight: 500;
+            padding: 0.55rem 1.1rem;
+            border-radius: 8px; border: none;
+            cursor: pointer;
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            letter-spacing: 0.01em; white-space: nowrap;
+        }
+        .btn-primary { background: var(--accent); color: white; box-shadow: 0 3px 10px rgba(59,91,219,0.3); }
+        .btn-primary:hover { background: #364fc7; transform: translateY(-1px); box-shadow: 0 5px 16px rgba(59,91,219,0.4); }
+        .btn-ghost { background: var(--surface); color: var(--ink-mid); border: 1.5px solid var(--border); }
+        .btn-ghost:hover { background: var(--bg); color: var(--ink); border-color: #c5cbdf; }
+        .btn-danger-soft { background: #fff5f5; color: var(--danger); border: 1.5px solid #ffc9c9; }
+        .btn-danger-soft:hover { background: #ffe3e3; border-color: var(--danger); }
+
+        /* Alert */
+        .alert {
+            padding: 0.85rem 1.2rem;
+            border-radius: 10px; font-size: 0.875rem;
+            margin-bottom: 1.25rem;
+            display: flex; align-items: center; gap: 0.6rem;
+            border: 1px solid transparent;
+        }
+        .alert-success { background: #d3f9d8; color: #1a7a2e; border-color: #b2f2bb; }
+        .alert-danger  { background: #ffe3e3; color: #9b1c1c; border-color: #ffc9c9; }
+
+        /* Stats bar */
+        .stats-bar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .stat-chip {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 10px; padding: 0.55rem 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+            font-size: 0.82rem; color: var(--ink-mid);
+            box-shadow: var(--shadow);
+        }
+        .stat-chip strong {
+            font-family: 'Sora', sans-serif; font-weight: 700;
+            color: var(--ink); font-size: 1rem;
+        }
+
+        /* Card */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        /* Filter bar */
+        .filter-bar {
+            padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+        }
+        .search-wrap { position: relative; flex: 1; min-width: 200px; }
+        .search-wrap i { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--ink-light); font-size: 0.9rem; }
+        .search-wrap input {
+            width: 100%; padding: 0.55rem 0.85rem 0.55rem 2.4rem;
+            font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+            border: 1.5px solid var(--border); border-radius: 8px;
+            color: var(--ink); background: #fafbfe; outline: none; transition: all 0.2s;
+        }
+        .search-wrap input:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px var(--accent-glow); }
+
+        .filter-select {
+            padding: 0.55rem 2rem 0.55rem 0.85rem;
+            font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+            border: 1.5px solid var(--border); border-radius: 8px;
+            color: var(--ink-mid);
+            background: #fafbfe url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%239399b0' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 0.7rem center;
+            appearance: none; outline: none; cursor: pointer; transition: border-color 0.2s;
+        }
+        .filter-select:focus { border-color: var(--accent); }
+        .filter-count { font-size: 0.8rem; color: var(--ink-light); margin-left: auto; white-space: nowrap; }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--ink-light);
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            background: #fafbfe; text-align: left; white-space: nowrap;
+        }
+        tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #f8f9ff; }
+        td { padding: 1rem 1.25rem; font-size: 0.875rem; color: var(--ink); vertical-align: middle; }
+
+        /* Title cell */
+        .title-cell { display: flex; align-items: center; gap: 0.85rem; }
+        .item-icon {
+            width: 36px; height: 36px; border-radius: 9px;
+            background: var(--accent-soft);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--accent); font-size: 1rem; flex-shrink: 0;
+        }
+        .item-title { font-weight: 500; color: var(--ink); line-height: 1.2; }
+        .text-muted-sm { font-size: 0.78rem; color: var(--ink-light); }
+
+        /* Category badge */
+        .cat-badge {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            padding: 0.28rem 0.7rem;
+            border-radius: 99px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.04em; text-transform: uppercase;
+        }
+        .cat-lehoi   { background: #ffe3e3; color: #9b1c1c; }
+        .cat-dantoc  { background: #e7f5ff; color: #1864ab; }
+        .cat-langnghe{ background: #fff9db; color: #7c4a00; }
+        .cat-sonnuoc { background: #d3f9d8; color: #1a7a2e; }
+        .cat-other   { background: #f3f0ff; color: #5c2d91; }
+
+        /* Action buttons */
+        .actions { display: flex; gap: 0.4rem; align-items: center; }
+        .icon-btn {
+            width: 32px; height: 32px; border-radius: 7px;
+            border: 1.5px solid var(--border);
+            background: var(--surface); color: var(--ink-mid);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; cursor: pointer;
+            text-decoration: none; transition: all 0.18s ease;
+        }
+        .icon-btn:hover { transform: translateY(-1px); }
+        .icon-btn.view:hover { background: #e7f5ff; border-color: var(--info);    color: var(--info); }
+        .icon-btn.edit:hover { background: #fff9db; border-color: var(--warning); color: var(--warning); }
+        .icon-btn.del:hover  { background: #fff5f5; border-color: var(--danger);  color: var(--danger); }
+
+        /* Empty state */
+        .empty-state { padding: 5rem 2rem; text-align: center; color: var(--ink-light); }
+        .empty-state i { font-size: 3.5rem; display: block; margin-bottom: 1rem; opacity: 0.4; }
+        .empty-state h4 { font-family: 'Sora', sans-serif; color: var(--ink-mid); font-size: 1rem; margin-bottom: 0.3rem; }
+        .empty-state p { font-size: 0.85rem; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 1000;
+            background: rgba(15,17,23,0.45); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: var(--surface); border-radius: var(--radius);
+            box-shadow: 0 24px 80px rgba(15,17,23,0.2);
+            width: 100%; max-width: 420px; margin: 1rem;
+            overflow: hidden; animation: popIn 0.25s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes popIn { from { opacity:0; transform: scale(0.93); } to { opacity:1; transform: scale(1); } }
+        .modal-head {
+            padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        .modal-head-icon {
+            width: 36px; height: 36px; border-radius: 9px;
+            background: #fff5f5; color: var(--danger);
+            display: flex; align-items: center; justify-content: center; font-size: 1rem;
+        }
+        .modal-head h5 { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 600; color: var(--ink); margin: 0; }
+        .modal-body-inner { padding: 1.25rem 1.5rem; }
+        .modal-body-inner p { font-size: 0.9rem; color: var(--ink-mid); margin-bottom: 0.5rem; }
+        .modal-body-inner .warn { font-size: 0.82rem; color: var(--danger); display: flex; align-items: center; gap: 0.4rem; }
+        .modal-foot {
+            padding: 1rem 1.5rem; border-top: 1px solid var(--border);
+            display: flex; gap: 0.6rem; justify-content: flex-end; background: #fafbfe;
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .topbar { flex-direction: column; align-items: flex-start; }
+            thead th:nth-child(3), td:nth-child(3) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="fragments/admin-header :: adminHeader"></div>
+
+<div class="page">
+
+    <!-- Top bar -->
+    <div class="topbar">
+        <div class="page-heading">
+            <div class="heading-icon"><i class="bi bi-buildings-fill"></i></div>
+            <div class="heading-text">
+                <h1>Văn hóa An Giang 3D</h1>
+                <p>Quản lý nội dung văn hóa & danh mục</p>
+            </div>
+        </div>
+        <div class="topbar-actions">
+            <a th:href="@{/admin}" href="#" class="btn btn-ghost">
+                <i class="bi bi-layout-sidebar"></i> Dashboard
+            </a>
+            <a href="/admin/vanhoa3d/create" class="btn btn-primary">
+                <i class="bi bi-plus-circle-fill"></i> Thêm mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    <div th:if="${successMessage}" class="alert alert-success">
+        <i class="bi bi-check-circle-fill"></i>
+        <span th:text="${successMessage}">Thao tác thành công.</span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <span th:text="${errorMessage}">Có lỗi xảy ra.</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar" th:if="${vanHoas != null and !#lists.isEmpty(vanHoas)}">
+        <div class="stat-chip">
+            <strong th:text="${#lists.size(vanHoas)}">0</strong> tổng mục văn hóa
+        </div>
+    </div>
+
+    <!-- Table card -->
+    <div class="card" th:if="${vanHoas != null and !#lists.isEmpty(vanHoas)}">
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+            <div class="search-wrap">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchInput" placeholder="Tìm theo tiêu đề, mô tả...">
+            </div>
+            <select class="filter-select" id="catFilter">
+                <option value="">Tất cả danh mục</option>
+                <option value="lehoi">Lễ hội</option>
+                <option value="dantoc">Dân tộc</option>
+                <option value="langnghe">Làng nghề</option>
+                <option value="sonnuoc">Sơn nước</option>
+            </select>
+            <span class="filter-count" id="filterCount"></span>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table id="vhTable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tiêu đề</th>
+                    <th>Mô tả</th>
+                    <th>Danh mục</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="vh : ${vanHoas}" class="vh-row"
+                    th:attr="data-title=${vh.tieuDe},data-desc=${vh.moTa},data-cat=${vh.danhMuc}">
+
+                    <!-- ID -->
+                    <td>
+                        <span class="text-muted-sm" th:text="${vh.id}">1</span>
+                    </td>
+
+                    <!-- Title -->
+                    <td>
+                        <div class="title-cell">
+                            <div class="item-icon"><i class="bi bi-image"></i></div>
+                            <div>
+                                <div class="item-title" th:text="${vh.tieuDe}">Tiêu đề</div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Description -->
+                    <td>
+                        <span class="text-muted-sm" th:text="${#strings.abbreviate(vh.moTa, 60)}">Mô tả...</span>
+                    </td>
+
+                    <!-- Category badge -->
+                    <td>
+                        <span class="cat-badge"
+                              th:classappend="${vh.danhMuc == 'lehoi'} ? 'cat-lehoi' :
+                                             (${vh.danhMuc == 'dantoc'} ? 'cat-dantoc' :
+                                             (${vh.danhMuc == 'langnghe'} ? 'cat-langnghe' :
+                                             (${vh.danhMuc == 'sonnuoc'} ? 'cat-sonnuoc' : 'cat-other')))"
+                              th:text="${vh.danhMuc}">lehoi</span>
+                    </td>
+
+                    <!-- Actions -->
+                    <td>
+                        <div class="actions">
+                            <a th:href="@{/admin/vanhoa3d/{id}(id=${vh.id})}"
+                               class="icon-btn view" title="Xem chi tiết">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a th:href="@{/admin/vanhoa3d/edit/{id}(id=${vh.id})}"
+                               class="icon-btn edit" title="Chỉnh sửa">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <span class="icon-btn del" title="Xóa"
+                                  th:data-vh-id="${vh.id}" th:data-vh-name="${vh.tieuDe}"
+                                  onclick="showDeleteModal(this)">
+                                <i class="bi bi-trash3"></i>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div th:if="${vanHoas == null or #lists.isEmpty(vanHoas)}" class="card empty-state">
+        <i class="bi bi-buildings"></i>
+        <h4>Chưa có mục văn hóa nào</h4>
+        <p>Nhấn "Thêm mới" để bắt đầu thêm nội dung văn hóa.</p>
+    </div>
+
+</div>
+
+<div th:replace="fragments/admin-footer :: adminFooter"></div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <div class="modal-head-icon"><i class="bi bi-trash3-fill"></i></div>
+            <h5>Xác nhận xóa</h5>
+        </div>
+        <div class="modal-body-inner">
+            <p>Bạn chắc chắn muốn xóa <strong id="deleteVHName"></strong>?</p>
+            <p class="warn"><i class="bi bi-exclamation-triangle-fill"></i> Hành động này không thể hoàn tác!</p>
+        </div>
+        <div class="modal-foot">
+            <button class="btn btn-ghost" onclick="closeDeleteModal()">
+                <i class="bi bi-x-lg"></i> Hủy
+            </button>
+            <form id="deleteForm" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger-soft">
+                    <i class="bi bi-trash3"></i> Xóa
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filter
+    const searchInput = document.getElementById('searchInput');
+    const catFilter   = document.getElementById('catFilter');
+    const rows        = document.querySelectorAll('.vh-row');
+    const countEl     = document.getElementById('filterCount');
+
+    function filterTable() {
+        const q   = searchInput.value.toLowerCase();
+        const cat = catFilter.value.toLowerCase();
+        let visible = 0;
+
+        rows.forEach(row => {
+            const title = (row.dataset.title || '').toLowerCase();
+            const desc  = (row.dataset.desc  || '').toLowerCase();
+            const c     = (row.dataset.cat   || '').toLowerCase();
+
+            const matchSearch = !q   || title.includes(q) || desc.includes(q);
+            const matchCat    = !cat || c === cat;
+
+            const show = matchSearch && matchCat;
+            row.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        countEl.textContent = `Hiển thị ${visible} / ${rows.length} mục`;
+    }
+
+    searchInput.addEventListener('input', filterTable);
+    catFilter.addEventListener('change', filterTable);
+    filterTable();
+
+    // Modal
+    function showDeleteModal(btn) {
+        document.getElementById('deleteVHName').textContent = btn.dataset.vhName;
+        document.getElementById('deleteForm').action = '/admin/vanhoa3d/' + btn.dataset.vhId + '/delete';
+        document.getElementById('deleteModal').classList.add('open');
+    }
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('open');
+    }
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteModal();
+    });
+</script>
+
+</body>
+</html>

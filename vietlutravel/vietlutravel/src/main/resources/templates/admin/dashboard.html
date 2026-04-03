@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
@@ -16,10 +19,16 @@
             --surface: #ffffff;
             --accent: #3b5bdb;
             --border: #e2e5f0;
-            --shadow: 0 2px 24px rgba(15,17,23,0.07);
+            --shadow: 0 2px 24px rgba(15, 17, 23, 0.07);
         }
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'DM Sans', sans-serif;
@@ -28,343 +37,879 @@
             position: relative;
             overflow-x: hidden;
             background-image:
-                linear-gradient(135deg, rgba(15,17,35,0.75) 0%, rgba(59,41,120,0.68) 100%),
+                linear-gradient(135deg, rgba(15, 17, 35, 0.75) 0%, rgba(59, 41, 120, 0.68) 100%),
                 url('/image/nen.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
 
-        /* Dot grid overlay */
         body::after {
             content: '';
-            position: fixed; inset: 0;
-            background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
             background-size: 28px 28px;
-            pointer-events: none; z-index: 0;
+            pointer-events: none;
+            z-index: 0;
         }
 
         body::before {
             content: '';
-            position: fixed; inset: 0;
+            position: fixed;
+            inset: 0;
             background:
-                radial-gradient(ellipse 60% 50% at 10% 0%, rgba(99,102,241,0.2) 0%, transparent 55%),
-                radial-gradient(ellipse 50% 55% at 90% 100%, rgba(139,92,246,0.15) 0%, transparent 55%);
-            pointer-events: none; z-index: 0;
+                radial-gradient(ellipse 60% 50% at 10% 0%, rgba(99, 102, 241, 0.2) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 55% at 90% 100%, rgba(139, 92, 246, 0.15) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+        /* ── Floating particles canvas ── */
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
 
-        /* Hero section */
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* ══════════════════════════════
+           HERO
+        ══════════════════════════════ */
         .hero {
             text-align: center;
             padding: 2.5rem 1rem 2rem;
             margin-bottom: 2.5rem;
+            animation: heroReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
+
+        @keyframes heroReveal {
+            from {
+                opacity: 0;
+                transform: translateY(28px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .hero-eyebrow {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 600;
-            letter-spacing: 0.12em; text-transform: uppercase;
-            color: #a5b4fc; background: rgba(165,180,252,0.12);
-            border: 1px solid rgba(165,180,252,0.25);
-            padding: 0.35rem 1rem; border-radius: 99px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #a5b4fc;
+            background: rgba(165, 180, 252, 0.12);
+            border: 1px solid rgba(165, 180, 252, 0.25);
+            padding: 0.35rem 1rem;
+            border-radius: 99px;
             margin-bottom: 1.2rem;
+            animation: fadeScale 0.5s ease 0.1s both;
         }
+
+        @keyframes fadeScale {
+            from {
+                opacity: 0;
+                transform: scale(0.92);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         .hero h1 {
-            font-family: 'Sora', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem);
-            font-weight: 800; color: white; line-height: 1.1;
-            letter-spacing: -0.03em; margin-bottom: 0.75rem;
-            text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            color: white;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.75rem;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+            animation: fadeScale 0.5s ease 0.2s both;
         }
+
         .hero h1 span {
             background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
+        /* Animated gradient text shimmer */
+        .hero h1 span {
+            background-size: 200% auto;
+            animation: shimmerText 3s linear 1s infinite;
+        }
+
+        @keyframes shimmerText {
+            0% {
+                background-position: 0% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+        }
+
         .hero p {
-            font-size: 0.95rem; color: rgba(255,255,255,0.6); max-width: 420px; margin: 0 auto;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 420px;
+            margin: 0 auto;
+            animation: fadeScale 0.5s ease 0.3s both;
         }
 
-        /* Time chip */
         .time-chip {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            margin-top: 1.2rem; padding: 0.45rem 1rem;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 99px; font-size: 0.8rem; color: rgba(255,255,255,0.7);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.2rem;
+            padding: 0.45rem 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 99px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(8px);
+            animation: fadeScale 0.5s ease 0.4s both;
+            transition: background 0.3s, border-color 0.3s;
         }
-        .time-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: blink 2s infinite; }
-        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
 
-        /* Stats grid */
+        .time-chip:hover {
+            background: rgba(255, 255, 255, 0.13);
+            border-color: rgba(255, 255, 255, 0.28);
+        }
+
+        .time-chip .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: blink 2s infinite;
+            box-shadow: 0 0 6px rgba(34, 197, 94, 0.7);
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.35;
+            }
+        }
+
+        /* ══════════════════════════════
+           STATS GRID
+        ══════════════════════════════ */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 1.25rem;
             margin-bottom: 2rem;
         }
 
-        /* Stat card */
         .stat-card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 20px;
             padding: 1.75rem 1.5rem;
             box-shadow: var(--shadow);
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
             gap: 1rem;
             position: relative;
             overflow: hidden;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
             text-decoration: none;
             color: inherit;
+            /* Stagger animation */
+            opacity: 0;
+            transform: translateY(30px);
         }
+
+        .stat-card.tours {
+            animation: cardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+        }
+
+        .stat-card.bookings {
+            animation: cardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
+        }
+
+        .stat-card.customers {
+            animation: cardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+        }
+
+        .stat-card.guides {
+            animation: cardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+        }
+
+        .stat-card.messages {
+            animation: cardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.55s forwards;
+        }
+
+        @keyframes cardReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 16px 40px rgba(15,17,23,0.12);
+            transform: translateY(-7px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(15, 17, 23, 0.15);
             color: inherit;
         }
 
-        /* Subtle top accent line */
+        /* top accent bar */
         .stat-card::before {
             content: '';
-            position: absolute; top: 0; left: 0; right: 0;
-            height: 3px; border-radius: 20px 20px 0 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 20px 20px 0 0;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
         }
-        .stat-card.tours::before    { background: linear-gradient(90deg, #3b5bdb, #4263eb); }
-        .stat-card.bookings::before { background: linear-gradient(90deg, #e64980, #f06595); }
-        .stat-card.customers::before{ background: linear-gradient(90deg, #1c7ed6, #339af0); }
-        .stat-card.messages::before { background: linear-gradient(90deg, #e67700, #f59f00); }
 
-        /* Glow blob in corner */
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card.tours::before {
+            background: linear-gradient(90deg, #3b5bdb, #4263eb);
+        }
+
+        .stat-card.bookings::before {
+            background: linear-gradient(90deg, #e64980, #f06595);
+        }
+
+        .stat-card.customers::before {
+            background: linear-gradient(90deg, #1c7ed6, #339af0);
+        }
+
+        .stat-card.guides::before {
+            background: linear-gradient(90deg, #099268, #20c997);
+        }
+
+        .stat-card.messages::before {
+            background: linear-gradient(90deg, #e67700, #f59f00);
+        }
+
+        /* background orb */
         .stat-card::after {
             content: '';
-            position: absolute; bottom: -30px; right: -30px;
-            width: 100px; height: 100px; border-radius: 50%;
-            opacity: 0.06; transition: opacity 0.3s;
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            opacity: 0.06;
+            transition: opacity 0.3s, transform 0.4s;
         }
-        .stat-card:hover::after { opacity: 0.1; }
-        .stat-card.tours::after    { background: #3b5bdb; }
-        .stat-card.bookings::after { background: #e64980; }
-        .stat-card.customers::after{ background: #1c7ed6; }
-        .stat-card.messages::after { background: #e67700; }
 
-        .card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+        .stat-card:hover::after {
+            opacity: 0.13;
+            transform: scale(1.2);
+        }
+
+        .stat-card.tours::after {
+            background: #3b5bdb;
+        }
+
+        .stat-card.bookings::after {
+            background: #e64980;
+        }
+
+        .stat-card.customers::after {
+            background: #1c7ed6;
+        }
+
+        .stat-card.guides::after {
+            background: #099268;
+        }
+
+        .stat-card.messages::after {
+            background: #e67700;
+        }
+
+        /* Ripple on click */
+        .stat-card .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: rippleOut 0.6s linear;
+            pointer-events: none;
+            opacity: 0.18;
+        }
+
+        @keyframes rippleOut {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .stat-card.tours .ripple {
+            background: #3b5bdb;
+        }
+
+        .stat-card.bookings .ripple {
+            background: #e64980;
+        }
+
+        .stat-card.customers .ripple {
+            background: #1c7ed6;
+        }
+
+        .stat-card.guides .ripple {
+            background: #099268;
+        }
+
+        .stat-card.messages .ripple {
+            background: #e67700;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
 
         .card-icon {
-            width: 48px; height: 48px; border-radius: 13px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem; color: white; flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: white;
+            flex-shrink: 0;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .stat-card.tours .card-icon     { background: linear-gradient(135deg, #3b5bdb, #4263eb); box-shadow: 0 6px 16px rgba(59,91,219,0.35); }
-        .stat-card.bookings .card-icon  { background: linear-gradient(135deg, #e64980, #f06595); box-shadow: 0 6px 16px rgba(230,73,128,0.35); }
-        .stat-card.customers .card-icon { background: linear-gradient(135deg, #1c7ed6, #339af0); box-shadow: 0 6px 16px rgba(28,126,214,0.35); }
-        .stat-card.messages .card-icon  { background: linear-gradient(135deg, #e67700, #f59f00); box-shadow: 0 6px 16px rgba(230,119,0,0.35); }
+
+        .stat-card:hover .card-icon {
+            transform: rotate(-8deg) scale(1.12);
+        }
+
+        .stat-card.tours .card-icon {
+            background: linear-gradient(135deg, #3b5bdb, #4263eb);
+            box-shadow: 0 6px 16px rgba(59, 91, 219, 0.35);
+        }
+
+        .stat-card.bookings .card-icon {
+            background: linear-gradient(135deg, #e64980, #f06595);
+            box-shadow: 0 6px 16px rgba(230, 73, 128, 0.35);
+        }
+
+        .stat-card.customers .card-icon {
+            background: linear-gradient(135deg, #1c7ed6, #339af0);
+            box-shadow: 0 6px 16px rgba(28, 126, 214, 0.35);
+        }
+
+        .stat-card.guides .card-icon {
+            background: linear-gradient(135deg, #099268, #20c997);
+            box-shadow: 0 6px 16px rgba(9, 146, 104, 0.35);
+        }
+
+        .stat-card.messages .card-icon {
+            background: linear-gradient(135deg, #e67700, #f59f00);
+            box-shadow: 0 6px 16px rgba(230, 119, 0, 0.35);
+        }
 
         .card-arrow {
-            width: 30px; height: 30px; border-radius: 8px;
-            background: var(--bg); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; color: var(--ink-light);
-            transition: all 0.2s;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--ink-light);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         .stat-card:hover .card-arrow {
-            background: var(--accent); border-color: var(--accent);
-            color: white; transform: translate(2px, -2px);
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            transform: translate(3px, -3px) rotate(0deg);
         }
 
         .card-label {
-            font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 600;
-            letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-light);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-light);
         }
 
+        /* Animated counter */
         .card-number {
-            font-family: 'Sora', sans-serif; font-size: 3rem; font-weight: 800;
-            color: var(--ink); line-height: 1; letter-spacing: -0.03em;
+            font-family: 'Sora', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--ink);
+            line-height: 1;
+            letter-spacing: -0.03em;
+            transition: color 0.2s;
+        }
+
+        .stat-card.tours:hover .card-number {
+            color: #3b5bdb;
+        }
+
+        .stat-card.bookings:hover .card-number {
+            color: #e64980;
+        }
+
+        .stat-card.customers:hover .card-number {
+            color: #1c7ed6;
+        }
+
+        .stat-card.guides:hover .card-number {
+            color: #099268;
+        }
+
+        .stat-card.messages:hover .card-number {
+            color: #e67700;
         }
 
         .card-footer-row {
-            display: flex; align-items: center; justify-content: space-between;
-            padding-top: 0.85rem; border-top: 1px solid var(--border);
-            font-size: 0.78rem; color: var(--ink-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.85rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.78rem;
+            color: var(--ink-light);
         }
+
         .card-link {
-            font-family: 'Sora', sans-serif; font-size: 0.75rem; font-weight: 600;
-            color: var(--accent); display: flex; align-items: center; gap: 0.25rem;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
             transition: gap 0.2s;
         }
-        .stat-card:hover .card-link { gap: 0.5rem; }
 
-        /* Quick actions */
-        .section-label {
-            font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 600;
-            letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5);
-            margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem;
+        .stat-card:hover .card-link {
+            gap: 0.5rem;
         }
-        .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.12); }
+
+        /* ══════════════════════════════
+           QUICK ACTIONS
+        ══════════════════════════════ */
+        .section-label {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            animation: fadeScale 0.4s ease 0.7s both;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.12);
+        }
 
         .quick-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;
-        }
-        .quick-btn {
-            background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.12);
-            border-radius: 12px; padding: 1rem;
-            display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-            text-decoration: none; color: rgba(255,255,255,0.7);
-            font-family: 'Sora', sans-serif; font-size: 0.78rem; font-weight: 500;
-            transition: all 0.2s ease;
-            text-align: center; backdrop-filter: blur(8px);
-        }
-        .quick-btn i { font-size: 1.2rem; }
-        .quick-btn:hover {
-            background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.25);
-            color: white; transform: translateY(-2px);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.75rem;
         }
 
-        @media (max-width: 900px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .quick-grid  { grid-template-columns: repeat(2, 1fr); }
+        .quick-btn {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+            backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
         }
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .quick-grid  { grid-template-columns: repeat(2, 1fr); }
-            body { padding: 1rem; }
+
+        .quick-btn:nth-child(1) {
+            animation: cardReveal 0.5s ease 0.75s forwards;
+        }
+
+        .quick-btn:nth-child(2) {
+            animation: cardReveal 0.5s ease 0.82s forwards;
+        }
+
+        .quick-btn:nth-child(3) {
+            animation: cardReveal 0.5s ease 0.89s forwards;
+        }
+
+        .quick-btn:nth-child(4) {
+            animation: cardReveal 0.5s ease 0.96s forwards;
+        }
+
+        .quick-btn:nth-child(5) {
+            animation: cardReveal 0.5s ease 1.03s forwards;
+        }
+
+        .quick-btn i {
+            font-size: 1.2rem;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .quick-btn:hover i {
+            transform: scale(1.3) rotate(-5deg);
+        }
+
+        .quick-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0);
+            transition: background 0.25s;
+        }
+
+        .quick-btn:hover {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-4px) scale(1.03);
+        }
+
+        /* ══════════════════════════════
+           RESPONSIVE
+        ══════════════════════════════ */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .quick-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            body {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div th:replace="fragments/admin-header :: adminHeader"></div>
+    <!-- Floating particles -->
+    <canvas id="particles"></canvas>
 
-<div class="page">
+    <div th:replace="fragments/admin-header :: adminHeader"></div>
 
-    <!-- Hero -->
-    <div class="hero">
-        <div class="hero-eyebrow">
-            <i class="bi bi-shield-fill-check"></i>
-            Admin Control Panel
+    <div class="page">
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-eyebrow">
+                <i class="bi bi-shield-fill-check"></i>
+                Admin Control Panel
+            </div>
+            <h1>Xin chào, <span>Admin</span> 👋</h1>
+            <p>Tổng quan hoạt động hệ thống trong thời gian thực</p>
+            <div class="time-chip">
+                <span class="dot"></span>
+                <span id="liveClock">--:--:--</span>
+                <span style="color:#e2e5f0;">·</span>
+                <span id="liveDate">--/--/----</span>
+            </div>
         </div>
-        <h1>Xin chào, <span>Admin</span> 👋</h1>
-        <p>Tổng quan hoạt động hệ thống trong thời gian thực</p>
-        <div class="time-chip">
-            <span class="dot"></span>
-            <span id="liveClock">--:--:--</span>
-            <span style="color:#e2e5f0;">·</span>
-            <span id="liveDate">--/--/----</span>
+
+        <!-- Stats grid -->
+        <div class="stats-grid">
+
+            <!-- Tours -->
+            <a th:href="@{/admin/tours}" href="#" class="stat-card tours">
+                <div class="card-top">
+                    <div class="card-icon"><i class="bi bi-globe2"></i></div>
+                    <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                </div>
+                <div>
+                    <div class="card-label">Tours</div>
+                    <div class="card-number" th:text="${tourCount}" data-target-val th:data-target="${tourCount}">0
+                    </div>
+                </div>
+                <div class="card-footer-row">
+                    <span>Tour du lịch</span>
+                    <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- Bookings -->
+            <a th:href="@{/admin/bookings}" href="#" class="stat-card bookings">
+                <div class="card-top">
+                    <div class="card-icon"><i class="bi bi-calendar2-check-fill"></i></div>
+                    <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                </div>
+                <div>
+                    <div class="card-label">Bookings</div>
+                    <div class="card-number" th:text="${bookingCount}" th:data-target="${bookingCount}">0</div>
+                </div>
+                <div class="card-footer-row">
+                    <span>Đặt tour</span>
+                    <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- Customers -->
+            <a th:href="@{/admin/customers}" href="#" class="stat-card customers">
+                <div class="card-top">
+                    <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+                    <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                </div>
+                <div>
+                    <div class="card-label">Customers</div>
+                    <div class="card-number" th:text="${customerCount}" th:data-target="${customerCount}">0</div>
+                </div>
+                <div class="card-footer-row">
+                    <span>Người dùng</span>
+                    <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- Tour Guides -->
+            <a th:href="@{/admin/tour-guides}" href="#" class="stat-card guides">
+                <div class="card-top">
+                    <div class="card-icon"><i class="bi bi-person-badge-fill"></i></div>
+                    <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                </div>
+                <div>
+                    <div class="card-label">Hướng dẫn viên</div>
+                    <div class="card-number" th:text="${guideCount}" th:data-target="${guideCount}">0</div>
+                </div>
+                <div class="card-footer-row">
+                    <span>HDV du lịch</span>
+                    <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- Messages -->
+            <a th:href="@{/admin/contacts}" href="#" class="stat-card messages">
+                <div class="card-top">
+                    <div class="card-icon"><i class="bi bi-envelope-fill"></i></div>
+                    <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                </div>
+                <div>
+                    <div class="card-label">Liên hệ</div>
+                    <div class="card-number" th:text="${messageCount}" th:data-target="${messageCount}">0</div>
+                </div>
+                <div class="card-footer-row">
+                    <span>Tin nhắn</span>
+                    <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
+                </div>
+            </a>
+
         </div>
-    </div>
 
-    <!-- Stats grid -->
-    <div class="stats-grid">
+        <!-- Quick actions -->
+        <div class="section-label">
+            <i class="bi bi-lightning-fill" style="color:#a5b4fc;font-size:0.85rem;"></i>
+            Thao tác nhanh
+        </div>
 
-        <!-- Tours -->
-        <a th:href="@{/admin/tours}" href="#" class="stat-card tours">
-            <div class="card-top">
-                <div class="card-icon"><i class="bi bi-globe2"></i></div>
-                <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
-            </div>
-            <div>
-                <div class="card-label">Tours</div>
-                <div class="card-number" th:text="${tourCount}">0</div>
-            </div>
-            <div class="card-footer-row">
-                <span>Tour du lịch</span>
-                <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
-            </div>
-        </a>
-
-        <!-- Bookings -->
-        <a th:href="@{/admin/bookings}" href="#" class="stat-card bookings">
-            <div class="card-top">
-                <div class="card-icon"><i class="bi bi-calendar2-check-fill"></i></div>
-                <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
-            </div>
-            <div>
-                <div class="card-label">Bookings</div>
-                <div class="card-number" th:text="${bookingCount}">0</div>
-            </div>
-            <div class="card-footer-row">
-                <span>Đặt tour</span>
-                <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
-            </div>
-        </a>
-
-        <!-- Customers -->
-        <a th:href="@{/admin/customers}" href="#" class="stat-card customers">
-            <div class="card-top">
-                <div class="card-icon"><i class="bi bi-people-fill"></i></div>
-                <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
-            </div>
-            <div>
-                <div class="card-label">Customers</div>
-                <div class="card-number" th:text="${customerCount}">0</div>
-            </div>
-            <div class="card-footer-row">
-                <span>Người dùng</span>
-                <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
-            </div>
-        </a>
-
-        <!-- Messages -->
-        <a th:href="@{/admin/contacts}" href="#" class="stat-card messages">
-            <div class="card-top">
-                <div class="card-icon"><i class="bi bi-envelope-fill"></i></div>
-                <div class="card-arrow"><i class="bi bi-arrow-up-right"></i></div>
-            </div>
-            <div>
-                <div class="card-label">Liên hệ</div>
-                <div class="card-number" th:text="${messageCount}">0</div>
-            </div>
-            <div class="card-footer-row">
-                <span>Tin nhắn</span>
-                <span class="card-link">Quản lý <i class="bi bi-arrow-right"></i></span>
-            </div>
-        </a>
+        <div class="quick-grid">
+            <a th:href="@{/admin/tours/create}" href="#" class="quick-btn">
+                <i class="bi bi-plus-circle" style="color:#818cf8;"></i>
+                Thêm tour mới
+            </a>
+            <a th:href="@{/admin/customers/create}" href="#" class="quick-btn">
+                <i class="bi bi-person-plus" style="color:#60a5fa;"></i>
+                Thêm người dùng
+            </a>
+            <a th:href="@{/admin/bookings}" href="#" class="quick-btn">
+                <i class="bi bi-clock-history" style="color:#f472b6;"></i>
+                Xem booking mới
+            </a>
+            <a th:href="@{/admin/tour-guides/create}" href="#" class="quick-btn">
+                <i class="bi bi-person-badge" style="color:#34d399;"></i>
+                Thêm HDV mới
+            </a>
+            <a th:href="@{/admin/contacts}" href="#" class="quick-btn">
+                <i class="bi bi-chat-dots" style="color:#fbbf24;"></i>
+                Xem tin nhắn
+            </a>
+        </div>
 
     </div>
 
-    <!-- Quick actions -->
-    <div class="section-label">
-        <i class="bi bi-lightning-fill" style="color:var(--accent);font-size:0.85rem;"></i>
-        Thao tác nhanh
-    </div>
+    <div th:replace="fragments/admin-footer :: adminFooter"></div>
 
-    <div class="quick-grid">
-        <a href="/admin/tours/create" class="quick-btn">
-            <i class="bi bi-plus-circle" style="color:#3b5bdb;"></i>
-            Thêm tour mới
-        </a>
-        <a th:href="@{/admin/customers/create}" href="#" class="quick-btn">
-            <i class="bi bi-person-plus" style="color:#1c7ed6;"></i>
-            Thêm người dùng
-        </a>
-        <a th:href="@{/admin/bookings}" href="#" class="quick-btn">
-            <i class="bi bi-clock-history" style="color:#e64980;"></i>
-            Xem booking mới
-        </a>
-        <a th:href="@{/admin/contacts}" href="#" class="quick-btn">
-            <i class="bi bi-chat-dots" style="color:#e67700;"></i>
-            Xem tin nhắn
-        </a>
-    </div>
+    <script>
+        /* ── Live clock ── */
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('liveClock').textContent = `${h}:${m}:${s}`;
+            document.getElementById('liveDate').textContent =
+                now.toLocaleDateString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
 
-</div>
+        /* ── Count-up animation ── */
+        function countUp(el, target, duration) {
+            const start = performance.now();
+            const from = 0;
+            function step(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.round(from + (target - from) * eased);
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
 
-<div th:replace="fragments/admin-footer :: adminFooter"></div>
+        document.querySelectorAll('.card-number[data-target]').forEach(el => {
+            const target = parseInt(el.dataset.target) || parseInt(el.textContent) || 0;
+            el.textContent = '0';
+            setTimeout(() => countUp(el, target, 1200), 600);
+        });
 
-<script>
-    function updateClock() {
-        const now = new Date();
-        const h = String(now.getHours()).padStart(2,'0');
-        const m = String(now.getMinutes()).padStart(2,'0');
-        const s = String(now.getSeconds()).padStart(2,'0');
-        document.getElementById('liveClock').textContent = `${h}:${m}:${s}`;
-        document.getElementById('liveDate').textContent =
-            now.toLocaleDateString('vi-VN', {weekday:'short', day:'2-digit', month:'2-digit', year:'numeric'});
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-</script>
+        /* ── Ripple effect on card click ── */
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('click', function (e) {
+                const rect = card.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height) * 1.5;
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
+                card.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        /* ── Floating particles ── */
+        (function () {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            let W, H, pts = [];
+
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const COUNT = 55;
+            for (let i = 0; i < COUNT; i++) {
+                pts.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight,
+                    r: Math.random() * 1.8 + 0.4,
+                    dx: (Math.random() - 0.5) * 0.35,
+                    dy: (Math.random() - 0.5) * 0.35,
+                    a: Math.random()
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
+                pts.forEach(p => {
+                    p.x += p.dx; p.y += p.dy;
+                    if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+                    if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(165,180,252,${p.a * 0.55})`;
+                    ctx.fill();
+                });
+
+                /* draw connecting lines between close particles */
+                for (let i = 0; i < pts.length; i++) {
+                    for (let j = i + 1; j < pts.length; j++) {
+                        const dx = pts[i].x - pts[j].x;
+                        const dy = pts[i].y - pts[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(pts[i].x, pts[i].y);
+                            ctx.lineTo(pts[j].x, pts[j].y);
+                            ctx.strokeStyle = `rgba(165,180,252,${(1 - dist / 120) * 0.12})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+    </script>
 
 </body>
+
 </html>

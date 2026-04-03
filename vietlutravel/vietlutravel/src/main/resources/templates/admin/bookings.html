@@ -259,6 +259,37 @@
             .topbar { flex-direction: column; align-items: flex-start; }
             .stats-bar { grid-template-columns: 1fr 1fr; }
         }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 1000; display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--surface); width: 90%; max-width: 500px;
+            border-radius: var(--radius); padding: 1.5rem;
+            box-shadow: var(--shadow-md); position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 1rem; right: 1rem;
+            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--ink-light);
+        }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.85rem; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 0.6rem; border: 1.5px solid var(--border);
+            border-radius: 8px; font-family: inherit; font-size: 0.85rem;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--accent); outline: none; }
+        .badge {
+            display: inline-block; padding: 0.25em 0.4em;
+            font-size: 0.75rem; font-weight: 700; line-height: 1;
+            text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: 0.25rem;
+        }
+        .bg-info { background-color: #0dcaf0 !important; }
+        .text-dark { color: #212529 !important; }
+        .bg-secondary { background-color: #6c757d !important; color: white; }
     </style>
 </head>
 <body>
@@ -325,6 +356,13 @@
         </div>
     </div>
 
+    <!-- Actions bar -->
+    <div style="margin-bottom: 1.5rem;" th:if="${bookings != null and !#lists.isEmpty(bookings)}">
+        <button type="button" class="btn btn-primary" onclick="openAssignModal()" style="background: var(--accent); color: white;">
+            <i class="bi bi-people-fill"></i> Gom Khách / Phân công HDV
+        </button>
+    </div>
+
     <!-- Table card -->
     <div class="card" th:unless="${bookings == null or #lists.isEmpty(bookings)}">
 
@@ -346,11 +384,15 @@
             <table id="bookingTable">
                 <thead>
                 <tr>
+                    <th style="width: 40px; text-align: center;">
+                        <input type="checkbox" id="selectAll">
+                    </th>
                     <th>Khách hàng</th>
                     <th>Tour</th>
                     <th>Ngày đặt</th>
                     <th>Ngày khởi hành</th>
                     <th>Số người</th>
+                    <th>HDV</th>
                     <th>Tổng tiền</th>
                     <th>Trạng thái</th>
                     <th style="text-align:right;">Hành động</th>
@@ -358,7 +400,12 @@
                 </thead>
                 <tbody>
                 <tr th:each="booking : ${bookings}" class="booking-row"
-                    th:attr="data-name=${booking.customer != null ? booking.customer.userName : ''},data-tour=${booking.tour != null ? booking.tour.tourName : ''},data-status=${booking.status != null ? booking.status : ''}">
+                    th:attr="data-name=${booking.customer != null ? booking.customer.userName : ''},data-tour=${booking.tour != null ? booking.tour.tourName : ''},data-tour-id=${booking.tourID},data-status=${booking.status != null ? booking.status : ''}">
+
+                    <!-- Checkbox -->
+                    <td style="text-align: center;">
+                        <input type="checkbox" class="booking-checkbox" th:value="${booking.bookingID}">
+                    </td>
 
                     <!-- Customer -->
                     <td>
@@ -396,6 +443,12 @@
                             <i class="bi bi-people" style="color:var(--ink-light);"></i>
                             <span th:text="${booking.numberOfPeople != null} ? ${booking.numberOfPeople} : '—'">1</span>
                         </span>
+                    </td>
+
+                    <!-- HDV -->
+                    <td>
+                        <span th:if="${booking.tourGuide != null}" class="badge bg-info text-dark" th:text="${booking.tourGuide.fullName}">HDV</span>
+                        <span th:unless="${booking.tourGuide != null}" class="bg-secondary badge" style="font-size: 0.70rem;">Chưa phân công</span>
                     </td>
 
                     <!-- Price -->
@@ -456,6 +509,39 @@
 
 </div>
 
+<!-- Modal Gom Khách / Phân công HDV -->
+<div class="modal-overlay" id="assignModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeAssignModal()">&times;</button>
+        <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Gom Khách & Phân công HDV</h3>
+        <p style="font-size: 0.85rem; color: var(--ink-mid); margin-bottom: 1rem;">
+            Chỉ các Booking được chọn (đánh dấu tick) mới được cập nhật.
+        </p>
+        <form th:action="@{/admin/bookings/assign-guide}" method="post" id="assignForm">
+            <div id="hiddenBookingInputs"></div>
+            
+            <div class="form-group">
+                <label>Ngày khởi hành mới (Tùy chọn)</label>
+                <input type="date" name="travelDate">
+                <p style="font-size: 0.75rem; color: var(--ink-light); margin-top: 4px;">Bỏ trống nếu giữ nguyên ngày cũ của từng Booking.</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Chọn Hướng dẫn viên</label>
+                <select name="guideId">
+                    <option value="">-- Bỏ trống nếu chưa phân công --</option>
+                    <option th:each="guide : ${guides}" th:value="${guide.guideId}" th:text="${guide.fullName}"></option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button type="button" class="btn btn-ghost" onclick="closeAssignModal()">Hủy</button>
+                <button type="submit" class="btn btn-primary" onclick="return prepareAssignForm(event)">Cập nhật</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div th:replace="fragments/admin-footer :: adminFooter"></div>
 
 <script>
@@ -488,6 +574,102 @@
     searchInput.addEventListener('input', filterTable);
     statusFilter.addEventListener('change', filterTable);
     filterTable();
+
+    // Checkbox logic
+    const selectAll = document.getElementById('selectAll');
+    const bookingCheckboxes = document.querySelectorAll('.booking-checkbox');
+
+    function updateCheckboxState() {
+        let firstCheckedTourId = null;
+        
+        for (const cb of bookingCheckboxes) {
+            if (cb.checked) {
+                const row = cb.closest('tr');
+                firstCheckedTourId = row.getAttribute('data-tour-id');
+                break;
+            }
+        }
+
+        bookingCheckboxes.forEach(cb => {
+            const row = cb.closest('tr');
+            const tourId = row.getAttribute('data-tour-id');
+            
+            if (firstCheckedTourId !== null && tourId !== firstCheckedTourId) {
+                cb.disabled = true;
+                row.style.opacity = '0.5';
+            } else {
+                cb.disabled = false;
+                row.style.opacity = '1';
+            }
+        });
+    }
+
+    bookingCheckboxes.forEach(cb => {
+        cb.addEventListener('change', updateCheckboxState);
+    });
+
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            bookingCheckboxes.forEach(cb => {
+                if(!cb.disabled && cb.closest('tr').style.display !== 'none') {
+                    cb.checked = selectAll.checked;
+                }
+            });
+            updateCheckboxState();
+        });
+    }
+
+    // Modal logic
+    const assignModal = document.getElementById('assignModal');
+    function openAssignModal() {
+        assignModal.classList.add('active');
+    }
+    function closeAssignModal() {
+        assignModal.classList.remove('active');
+    }
+
+    function prepareAssignForm(event) {
+        const hiddenInputsContainer = document.getElementById('hiddenBookingInputs');
+        hiddenInputsContainer.innerHTML = '';
+        
+        let checkedCount = 0;
+        let firstTourId = null;
+        let diffTour = false;
+
+        bookingCheckboxes.forEach(cb => {
+            if (cb.checked) {
+                checkedCount++;
+                const row = cb.closest('tr');
+                const tourId = row.getAttribute('data-tour-id');
+
+                if (firstTourId === null) {
+                    firstTourId = tourId;
+                } else if (firstTourId !== tourId) {
+                    diffTour = true;
+                }
+
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'bookingIds';
+                input.value = cb.value;
+                hiddenInputsContainer.appendChild(input);
+            }
+        });
+        
+        if (checkedCount === 0) {
+            alert('Vui lòng chọn ít nhất một booking để gom/phân công!');
+            event.preventDefault(); // Stop form submission
+            return false;
+        }
+
+        if (diffTour) {
+            alert('Lỗi: Chỉ được phép gom các Booking thuộc cùng 1 Tour!');
+            event.preventDefault();
+            return false;
+        }
+
+        return true;
+    }
 </script>
 
 </body>

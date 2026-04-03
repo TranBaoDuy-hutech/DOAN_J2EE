@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Form Văn hóa 3D</title>
+
+    <!-- Fonts + Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --ink:#0f1117;
+            --ink-mid:#4a4f63;
+            --ink-light:#9399b0;
+            --bg:#f0f2f8;
+            --surface:#ffffff;
+            --accent:#3b5bdb;
+            --accent-glow:rgba(59,91,219,0.15);
+            --border:#e2e5f0;
+            --shadow:0 2px 24px rgba(15,17,23,0.07);
+            --radius:16px;
+        }
+
+        *{box-sizing:border-box;}
+
+        body{
+            font-family:'DM Sans',sans-serif;
+            background:var(--bg);
+            padding:2rem;
+            position:relative;
+        }
+
+        /* background giống list */
+        body::before{
+            content:'';
+            position:fixed;
+            inset:0;
+            background:
+                radial-gradient(ellipse 70% 40% at 15% 5%, rgba(59,91,219,0.07), transparent),
+                radial-gradient(ellipse 50% 50% at 90% 90%, rgba(100,60,220,0.05), transparent);
+        }
+
+        body::after{
+            content:'';
+            position:fixed;
+            inset:0;
+            background-image: radial-gradient(circle, rgba(59,91,219,0.1) 1px, transparent 1px);
+            background-size:28px 28px;
+        }
+
+        .page{
+            position:relative;
+            z-index:1;
+            max-width:900px;
+            margin:auto;
+        }
+
+        /* TOPBAR */
+        .topbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:1.7rem;
+            flex-wrap:wrap;
+        }
+
+        .page-heading{
+            display:flex;
+            align-items:center;
+            gap:0.85rem;
+        }
+
+        .heading-icon{
+            width:46px;
+            height:46px;
+            border-radius:12px;
+            background:linear-gradient(135deg,#3b5bdb,#4263eb);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            font-size:1.2rem;
+            box-shadow:0 4px 14px rgba(59,91,219,0.35);
+        }
+
+        .heading-text h1{
+            font-family:'Sora';
+            font-size:1.4rem;
+            margin:0;
+        }
+
+        .heading-text p{
+            font-size:0.8rem;
+            color:var(--ink-light);
+        }
+
+        /* CARD */
+        .card{
+            background:var(--surface);
+            border-radius:var(--radius);
+            box-shadow:var(--shadow);
+            border:1px solid var(--border);
+            padding:1.5rem;
+        }
+
+        /* FORM */
+        .form-group{
+            margin-bottom:1.2rem;
+        }
+
+        .form-label{
+            font-size:0.75rem;
+            text-transform:uppercase;
+            letter-spacing:0.06em;
+            color:var(--ink-light);
+            margin-bottom:4px;
+            display:block;
+        }
+
+        .form-control{
+            width:100%;
+            padding:0.55rem 0.75rem;
+            border-radius:8px;
+            border:1.5px solid var(--border);
+            font-size:0.85rem;
+            font-family:'DM Sans';
+            background:#fafbfe;
+            outline:none;
+            transition:all 0.2s;
+        }
+
+        .form-control:focus{
+            border-color:var(--accent);
+            background:white;
+            box-shadow:0 0 0 3px var(--accent-glow);
+        }
+
+        textarea.form-control{
+            resize:none;
+        }
+
+        select.form-control{
+            appearance:none;
+            background:#fafbfe;
+        }
+
+        /* IMAGE UPLOAD */
+        .image-upload-options {
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .option-tabs {
+            display: flex;
+            background: #fafbfe;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--ink-light);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: rgba(59,91,219,0.1);
+        }
+
+        .input-option {
+            padding: 1rem;
+        }
+
+        /* BUTTON */
+        .btn{
+            font-family:'Sora';
+            font-size:0.82rem;
+            padding:0.55rem 1.1rem;
+            border-radius:8px;
+            border:none;
+            display:inline-flex;
+            align-items:center;
+            gap:0.4rem;
+            text-decoration:none;
+        }
+
+        .btn-primary{
+            background:var(--accent);
+            color:white;
+        }
+
+        .btn-ghost{
+            background:white;
+            border:1.5px solid var(--border);
+            color:var(--ink-mid);
+        }
+
+    </style>
+</head>
+<body>
+
+<div th:replace="fragments/admin-header :: adminHeader"></div>
+
+<div class="page">
+
+    <!-- TOP -->
+    <div class="topbar">
+        <div class="page-heading">
+            <div class="heading-icon">
+                <i class="bi bi-plus-circle-fill"></i>
+            </div>
+            <div class="heading-text">
+                <h1 th:text="${pageTitle}">Thêm Văn hóa</h1>
+                <p>Nhập thông tin nội dung văn hóa</p>
+            </div>
+        </div>
+
+        <a href="/admin/vanhoa3d" class="btn btn-ghost">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <!-- FORM -->
+    <div class="card">
+        <form th:action="@{/admin/vanhoa3d/save}" method="POST" enctype="multipart/form-data">
+
+            <input type="hidden" name="id" th:value="${vanHoa.id}">
+
+            <div class="form-group">
+                <label class="form-label">Tiêu đề *</label>
+                <input type="text" name="tieuDe" class="form-control"
+                       th:value="${vanHoa.tieuDe}" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mô tả</label>
+                <textarea name="moTa" class="form-control" rows="5"
+                          th:text="${vanHoa.moTa}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Danh mục</label>
+                <select name="danhMuc" class="form-control">
+                    <option value="">-- Chọn --</option>
+                    <option value="lehoi" th:selected="${vanHoa.danhMuc == 'lehoi'}">Lễ hội</option>
+                    <option value="dantoc" th:selected="${vanHoa.danhMuc == 'dantoc'}">Dân tộc</option>
+                    <option value="langnghe" th:selected="${vanHoa.danhMuc == 'langnghe'}">Làng nghề</option>
+                    <option value="sonnuoc" th:selected="${vanHoa.danhMuc == 'sonnuoc'}">Sông nước</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Video URL</label>
+                <input type="url" name="videoUrl" class="form-control"
+                       th:value="${vanHoa.videoUrl}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Hình ảnh</label>
+                <div class="image-upload-options">
+                    <div class="option-tabs">
+                        <button type="button" class="tab-btn active" onclick="showUrlInput()">Nhập URL</button>
+                        <button type="button" class="tab-btn" onclick="showFileInput()">Chọn từ máy</button>
+                    </div>
+
+                    <div id="url-input" class="input-option">
+                        <input type="text" name="hinhAnhUrl" class="form-control"
+                               th:value="${vanHoa.hinhAnh}" placeholder="https://example.com/image.jpg hoặc /image/xxx.jpg">
+                    </div>
+
+                    <div id="file-input" class="input-option" style="display: none;">
+                        <input type="file" name="hinhAnhFile" class="form-control" accept="image/*">
+                        <small class="form-text text-muted">Chọn file ảnh từ máy tính (JPG, PNG, GIF)</small>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:20px;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Lưu
+                </button>
+                <a href="/admin/vanhoa3d" class="btn btn-ghost">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+<div th:replace="fragments/admin-footer :: adminFooter"></div>
+
+<script>
+function showUrlInput() {
+    document.getElementById('url-input').style.display = 'block';
+    document.getElementById('file-input').style.display = 'none';
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.querySelectorAll('.tab-btn')[1].classList.remove('active');
+}
+
+function showFileInput() {
+    document.getElementById('url-input').style.display = 'none';
+    document.getElementById('file-input').style.display = 'block';
+    document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+}
+</script>
+
+</body>
+</html>
