@@ -10,9 +10,65 @@ An Giang là một trong những tỉnh miền Tây Nam Bộ nổi tiếng với
 Trong bối cảnh công nghệ di động và công nghệ 3D phát triển mạnh mẽ, việc ứng dụng hình ảnh 3D và ảnh 360 độ vào du lịch sẽ mang đến trải nghiệm mới mẻ, giúp du khách hình dung rõ hơn về điểm đến trước khi tham quan. Vì vậy, nhóm chọn đề tài:
 “Hệ thống du lịch 3D giới thiệu văn hóa, đặc sản và địa điểm tỉnh An Giang” nhằm vừa rèn luyện kỹ năng lập trình, vừa tạo ra sản phẩm có ý nghĩa thực tiễn trong việc quảng bá du lịch địa phương.
 # BÀI TOÁN:
-•	Làm thế nào để giới thiệu các địa điểm du lịch, đặc sản, văn hóa của An Giang một cách trực quan và sinh động hơn?
+Làm thế nào để giới thiệu các địa điểm du lịch, đặc sản, văn hóa của An Giang một cách trực quan và sinh động hơn?
+Làm sao để người dùng có thể trải nghiệm 3D, từ đó kích thích nhu cầu du lịch thực tế?
+# CÔNG NGHỆ SỬ DỤNG:
+  Backend: Spring Boot
+  
+  Ngôn ngữ: Java
+  
+  Frontend: HTML, CSS, JavaScript, Thymeleaf
+  
+  Database: MySQL
+  
+  Build tool: Apache Maven
+# TÍNH NĂNG CHÍNH:
+🌐 Xem danh sách địa điểm du lịch
 
-•	Làm sao để người dùng có thể trải nghiệm 3D, từ đó kích thích nhu cầu du lịch thực tế?
+🏞️ Trải nghiệm ảnh 360 / mô hình 3D
+
+🍜 Giới thiệu đặc sản địa phương
+
+📍 Thông tin chi tiết từng địa điểm
+
+🔍 Tìm kiếm và lọc dữ liệu
+
+👤 Quản trị (Admin)
+
+# HƯỚNG DẪN SỬ DỤNG
+1. Clone project
+
+git clone https://github.com/TranBaoDuy-hutech/DOAN_J2EE.git
+
+cd DOAN_J2EE
+
+3. Tạo database
+
+CREATE DATABASE vietlutravel3d;
+
+4. Cấu hình database
+
+Mở file:
+
+  src/main/resources/application.properties
+
+Cập nhật:
+
+  spring.datasource.url=jdbc:mysql://localhost:3306/j2ee_db
+  
+  spring.datasource.username=root
+  
+  spring.datasource.password=
+  
+  spring.jpa.hibernate.ddl-auto=update
+
+5. Chạy project
+
+mvn spring-boot:run
+
+6. Truy cập hệ thống
+
+http://localhost:8080
 
 Thanks & Regards,
 ------------------------------------------------
