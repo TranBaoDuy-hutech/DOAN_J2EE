@@ -42,6 +42,8 @@ public class EmailService {
 
             String totalPrice =
                     currencyFormat.format(booking.getTotalPrice());
+            String depositPrice =
+                    currencyFormat.format(booking.getTotalPrice() * 0.7);
 
             String htmlContent = """
                     <div style="font-family: Arial; max-width:700px; margin:auto; border:1px solid #ddd; border-radius:10px; padding:20px">
@@ -83,13 +85,23 @@ public class EmailService {
                                 </td>
                             </tr>
                             <tr>
+                                <td style="padding:10px;border:1px solid #ddd; color:#008000; font-weight:bold;">Đã thanh toán (Cọc 70%%) qua VNPAY</td>
+                                <td style="padding:10px;border:1px solid #ddd; color:#008000; font-weight:bold;">
+                                    %s VNĐ
+                                </td>
+                            </tr>
+                            <tr>
                                 <td style="padding:10px;border:1px solid #ddd;">Ngày đặt</td>
                                 <td style="padding:10px;border:1px solid #ddd;">%s</td>
                             </tr>
                         </table>
-
+                        
+                        <p style="margin-top:15px; color:#008000; font-weight:bold;">
+                            Giao dịch thanh toán cọc 70%% đã được xác nhận thành công.
+                        </p>
+                        
                         <p style="margin-top:20px; color:#666;">
-                            <b>Lưu ý:</b> Hợp đồng tour sẽ được gửi qua email sau khi admin xác nhận hướng dẫn viên và duyệt booking.
+                            <b>Lưu ý:</b> Số tiền còn lại (30%%) sẽ được thanh toán trực tiếp cho Hướng dẫn viên khi bắt đầu tour. Hợp đồng tour sẽ được gửi qua email sau khi admin duyệt booking.
                         </p>
 
                         <hr>
@@ -110,6 +122,7 @@ public class EmailService {
                     booking.getTravelDate().format(dateFormat),
                     booking.getNumberOfPeople(),
                     totalPrice,
+                    depositPrice,
                     booking.getBookingDate().format(dateFormat)
             );
 
@@ -148,6 +161,8 @@ public class EmailService {
 
             String totalPrice =
                     currencyFormat.format(booking.getTotalPrice());
+            String depositPrice =
+                    currencyFormat.format(booking.getTotalPrice() * 0.7);
 
             String guideName = booking.getTourGuide() != null
                     ? booking.getTourGuide().getFullName()
@@ -196,11 +211,17 @@ public class EmailService {
                                     %s VNĐ
                                 </td>
                             </tr>
+                            <tr>
+                                <td style="padding:10px;border:1px solid #ddd; color:#008000; font-weight:bold;">Đã thanh toán (Cọc 70%%)</td>
+                                <td style="padding:10px;border:1px solid #ddd; color:#008000; font-weight:bold;">
+                                    %s VNĐ
+                                </td>
+                            </tr>
                         </table>
 
                         <p style="margin-top:20px">
                             📎 <b>Hợp đồng tour chi tiết</b> đã được đính kèm trong email này.
-                            Vui lòng kiểm tra và chuẩn bị cho chuyến đi!
+                            Vui lòng kiểm tra và chuẩn bị cho chuyến đi! Số tiền còn lại (30%%) sẽ được thanh toán trực tiếp cho Hướng dẫn viên khi bắt đầu tour.
                         </p>
 
                         <hr>
@@ -221,7 +242,8 @@ public class EmailService {
                     booking.getTravelDate().format(dateFormat),
                     booking.getNumberOfPeople(),
                     guideName,
-                    totalPrice
+                    totalPrice,
+                    depositPrice
             );
 
             helper.setTo(booking.getCustomer().getEmail());

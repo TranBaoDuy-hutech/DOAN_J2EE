@@ -80,6 +80,11 @@
             border: 1.5px solid var(--border); box-shadow: var(--shadow-sm);
         }
         .btn-ghost:hover { background: #eceef7; color: var(--ink); border-color: #c8cce0; }
+        .btn-primary {
+            background: var(--accent); color: #fff;
+            box-shadow: 0 4px 14px rgba(67,97,238,.35);
+        }
+        .btn-primary:hover { background: #3454d1; }
 
         .alert {
             padding: .85rem 1.2rem; border-radius: 10px;
@@ -89,6 +94,22 @@
         }
         .alert-success { background: #d8f5e0; color: #176332; border-color: #a9e6b8; }
         .alert-danger  { background: #ffe3e3; color: #9b1b1b; border-color: #ffb8b8; }
+
+        /* ── BULK ACTION BAR ── */
+        .bulk-bar {
+            display: none; align-items: center; gap: .75rem;
+            background: #fff8e7; border: 1.5px solid #f4c875;
+            border-radius: 10px; padding: .65rem 1.1rem;
+            margin-bottom: 1rem; font-size: .82rem; font-weight: 600; color: #633806;
+            flex-wrap: wrap;
+        }
+        .bulk-bar.active { display: flex; }
+        .bulk-bar .bulk-cnt { font-weight: 800; color: #412402; }
+        .bulk-bar .sep { color: #f4c875; }
+        .btn-ok  { background: #d8f5e0; color: #176332; border: 1px solid #a9e6b8; border-radius: 8px; }
+        .btn-ok:hover  { background: #c5edd5; }
+        .btn-err { background: #ffe3e3; color: #9b1b1b; border: 1px solid #ffb8b8; border-radius: 8px; }
+        .btn-err:hover { background: #ffd5d5; }
 
         .stats-bar {
             display: grid;
@@ -156,9 +177,18 @@
             border-bottom: 1px solid var(--border); background: #fafbff;
             text-align: left; white-space: nowrap;
         }
-        tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+        /* sortable column header */
+        thead th.sortable { cursor: pointer; user-select: none; }
+        thead th.sortable:hover { color: var(--accent); }
+        thead th.sortable .sort-icon { margin-left: .3rem; opacity: .4; }
+        thead th.sortable.asc .sort-icon::after  { content: '↑'; opacity: 1; }
+        thead th.sortable.desc .sort-icon::after { content: '↓'; opacity: 1; }
+        thead th.sortable:not(.asc):not(.desc) .sort-icon::after { content: '↕'; }
+
+        tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; cursor: pointer; }
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: #f7f8ff; }
+        tbody tr.row-selected { background: #eef0fd; }
         td { padding: .85rem 1rem; font-size: .875rem; color: var(--ink); vertical-align: middle; }
 
         .user-cell { display: flex; align-items: center; gap: .75rem; }
@@ -177,7 +207,6 @@
 
         .date-cell { font-size: .8rem; color: var(--ink-mid); font-weight: 500; white-space: nowrap; }
 
-        /* Ngày khởi hành badge nổi bật */
         .travel-badge {
             display: inline-flex; align-items: center; gap: .35rem;
             background: var(--accent-soft); color: var(--accent);
@@ -208,7 +237,10 @@
         .status-badge.pending   { background: #fff4e0; color: #8a5000; }
         .status-badge.confirmed { background: #d8f5e0; color: #176332; }
         .status-badge.cancelled { background: #ffe3e3; color: #9b1b1b; }
+        .status-badge.paid      { background: #dff3ff; color: #0a5a8a; }
+        .status-badge.failed    { background: #ffe3e3; color: #9b1b1b; }
 
+        /* ── INLINE STATUS SELECT ── */
         .status-form { display: flex; align-items: center; gap: .35rem; }
         .status-select {
             padding: .3rem 1.8rem .3rem .6rem;
@@ -247,20 +279,16 @@
         .empty-state h4 { font-weight: 700; color: var(--ink-mid); font-size: 1rem; margin-bottom: .35rem; }
         .empty-state p  { font-size: .85rem; }
 
-        @media (max-width: 1024px) {
-            thead th:nth-child(4), td:nth-child(4) { display: none; }
-        }
-        @media (max-width: 800px) {
-            thead th:nth-child(5), td:nth-child(5),
-            thead th:nth-child(6), td:nth-child(6) { display: none; }
-        }
         @media (max-width: 640px) {
             body { padding: 1rem 1rem 2rem; }
             .topbar { flex-direction: column; align-items: flex-start; }
             .stats-bar { grid-template-columns: 1fr 1fr; }
         }
 
-        /* Modal styles */
+        /* hint "click để xem chi tiết" */
+        .row-hint { font-size: .68rem; color: var(--ink-light); font-style: italic; margin-top: 2px; }
+
+        /* ── MODAL ── */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5);
             z-index: 1000; display: none; align-items: center; justify-content: center;
@@ -282,11 +310,58 @@
             border-radius: 8px; font-family: inherit; font-size: 0.85rem;
         }
         .form-group input:focus, .form-group select:focus { border-color: var(--accent); outline: none; }
-        .badge {
-            display: inline-block; padding: 0.25em 0.4em;
-            font-size: 0.75rem; font-weight: 700; line-height: 1;
-            text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: 0.25rem;
+
+        /* ── DRAWER (chi tiết booking) ── */
+        .drawer-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,.35);
+            z-index: 900; display: none;
         }
+        .drawer-overlay.active { display: block; }
+        .drawer {
+            position: fixed; top: 0; right: 0; bottom: 0; width: 360px;
+            background: var(--surface); box-shadow: -8px 0 32px rgba(13,15,20,.12);
+            z-index: 901; transform: translateX(100%);
+            transition: transform .25s cubic-bezier(.4,0,.2,1);
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .drawer.active { transform: none; }
+        .drawer-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
+        }
+        .drawer-head h3 { font-size: 1rem; font-weight: 800; letter-spacing: -.02em; }
+        .drawer-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--ink-light); line-height: 1; }
+        .drawer-body { flex: 1; overflow-y: auto; padding: 1.25rem; }
+        .drawer-section { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-light); margin: 1.1rem 0 .5rem; }
+        .drawer-row { display: flex; justify-content: space-between; align-items: center; padding: .4rem 0; border-bottom: 1px solid var(--border); }
+        .drawer-row:last-child { border-bottom: none; }
+        .drawer-lbl { font-size: .78rem; color: var(--ink-mid); }
+        .drawer-val { font-size: .78rem; font-weight: 600; text-align: right; }
+        .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border); display: flex; gap: .5rem; flex-shrink: 0; }
+        .drawer-footer .btn { flex: 1; justify-content: center; }
+
+        /* ── TOAST ── */
+        .toast-stack {
+            position: fixed; bottom: 1.5rem; right: 1.5rem;
+            z-index: 9999; display: flex; flex-direction: column; gap: .5rem;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--ink); color: #fff;
+            padding: .65rem 1rem; border-radius: 10px;
+            font-size: .82rem; font-weight: 600;
+            display: flex; align-items: center; gap: .5rem;
+            box-shadow: 0 4px 20px rgba(13,15,20,.25);
+            transform: translateY(12px) scale(.97); opacity: 0;
+            transition: all .22s cubic-bezier(.4,0,.2,1);
+            pointer-events: none;
+        }
+        .toast.show { transform: none; opacity: 1; }
+        .toast.t-ok   { background: #176332; }
+        .toast.t-warn { background: #8a5000; }
+        .toast.t-err  { background: #9b1b1b; }
+
+        .badge { display: inline-block; padding: 0.25em 0.4em; font-size: 0.75rem; font-weight: 700; line-height: 1; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: 0.25rem; }
         .bg-info { background-color: #0dcaf0 !important; }
         .text-dark { color: #212529 !important; }
         .bg-secondary { background-color: #6c757d !important; color: white; }
@@ -311,6 +386,10 @@
             <a th:href="@{/admin}" href="#" class="btn btn-ghost">
                 <i class="bi bi-layout-sidebar"></i> Dashboard
             </a>
+            <button type="button" class="btn btn-primary" onclick="openAssignModal()"
+                    th:if="${bookings != null and !#lists.isEmpty(bookings)}">
+                <i class="bi bi-people-fill"></i> Gom Khách / Phân công HDV
+            </button>
         </div>
     </div>
 
@@ -356,10 +435,28 @@
         </div>
     </div>
 
-    <!-- Actions bar -->
-    <div style="margin-bottom: 1.5rem;" th:if="${bookings != null and !#lists.isEmpty(bookings)}">
-        <button type="button" class="btn btn-primary" onclick="openAssignModal()" style="background: var(--accent); color: white;">
-            <i class="bi bi-people-fill"></i> Gom Khách / Phân công HDV
+    <!-- ── BULK ACTION BAR ── -->
+    <div class="bulk-bar" id="bulkBar" th:if="${bookings != null and !#lists.isEmpty(bookings)}">
+        <i class="bi bi-check-square-fill"></i>
+        Đã chọn <span class="bulk-cnt" id="bulkCount">0</span> booking
+        <span class="sep">|</span>
+        <form th:action="@{/admin/bookings/bulk-confirm}" method="post" id="bulkConfirmForm" style="display:inline;">
+            <div id="bulkConfirmInputs"></div>
+            <button type="submit" class="btn btn-ok btn-sm" onclick="return injectBulkIds('bulkConfirmInputs')">
+                <i class="bi bi-check-circle"></i> Confirm tất cả
+            </button>
+        </form>
+        <form th:action="@{/admin/bookings/bulk-cancel}" method="post" id="bulkCancelForm" style="display:inline;">
+            <div id="bulkCancelInputs"></div>
+            <button type="submit" class="btn btn-err btn-sm" onclick="return injectBulkIds('bulkCancelInputs') && confirm('Huỷ ' + selectedIds.size + ' booking?')">
+                <i class="bi bi-x-circle"></i> Huỷ tất cả
+            </button>
+        </form>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="openAssignModal()">
+            <i class="bi bi-person-check"></i> Phân công HDV
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="clearSelection()" style="margin-left:auto;">
+            <i class="bi bi-x"></i> Bỏ chọn
         </button>
     </div>
 
@@ -369,13 +466,21 @@
         <div class="filter-bar">
             <div class="search-wrap">
                 <i class="bi bi-search"></i>
-                <input type="text" id="searchInput" placeholder="Tìm theo khách hàng, tour...">
+                <input type="text" id="searchInput" placeholder="Tìm theo khách hàng, tour, email...">
             </div>
             <select class="filter-select" id="statusFilter">
                 <option value="">Tất cả trạng thái</option>
                 <option value="Pending">Pending</option>
                 <option value="Confirmed">Confirmed</option>
+                <option value="Paid 70% Deposit">Paid 70% Deposit</option>
+                <option value="Paid 100%">Paid 100%</option>
+                <option value="Payment Failed">Payment Failed</option>
                 <option value="Cancelled">Cancelled</option>
+            </select>
+            <select class="filter-select" id="hdvFilter">
+                <option value="">Tất cả HDV</option>
+                <option th:each="guide : ${guides}" th:value="${guide.fullName}" th:text="${guide.fullName}"></option>
+                <option value="__none__">Chưa phân công</option>
             </select>
             <span class="filter-count" id="filterCount"></span>
         </div>
@@ -385,26 +490,36 @@
                 <thead>
                 <tr>
                     <th style="width: 40px; text-align: center;">
-                        <input type="checkbox" id="selectAll">
+                        <input type="checkbox" id="selectAll" title="Chọn tất cả">
                     </th>
-                    <th>Khách hàng</th>
-                    <th>Tour</th>
-                    <th>Ngày đặt</th>
-                    <th>Ngày khởi hành</th>
-                    <th>Số người</th>
-                    <th>HDV</th>
-                    <th>Tổng tiền</th>
+                    <th class="sortable" data-col="name">Khách hàng <span class="sort-icon"></span></th>
+                    <th class="sortable" data-col="tour">Tour <span class="sort-icon"></span></th>
+                    <th class="sortable" data-col="travel">Khởi hành <span class="sort-icon"></span></th>
+                    <th class="sortable" data-col="price">Tổng tiền <span class="sort-icon"></span></th>
                     <th>Trạng thái</th>
                     <th style="text-align:right;">Hành động</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="booking : ${bookings}" class="booking-row"
-                    th:attr="data-name=${booking.customer != null ? booking.customer.userName : ''},data-tour=${booking.tour != null ? booking.tour.tourName : ''},data-tour-id=${booking.tourID},data-status=${booking.status != null ? booking.status : ''}">
+                    th:attr="data-name=${booking.customer != null ? booking.customer.userName : ''},
+                             data-tour=${booking.tour != null ? booking.tour.tourName : ''},
+                             data-email=${booking.customer != null ? booking.customer.email : ''},
+                             data-tour-id=${booking.tourID},
+                             data-status=${booking.status != null ? booking.status : ''},
+                             data-hdv=${booking.tourGuide != null ? booking.tourGuide.fullName : '__none__'},
+                             data-price=${booking.totalPrice != null ? booking.totalPrice : 0},
+                             data-booked=${booking.bookingDate != null ? booking.bookingDate : ''},
+                             data-travel=${booking.travelDate != null ? booking.travelDate : ''},
+                             data-booking-id=${booking.bookingID},
+                             data-guide-name=${booking.tourGuide != null ? booking.tourGuide.fullName : ''},
+                             data-ppl=${booking.numberOfPeople != null ? booking.numberOfPeople : 0}"
+                    onclick="openDrawer(this)">
 
                     <!-- Checkbox -->
-                    <td style="text-align: center;">
-                        <input type="checkbox" class="booking-checkbox" th:value="${booking.bookingID}">
+                    <td style="text-align: center;" onclick="event.stopPropagation()">
+                        <input type="checkbox" class="booking-checkbox" th:value="${booking.bookingID}"
+                               onclick="event.stopPropagation()">
                     </td>
 
                     <!-- Customer -->
@@ -423,12 +538,10 @@
                     <!-- Tour -->
                     <td>
                         <div class="tour-name" th:text="${booking.tour != null and booking.tour.tourName != null} ? ${booking.tour.tourName} : 'Tour đã xóa'">Tên tour</div>
+                        <div class="row-hint">click để xem chi tiết</div>
                     </td>
 
-                    <!-- Booking date -->
-                    <td class="date-cell" th:text="${booking.bookingDate != null} ? ${booking.bookingDate} : '—'">—</td>
-
-                    <!-- Travel date -->
+                    <!-- Travel date — giữ lại, gọn hơn -->
                     <td>
                         <span th:if="${booking.travelDate != null}" class="travel-badge">
                             <i class="bi bi-airplane-fill"></i>
@@ -437,54 +550,36 @@
                         <span th:if="${booking.travelDate == null}" class="no-date">Chưa chọn</span>
                     </td>
 
-                    <!-- People -->
-                    <td>
-                        <span class="people-cell">
-                            <i class="bi bi-people" style="color:var(--ink-light);"></i>
-                            <span th:text="${booking.numberOfPeople != null} ? ${booking.numberOfPeople} : '—'">1</span>
-                        </span>
-                    </td>
-
-                    <!-- HDV -->
-                    <td>
-                        <span th:if="${booking.tourGuide != null}" class="badge bg-info text-dark" th:text="${booking.tourGuide.fullName}">HDV</span>
-                        <span th:unless="${booking.tourGuide != null}" class="bg-secondary badge" style="font-size: 0.70rem;">Chưa phân công</span>
-                    </td>
-
                     <!-- Price -->
                     <td>
                         <span class="price">
-                            <span class="price" th:text="${booking.totalPrice != null} ? ${#numbers.formatDecimal(booking.totalPrice, 0, 'POINT', 0, 'NONE')} + ' ₫' : '0 ₫'">0 ₫</span>
+                            <span th:text="${booking.totalPrice != null} ? ${#numbers.formatDecimal(booking.totalPrice, 0, 'POINT', 0, 'NONE')} + ' ₫' : '0 ₫'">0 ₫</span>
                         </span>
                     </td>
 
-                    <!-- Status -->
-                    <td>
-                        <span th:with="st=${booking.status != null ? booking.status : 'Pending'}"
-                              th:class="'status-badge ' + (${st == 'Confirmed'} ? 'confirmed' : (${st == 'Cancelled'} ? 'cancelled' : 'pending'))">
-                            <i th:class="'bi ' + (${st == 'Confirmed'} ? 'bi-check-circle-fill' : (${st == 'Cancelled'} ? 'bi-x-circle-fill' : 'bi-clock-fill'))"></i>
-                            <span th:text="${st}">Pending</span>
-                        </span>
+                    <!-- Status — inline quick-change -->
+                    <td onclick="event.stopPropagation()">
+                        <form th:action="@{/admin/bookings/{id}/update-status(id=${booking.bookingID})}"
+                              method="post" class="status-form">
+                            <select name="status" class="status-select"
+                                    onchange="this.form.submit(); showToast('Đã cập nhật trạng thái','t-ok')">
+                                <option value="Pending"          th:selected="${booking.status == 'Pending'}">⏳ Pending</option>
+                                <option value="Confirmed"        th:selected="${booking.status == 'Confirmed'}">✅ Confirmed</option>
+                                <option value="Paid 70% Deposit" th:selected="${booking.status == 'Paid 70% Deposit'}">💳 Paid 70%</option>
+                                <option value="Paid 100%"        th:selected="${booking.status == 'Paid 100%'}">💰 Paid 100%</option>
+                                <option value="Payment Failed"   th:selected="${booking.status == 'Payment Failed'}">❌ Pmt Failed</option>
+                                <option value="Cancelled"        th:selected="${booking.status == 'Cancelled'}">🚫 Cancelled</option>
+                            </select>
+                        </form>
                     </td>
 
                     <!-- Actions -->
-                    <td>
+                    <td onclick="event.stopPropagation()">
                         <div class="actions" style="justify-content:flex-end;">
                             <a th:href="@{/admin/bookings/{id}(id=${booking.bookingID})}"
                                href="#" class="icon-btn view" title="Xem chi tiết">
                                 <i class="bi bi-eye"></i>
                             </a>
-                            <form th:action="@{/admin/bookings/{id}/update-status(id=${booking.bookingID})}"
-                                  method="post" class="status-form">
-                                <select name="status" class="status-select">
-                                    <option value="Pending"   th:selected="${booking.status == 'Pending'}">Pending</option>
-                                    <option value="Confirmed" th:selected="${booking.status == 'Confirmed'}">Confirmed</option>
-                                    <option value="Cancelled" th:selected="${booking.status == 'Cancelled'}">Cancelled</option>
-                                </select>
-                                <button type="submit" class="icon-btn sync" title="Lưu trạng thái">
-                                    <i class="bi bi-arrow-repeat"></i>
-                                </button>
-                            </form>
                             <span class="icon-btn del" title="Xóa">
                                 <form th:action="@{/admin/bookings/{id}/delete(id=${booking.bookingID})}"
                                       method="post"
@@ -509,23 +604,32 @@
 
 </div>
 
-<!-- Modal Gom Khách / Phân công HDV -->
+<!-- ── DRAWER CHI TIẾT BOOKING ── -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawerPanel">
+    <div class="drawer-head">
+        <h3 id="drawerTitle">Chi tiết Booking</h3>
+        <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <div class="drawer-footer" id="drawerFooter"></div>
+</div>
+
+<!-- ── MODAL GOM KHÁCH / PHÂN CÔNG HDV ── -->
 <div class="modal-overlay" id="assignModal">
     <div class="modal-content">
         <button class="modal-close" onclick="closeAssignModal()">&times;</button>
-        <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Gom Khách & Phân công HDV</h3>
-        <p style="font-size: 0.85rem; color: var(--ink-mid); margin-bottom: 1rem;">
-            Chỉ các Booking được chọn (đánh dấu tick) mới được cập nhật.
+        <h3 style="margin-bottom: .3rem; font-size: 1.1rem; font-weight: 800;">Gom Khách &amp; Phân công HDV</h3>
+        <p style="font-size: 0.82rem; color: var(--ink-mid); margin-bottom: 1.1rem;">
+            Chỉ các Booking được tích chọn mới được cập nhật.
         </p>
         <form th:action="@{/admin/bookings/assign-guide}" method="post" id="assignForm">
             <div id="hiddenBookingInputs"></div>
-            
             <div class="form-group">
                 <label>Ngày khởi hành mới (Tùy chọn)</label>
                 <input type="date" name="travelDate">
                 <p style="font-size: 0.75rem; color: var(--ink-light); margin-top: 4px;">Bỏ trống nếu giữ nguyên ngày cũ của từng Booking.</p>
             </div>
-            
             <div class="form-group">
                 <label>Chọn Hướng dẫn viên</label>
                 <select name="guideId">
@@ -533,143 +637,293 @@
                     <option th:each="guide : ${guides}" th:value="${guide.guideId}" th:text="${guide.fullName}"></option>
                 </select>
             </div>
-            
-            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.25rem;">
                 <button type="button" class="btn btn-ghost" onclick="closeAssignModal()">Hủy</button>
-                <button type="submit" class="btn btn-primary" onclick="return prepareAssignForm(event)">Cập nhật</button>
+                <button type="submit" class="btn btn-primary" onclick="return prepareAssignForm(event)">
+                    <i class="bi bi-check2"></i> Cập nhật
+                </button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- ── TOAST STACK ── -->
+<div class="toast-stack" id="toastStack"></div>
+
 <div th:replace="fragments/admin-footer :: adminFooter"></div>
 
 <script>
+    /* ─────────────────────────────────────────
+       FILTER + SEARCH + HDV FILTER
+    ───────────────────────────────────────── */
     const searchInput  = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
+    const hdvFilter    = document.getElementById('hdvFilter');
     const rows         = document.querySelectorAll('.booking-row');
     const countEl      = document.getElementById('filterCount');
 
     function filterTable() {
         const q      = searchInput.value.toLowerCase().trim();
         const status = statusFilter.value;
+        const hdv    = hdvFilter ? hdvFilter.value : '';
         let visible  = 0;
 
         rows.forEach(row => {
-            const name = (row.dataset.name  || '').toLowerCase();
-            const tour = (row.dataset.tour  || '').toLowerCase();
-            const st   =  row.dataset.status || '';
+            const name  = (row.dataset.name  || '').toLowerCase();
+            const tour  = (row.dataset.tour  || '').toLowerCase();
+            const email = (row.dataset.email || '').toLowerCase();
+            const st    =  row.dataset.status || '';
+            const rHdv  =  row.dataset.hdv    || '__none__';
 
-            const matchSearch = !q || name.includes(q) || tour.includes(q);
+            const matchSearch = !q || name.includes(q) || tour.includes(q) || email.includes(q);
             const matchStatus = !status || st === status;
+            const matchHdv    = !hdv    || rHdv === hdv;
 
-            const show = matchSearch && matchStatus;
+            const show = matchSearch && matchStatus && matchHdv;
             row.style.display = show ? '' : 'none';
             if (show) visible++;
         });
 
-        countEl.textContent = 'Hien thi ' + visible + ' / ' + rows.length + ' booking';
+        countEl.textContent = 'Hiển thị ' + visible + ' / ' + rows.length + ' booking';
     }
 
-    searchInput.addEventListener('input', filterTable);
-    statusFilter.addEventListener('change', filterTable);
+    if (searchInput)  searchInput.addEventListener('input', filterTable);
+    if (statusFilter) statusFilter.addEventListener('change', filterTable);
+    if (hdvFilter)    hdvFilter.addEventListener('change', filterTable);
     filterTable();
 
-    // Checkbox logic
-    const selectAll = document.getElementById('selectAll');
-    const bookingCheckboxes = document.querySelectorAll('.booking-checkbox');
-
-    function updateCheckboxState() {
-        let firstCheckedTourId = null;
-        
-        for (const cb of bookingCheckboxes) {
-            if (cb.checked) {
-                const row = cb.closest('tr');
-                firstCheckedTourId = row.getAttribute('data-tour-id');
-                break;
-            }
-        }
-
-        bookingCheckboxes.forEach(cb => {
-            const row = cb.closest('tr');
-            const tourId = row.getAttribute('data-tour-id');
-            
-            if (firstCheckedTourId !== null && tourId !== firstCheckedTourId) {
-                cb.disabled = true;
-                row.style.opacity = '0.5';
-            } else {
-                cb.disabled = false;
-                row.style.opacity = '1';
-            }
+    /* ─────────────────────────────────────────
+       SORT BY COLUMN
+    ───────────────────────────────────────── */
+    let sortCol = null, sortDir = 1;
+    document.querySelectorAll('thead th.sortable').forEach(th => {
+        th.addEventListener('click', () => {
+            const col = th.dataset.col;
+            if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+            document.querySelectorAll('thead th.sortable').forEach(t => t.classList.remove('asc','desc'));
+            th.classList.add(sortDir === 1 ? 'asc' : 'desc');
+            sortTable(col, sortDir);
         });
+    });
+
+    function sortTable(col, dir) {
+        const tbody = document.querySelector('#bookingTable tbody');
+        const rowsArr = Array.from(rows);
+        rowsArr.sort((a, b) => {
+            let va = a.dataset[col] || '';
+            let vb = b.dataset[col] || '';
+            if (col === 'price') { va = parseFloat(va)||0; vb = parseFloat(vb)||0; return (va - vb) * dir; }
+            return va.localeCompare(vb, 'vi') * dir;
+        });
+        rowsArr.forEach(r => tbody.appendChild(r));
     }
 
-    bookingCheckboxes.forEach(cb => {
-        cb.addEventListener('change', updateCheckboxState);
+    /* ─────────────────────────────────────────
+       CHECKBOX + BULK SELECTION
+    ───────────────────────────────────────── */
+    const selectAll       = document.getElementById('selectAll');
+    const bulkBar         = document.getElementById('bulkBar');
+    const bulkCountEl     = document.getElementById('bulkCount');
+    let selectedIds       = new Set();
+
+    function updateBulkBar() {
+        if (!bulkBar) return;
+        if (selectedIds.size > 0) {
+            bulkBar.classList.add('active');
+            bulkCountEl.textContent = selectedIds.size;
+        } else {
+            bulkBar.classList.remove('active');
+        }
+    }
+
+    function clearSelection() {
+        selectedIds.clear();
+        document.querySelectorAll('.booking-checkbox').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.booking-row').forEach(r => r.classList.remove('row-selected'));
+        if (selectAll) selectAll.checked = false;
+        updateBulkBar();
+    }
+
+    document.querySelectorAll('.booking-checkbox').forEach(cb => {
+        cb.addEventListener('change', function () {
+            const id = parseInt(this.value);
+            const row = this.closest('tr');
+            if (this.checked) { selectedIds.add(id); row.classList.add('row-selected'); }
+            else              { selectedIds.delete(id); row.classList.remove('row-selected'); }
+
+            // Same-tour constraint
+            enforceSameTour();
+            updateBulkBar();
+        });
     });
 
     if (selectAll) {
-        selectAll.addEventListener('change', function() {
-            bookingCheckboxes.forEach(cb => {
-                if(!cb.disabled && cb.closest('tr').style.display !== 'none') {
-                    cb.checked = selectAll.checked;
+        selectAll.addEventListener('change', function () {
+            document.querySelectorAll('.booking-checkbox').forEach(cb => {
+                if (!cb.disabled && cb.closest('tr').style.display !== 'none') {
+                    cb.checked = this.checked;
+                    const id = parseInt(cb.value);
+                    const row = cb.closest('tr');
+                    if (this.checked) { selectedIds.add(id); row.classList.add('row-selected'); }
+                    else              { selectedIds.delete(id); row.classList.remove('row-selected'); }
                 }
             });
-            updateCheckboxState();
+            enforceSameTour();
+            updateBulkBar();
         });
     }
 
-    // Modal logic
-    const assignModal = document.getElementById('assignModal');
-    function openAssignModal() {
-        assignModal.classList.add('active');
-    }
-    function closeAssignModal() {
-        assignModal.classList.remove('active');
-    }
-
-    function prepareAssignForm(event) {
-        const hiddenInputsContainer = document.getElementById('hiddenBookingInputs');
-        hiddenInputsContainer.innerHTML = '';
-        
-        let checkedCount = 0;
+    function enforceSameTour() {
         let firstTourId = null;
-        let diffTour = false;
-
-        bookingCheckboxes.forEach(cb => {
-            if (cb.checked) {
-                checkedCount++;
-                const row = cb.closest('tr');
-                const tourId = row.getAttribute('data-tour-id');
-
-                if (firstTourId === null) {
-                    firstTourId = tourId;
-                } else if (firstTourId !== tourId) {
-                    diffTour = true;
-                }
-
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'bookingIds';
-                input.value = cb.value;
-                hiddenInputsContainer.appendChild(input);
+        document.querySelectorAll('.booking-checkbox').forEach(cb => {
+            if (cb.checked) { firstTourId = cb.closest('tr').dataset.tourId; return false; }
+        });
+        document.querySelectorAll('.booking-checkbox').forEach(cb => {
+            const row = cb.closest('tr');
+            if (firstTourId && row.dataset.tourId !== firstTourId) {
+                cb.disabled = true; row.style.opacity = '.5';
+            } else {
+                cb.disabled = false; row.style.opacity = '1';
             }
         });
-        
-        if (checkedCount === 0) {
-            alert('Vui lòng chọn ít nhất một booking để gom/phân công!');
-            event.preventDefault(); // Stop form submission
-            return false;
-        }
+    }
 
-        if (diffTour) {
-            alert('Lỗi: Chỉ được phép gom các Booking thuộc cùng 1 Tour!');
-            event.preventDefault();
-            return false;
-        }
-
+    function injectBulkIds(containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        selectedIds.forEach(id => {
+            const inp = document.createElement('input');
+            inp.type = 'hidden'; inp.name = 'bookingIds'; inp.value = id;
+            container.appendChild(inp);
+        });
+        if (selectedIds.size === 0) { showToast('Chọn ít nhất 1 booking!', 't-warn'); return false; }
         return true;
     }
+
+    /* ─────────────────────────────────────────
+       DRAWER CHI TIẾT
+    ───────────────────────────────────────── */
+    function openDrawer(row) {
+        const d = row.dataset;
+        document.getElementById('drawerTitle').textContent = 'Booking #' + d.bookingId;
+
+        const stClass = {
+            'Confirmed':'confirmed','Pending':'pending','Cancelled':'cancelled',
+            'Paid 70% Deposit':'paid','Paid 100%':'paid','Payment Failed':'failed'
+        }[d.status] || 'pending';
+
+        const avatarBg = row.querySelector('.avatar').style.background;
+
+        document.getElementById('drawerBody').innerHTML = `
+            <div style="display:flex;align-items:center;gap:.85rem;padding:.25rem 0 1.1rem;border-bottom:1px solid var(--border);margin-bottom:.75rem;">
+                <div style="width:48px;height:48px;border-radius:12px;background:${avatarBg};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;color:#fff;flex-shrink:0;">
+                    ${(d.name||'K')[0].toUpperCase()}
+                </div>
+                <div>
+                    <div style="font-weight:800;font-size:1rem;line-height:1.2;">${d.name||'Khách vãng lai'}</div>
+                    <div style="font-size:.75rem;color:var(--ink-light);margin-top:2px;">${d.email||'—'}</div>
+                </div>
+            </div>
+
+            <div class="drawer-section">Thông tin booking</div>
+            <div class="drawer-row"><span class="drawer-lbl">Tour</span><span class="drawer-val">${d.tour||'—'}</span></div>
+            <div class="drawer-row"><span class="drawer-lbl">Ngày đặt</span><span class="drawer-val">${d.booked||'—'}</span></div>
+            <div class="drawer-row"><span class="drawer-lbl">Ngày khởi hành</span><span class="drawer-val">${d.travel||'Chưa chọn'}</span></div>
+            <div class="drawer-row"><span class="drawer-lbl">Số người</span><span class="drawer-val">${d.ppl||'—'} người</span></div>
+            <div class="drawer-row"><span class="drawer-lbl">Hướng dẫn viên</span>
+                <span class="drawer-val">${d.guideName
+                    ? '<span style="background:#e0f7fa;color:#00695c;padding:.15rem .55rem;border-radius:5px;font-size:.78rem;font-weight:700;">'+d.guideName+'</span>'
+                    : '<span style="color:var(--ink-light);font-style:italic;font-size:.78rem;">Chưa phân công</span>'}</span>
+            </div>
+            <div class="drawer-row"><span class="drawer-lbl">Tổng tiền</span>
+                <span class="drawer-val" style="color:var(--accent);font-size:.95rem;">
+                    ${parseInt(d.price||0).toLocaleString('vi-VN')} ₫
+                </span>
+            </div>
+
+            <div class="drawer-section">Cập nhật trạng thái</div>
+            <form action="/admin/bookings/${d.bookingId}/update-status" method="post"
+                  style="display:flex;gap:.5rem;align-items:center;">
+                <select name="status" class="status-select" style="flex:1;padding:.45rem 2rem .45rem .7rem;">
+                    <option value="Pending"          ${d.status==='Pending'?'selected':''}>⏳ Pending</option>
+                    <option value="Confirmed"        ${d.status==='Confirmed'?'selected':''}>✅ Confirmed</option>
+                    <option value="Paid 70% Deposit" ${d.status==='Paid 70% Deposit'?'selected':''}>💳 Paid 70%</option>
+                    <option value="Paid 100%"        ${d.status==='Paid 100%'?'selected':''}>💰 Paid 100%</option>
+                    <option value="Payment Failed"   ${d.status==='Payment Failed'?'selected':''}>❌ Pmt Failed</option>
+                    <option value="Cancelled"        ${d.status==='Cancelled'?'selected':''}>🚫 Cancelled</option>
+                </select>
+                <button type="submit" class="btn btn-primary" style="padding:.45rem .85rem;">
+                    <i class="bi bi-check2"></i> Lưu
+                </button>
+            </form>`;
+
+        document.getElementById('drawerFooter').innerHTML = `
+            <a href="/admin/bookings/${d.bookingId}" class="btn btn-ghost">
+                <i class="bi bi-eye"></i> Trang đầy đủ
+            </a>
+            <button class="btn btn-primary" onclick="closeDrawer();openAssignModal()">
+                <i class="bi bi-person-check"></i> Phân công HDV
+            </button>`;
+
+        document.getElementById('drawerOverlay').classList.add('active');
+        requestAnimationFrame(() => document.getElementById('drawerPanel').classList.add('active'));
+    }
+
+    function closeDrawer() {
+        document.getElementById('drawerPanel').classList.remove('active');
+        document.getElementById('drawerOverlay').classList.remove('active');
+    }
+
+    /* ─────────────────────────────────────────
+       MODAL GOM KHÁCH
+    ───────────────────────────────────────── */
+    const assignModal = document.getElementById('assignModal');
+    function openAssignModal()  { assignModal.classList.add('active'); }
+    function closeAssignModal() { assignModal.classList.remove('active'); }
+
+    function prepareAssignForm(event) {
+        const container = document.getElementById('hiddenBookingInputs');
+        container.innerHTML = '';
+        let checkedCount = 0, firstTourId = null, diffTour = false;
+
+        document.querySelectorAll('.booking-checkbox').forEach(cb => {
+            if (!cb.checked) return;
+            checkedCount++;
+            const row    = cb.closest('tr');
+            const tourId = row.dataset.tourId;
+            if (!firstTourId) firstTourId = tourId;
+            else if (firstTourId !== tourId) diffTour = true;
+            const inp = document.createElement('input');
+            inp.type = 'hidden'; inp.name = 'bookingIds'; inp.value = cb.value;
+            container.appendChild(inp);
+        });
+
+        if (checkedCount === 0) { showToast('Chọn ít nhất một booking!', 't-warn'); event.preventDefault(); return false; }
+        if (diffTour)           { showToast('Chỉ gom booking cùng 1 tour!', 't-err'); event.preventDefault(); return false; }
+        return true;
+    }
+
+    /* ─────────────────────────────────────────
+       TOAST NOTIFICATION
+    ───────────────────────────────────────── */
+    function showToast(msg, type = '') {
+        const stack = document.getElementById('toastStack');
+        const el = document.createElement('div');
+        el.className = 'toast ' + type;
+        const icon = type === 't-ok' ? 'bi-check-circle-fill' : type === 't-err' ? 'bi-x-circle-fill' : 'bi-exclamation-triangle-fill';
+        el.innerHTML = `<i class="bi ${icon}"></i> ${msg}`;
+        stack.appendChild(el);
+        requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
+        setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2800);
+    }
+
+    // Auto-toast nếu có successMessage / errorMessage trong DOM
+    document.addEventListener('DOMContentLoaded', () => {
+        const sMsg = document.querySelector('.alert-success span');
+        const eMsg = document.querySelector('.alert-danger span');
+        if (sMsg && sMsg.textContent.trim()) showToast(sMsg.textContent.trim(), 't-ok');
+        if (eMsg && eMsg.textContent.trim()) showToast(eMsg.textContent.trim(), 't-err');
+    });
 </script>
 
 </body>

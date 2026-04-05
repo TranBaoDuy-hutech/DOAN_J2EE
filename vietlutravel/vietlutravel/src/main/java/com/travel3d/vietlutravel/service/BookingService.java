@@ -64,8 +64,6 @@ public class BookingService {
         booking.setTour(tour);
         booking.setCustomer(customer);
 
-        emailService.sendBookingConfirmation(booking);
-
         return booking;
     }
 
@@ -125,7 +123,7 @@ public class BookingService {
             throw new IllegalArgumentException("Booking không tồn tại (ID: " + id + ")");
         }
 
-        if (!List.of("Pending", "Confirmed", "Cancelled").contains(newStatus)) {
+        if (!List.of("Pending", "Confirmed", "Cancelled", "Paid 70% Deposit", "Paid 100%", "Payment Failed").contains(newStatus)) {
             throw new IllegalArgumentException("Trạng thái không hợp lệ");
         }
 

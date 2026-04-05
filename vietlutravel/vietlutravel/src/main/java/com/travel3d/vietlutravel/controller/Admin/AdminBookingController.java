@@ -101,7 +101,7 @@ public class AdminBookingController {
 
         try {
             // Kiểm tra trạng thái hợp lệ
-            if (!List.of("Pending", "Confirmed", "Cancelled").contains(status)) {
+            if (!List.of("Pending", "Confirmed", "Cancelled", "Paid 70% Deposit", "Paid 100%", "Payment Failed").contains(status)) {
                 throw new IllegalArgumentException("Trạng thái không hợp lệ: " + status);
             }
 

@@ -830,6 +830,18 @@
                             <div class="total-note">Chưa bao gồm phụ phí (nếu có)</div>
                         </div>
                     </div>
+                    
+                    <div class="total-row mt-3" style="border-top: 1px dashed var(--gray-3); padding-top: 1rem;">
+                        <div>
+                            <div class="total-label" style="color: var(--sea)">Cần thanh toán trước (70%)</div>
+                        </div>
+                        <div>
+                            <div class="total-price" id="dynamicDeposit" style="font-size: 1.6rem; color: var(--sea)"
+                                 th:text="${#numbers.formatDecimal(tour.price * 0.7,0,'COMMA',0,'POINT')} + '₫'">
+                            </div>
+                            <div class="total-note">Sẽ được chuyển hướng tới VNPAY</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Guarantees -->
@@ -879,6 +891,7 @@
         var btnPlus     = document.getElementById('btnPlus');
         var summaryPpl  = document.getElementById('summaryPeople');
         var totalEl     = document.getElementById('dynamicTotal');
+        var depositEl   = document.getElementById('dynamicDeposit');
 
         function formatVND(n) {
             return n.toLocaleString('vi-VN') + '₫';
@@ -887,7 +900,9 @@
         function updateTotal() {
             var qty = parseInt(peopleInput.value, 10) || 1;
             summaryPpl.textContent  = qty;
-            totalEl.textContent     = formatVND(basePrice * qty);
+            var total = basePrice * qty;
+            totalEl.textContent     = formatVND(total);
+            depositEl.textContent   = formatVND(total * 0.7);
             btnMinus.disabled = qty <= 1;
             btnPlus.disabled  = qty >= 50;
         }

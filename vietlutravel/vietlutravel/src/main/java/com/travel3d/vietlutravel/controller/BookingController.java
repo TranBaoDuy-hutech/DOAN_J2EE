@@ -5,8 +5,10 @@ import com.travel3d.vietlutravel.model.Customer;
 import com.travel3d.vietlutravel.model.Tours;
 import com.travel3d.vietlutravel.service.BookingService;
 import com.travel3d.vietlutravel.service.ContractService;
+import com.travel3d.vietlutravel.service.VNPayService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -27,6 +29,9 @@ public class BookingController {
 
     @Autowired
     private ContractService contractService;
+
+    @Autowired
+    private VNPayService vnPayService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -103,7 +108,8 @@ public class BookingController {
             @RequestParam(value = "travelDate", required = false) String travelDateStr,
             @RequestParam(value = "note", required = false) String note,
             HttpSession session,
-            Model model) {
+            Model model,
+            HttpServletRequest request) {
 
         Customer customer = (Customer) session.getAttribute("user");
         if (customer == null) return "redirect:/login";
@@ -149,15 +155,23 @@ public class BookingController {
             return "booking-form";
         }
 
-        bookingService.bookTour(
-                tourID,
-                customer.getCustomerID(),
-                numberOfPeople,
-                travelDate,
-                note
-        );
+        Booking booking = new Booking();
+        booking.setTourID(tourID);
+        booking.setCustomerID(customer.getCustomerID());
+        booking.setBookingDate(LocalDate.now());
+        booking.setTravelDate(travelDate);
+        booking.setNumberOfPeople(numberOfPeople);
+        booking.setTotalPrice(tour.getPrice().doubleValue() * numberOfPeople);
+        booking.setStatus("Pending");
+        booking.setSpecialRequests(note);
+        booking.setTour(tour);
+        booking.setCustomer(customer);
 
-        return "redirect:/";
+        String txnRef = com.travel3d.vietlutravel.config.VNPayConfig.getRandomNumber(8);
+        session.setAttribute("PENDING_BOOKING_" + txnRef, booking);
+
+        String vnpayUrl = vnPayService.createOrder(txnRef, booking.getTotalPrice(), request);
+        return "redirect:" + vnpayUrl;
     }
 
     /**
