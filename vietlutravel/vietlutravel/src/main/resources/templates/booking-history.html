@@ -384,6 +384,7 @@
                     <th><i class="fas fa-calendar-alt"></i>Ngay khoi hanh</th>
                     <th><i class="fas fa-users"></i>So nguoi</th>
                     <th><i class="fas fa-coins"></i>Tong tien</th>
+                    <th><i class="fas fa-id-badge"></i>HDV</th>
                     <th><i class="fas fa-circle-dot"></i>Trang thai</th>
                     <th><i class="fas fa-sliders"></i>Hanh dong</th>
                 </tr>
@@ -411,6 +412,16 @@
                     <td>
                         <span class="price" th:text="${#numbers.formatDecimal(b.totalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
                         <span class="price-unit">d</span>
+                    </td>
+                    <td>
+                        <div class="meta" th:if="${b.tourGuide != null}">
+                            <i class="fas fa-user-tie"></i>
+                            <span th:text="${b.tourGuide.fullName}"></span>
+                        </div>
+                        <div class="meta" th:if="${b.tourGuide == null}">
+                            <i class="fas fa-user-slash" style="color: #cbd5e1;"></i>
+                            <span style="color: #94a3b8; font-style: italic;">Chua phan cong</span>
+                        </div>
                     </td>
                     <td>
                             <span th:if="${b.status == 'Pending'}" class="badge badge-pending">

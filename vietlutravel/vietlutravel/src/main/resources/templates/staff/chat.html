@@ -1,913 +1,1469 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSKH - Staff Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --sidebar-bg: #1e293b;
-            --sidebar-hover: #334155;
-            --chat-bg: #f8fafc;
-            --message-staff: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            --message-customer: #ffffff;
-            --border-color: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --primary: #5b6af0;
+            --primary-dark: #4353d6;
+            --primary-glow: rgba(91, 106, 240, 0.18);
+            --accent: #f0705b;
+            --success: #22c98a;
+            --danger: #f0705b;
+            --warning: #f5a623;
+
+            --sidebar-bg: #0d0f1a;
+            --sidebar-surface: #161929;
+            --sidebar-hover: #1e2236;
+            --sidebar-border: rgba(255, 255, 255, 0.06);
+
+            --chat-bg: #f4f5fb;
+            --chat-surface: #ffffff;
+
+            --msg-me-from: #5b6af0;
+            --msg-me-to: #a78bfa;
+            --msg-other-bg: #ffffff;
+
+            --text-primary: #0d0f1a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e4e7f0;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'DM Mono', monospace;
         }
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: var(--font-sans);
             background: var(--chat-bg);
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ── Sidebar ── */
+        /* ══════════════════════════════
+           SIDEBAR
+        ══════════════════════════════ */
         .sidebar {
             background: var(--sidebar-bg);
             height: 100vh;
             display: flex;
             flex-direction: column;
-            box-shadow: var(--shadow);
+            border-right: 1px solid var(--sidebar-border);
         }
 
+        /* Header */
         .sidebar-header {
-            padding: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
-            color: white;
+            padding: 22px 20px 18px;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-bottom: 14px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--msg-me-to));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 12px var(--primary-glow);
             flex-shrink: 0;
         }
 
-        .sidebar-header h4 {
+        .brand-text h4 {
+            font-size: 15px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.3px;
             margin: 0;
-            font-weight: 700;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            line-height: 1;
         }
 
-        .staff-info { font-size: 13px; opacity: 0.9; margin-top: 5px; }
+        .brand-text span {
+            font-size: 11px;
+            color: #64748b;
+            font-family: var(--font-mono);
+        }
 
-        .search-box { padding: 15px; background: #0f172a; flex-shrink: 0; }
+        .staff-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 12px;
+            background: var(--sidebar-surface);
+            border: 1px solid var(--sidebar-border);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #a5b0cc;
+        }
 
-        .search-wrapper { position: relative; }
+        .staff-badge .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 6px var(--success);
+            flex-shrink: 0;
+        }
+
+        .staff-badge strong {
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 12px;
+        }
+
+        /* Search */
+        .search-box {
+            padding: 14px 16px;
+            flex-shrink: 0;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
 
         .search-input {
             width: 100%;
-            padding: 10px 15px 10px 40px;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            background: var(--sidebar-bg);
-            color: white;
+            padding: 10px 16px 10px 38px;
+            border: 1px solid var(--sidebar-border);
+            border-radius: var(--radius-md);
+            background: var(--sidebar-surface);
+            color: #e2e8f0;
             outline: none;
-            transition: border-color 0.3s;
-            font-family: inherit;
+            font-size: 13px;
+            font-family: var(--font-sans);
+            transition: border-color 0.25s, box-shadow 0.25s;
         }
 
-        .search-input::placeholder { color: #64748b; }
-        .search-input:focus { border-color: var(--primary); }
+        .search-input::placeholder {
+            color: #475569;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
 
         .search-icon {
             position: absolute;
             left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #94a3b8;
+            color: #475569;
+            font-size: 13px;
             pointer-events: none;
         }
 
-        .customers-list { flex: 1; overflow-y: auto; padding: 10px; }
+        /* Customer list */
+        .list-header {
+            padding: 4px 16px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #475569;
+        }
 
-        .customers-list::-webkit-scrollbar { width: 6px; }
-        .customers-list::-webkit-scrollbar-track { background: #0f172a; }
-        .customers-list::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        .customers-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 10px 10px;
+        }
+
+        .customers-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .customers-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .customers-list::-webkit-scrollbar-thumb {
+            background: #1e2236;
+            border-radius: 4px;
+        }
+
+        .customers-list::-webkit-scrollbar-thumb:hover {
+            background: #2e3654;
+        }
 
         .customer-item {
-            padding: 15px;
-            margin-bottom: 8px;
-            border-radius: 10px;
+            padding: 12px 12px;
+            margin-bottom: 4px;
+            border-radius: var(--radius-md);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 0.18s, border-color 0.18s;
             border: 1px solid transparent;
             position: relative;
         }
 
-        .customer-item:hover { background: var(--sidebar-hover); }
-        .customer-item.active { background: var(--sidebar-hover); border-color: var(--primary); }
-        .customer-item.has-unread { background: rgba(99,102,241,0.1); }
+        .customer-item:hover {
+            background: var(--sidebar-hover);
+        }
 
-        .customer-info { display: flex; align-items: center; gap: 12px; }
+        .customer-item.active {
+            background: var(--sidebar-hover);
+            border-color: rgba(91, 106, 240, 0.35);
+            box-shadow: 0 0 0 1px rgba(91, 106, 240, 0.12) inset;
+        }
 
+        .customer-item.has-unread {
+            background: rgba(91, 106, 240, 0.08);
+        }
+
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        /* Avatar with gradient based on customer id */
         .customer-avatar {
-            width: 45px; height: 45px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #8b5cf6);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 600; font-size: 16px;
-            flex-shrink: 0; position: relative;
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            flex-shrink: 0;
+            position: relative;
+            letter-spacing: -0.5px;
         }
 
-        .customer-details { flex: 1; min-width: 0; }
-
-        .customer-name {
-            color: white; font-weight: 600; font-size: 14px; margin-bottom: 3px;
-        }
-
-        .customer-last-msg {
-            color: #94a3b8; font-size: 12px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-
-        .customer-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
-
-        .customer-time { color: #64748b; font-size: 11px; }
-
-        .unread-badge {
-            background: var(--danger);
-            color: white; border-radius: 12px;
-            padding: 2px 8px; font-size: 11px; font-weight: 600;
-            min-width: 20px; text-align: center; display: none;
-        }
-
-        .online-indicator {
-            width: 10px; height: 10px;
+        .customer-avatar .online-dot {
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
             background: var(--success);
             border: 2px solid var(--sidebar-bg);
-            position: absolute; bottom: 1px; right: 1px;
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            box-shadow: 0 0 5px var(--success);
         }
 
-        /* ── Chat Area ── */
-        .chat-container {
-            height: 100vh;
-            display: flex; flex-direction: column;
-            background: white;
+        .customer-details {
+            flex: 1;
+            min-width: 0;
         }
 
-        .chat-header {
-            padding: 20px 25px;
-            background: white;
-            border-bottom: 1px solid var(--border-color);
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        .customer-name {
+            color: #e2e8f0;
+            font-weight: 600;
+            font-size: 13.5px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .customer-id-tag {
+            font-size: 10.5px;
+            color: #475569;
+            font-family: var(--font-mono);
+        }
+
+        .customer-last-msg {
+            color: #64748b;
+            font-size: 11.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+        }
+
+        .customer-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
             flex-shrink: 0;
         }
 
-        .chat-header-left { display: flex; align-items: center; gap: 15px; }
+        .customer-time {
+            color: #475569;
+            font-size: 10.5px;
+            font-family: var(--font-mono);
+        }
+
+        .unread-badge {
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            padding: 2px 7px;
+            font-size: 10px;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 8px;
+            padding: 14px 16px;
+            border-top: 1px solid var(--sidebar-border);
+            flex-shrink: 0;
+        }
+
+        .stat-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px 6px;
+            background: var(--sidebar-surface);
+            border: 1px solid var(--sidebar-border);
+            border-radius: var(--radius-sm);
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 2px;
+            font-family: var(--font-mono);
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* ══════════════════════════════
+           CHAT AREA
+        ══════════════════════════════ */
+        .chat-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--chat-bg);
+        }
+
+        /* Chat header */
+        .chat-header {
+            padding: 16px 24px;
+            background: var(--chat-surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+        }
+
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
         .chat-customer-avatar {
-            width: 50px; height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #8b5cf6);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 600; font-size: 18px;
-            position: relative; flex-shrink: 0;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 17px;
+            position: relative;
+            flex-shrink: 0;
         }
 
-        .chat-customer-info h5 { margin: 0; font-size: 18px; font-weight: 600; color: #1e293b; }
-        .chat-customer-status { font-size: 13px; color: #64748b; margin-top: 2px; }
+        .chat-customer-avatar .online-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--success);
+            border: 2px solid white;
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            box-shadow: 0 0 5px var(--success);
+        }
 
-        .chat-header-actions { display: flex; gap: 10px; }
+        .chat-customer-info h5 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+
+        .chat-customer-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 3px;
+        }
+
+        .chat-customer-status {
+            font-size: 12px;
+            color: var(--success);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .chat-customer-id {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            background: var(--chat-bg);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .chat-header-actions {
+            display: flex;
+            gap: 6px;
+        }
 
         .action-btn {
-            width: 40px; height: 40px;
-            border-radius: 50%; border: none;
-            background: var(--chat-bg); color: #64748b;
-            cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--chat-surface);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.18s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
         }
 
-        .action-btn:hover { background: var(--border-color); color: var(--primary); }
-
-        #chatBox {
-            flex: 1; overflow-y: auto;
-            padding: 25px;
+        .action-btn:hover {
             background: var(--chat-bg);
-            display: flex; flex-direction: column;
-            gap: 15px;
+            color: var(--primary);
+            border-color: var(--primary);
         }
 
-        #chatBox::-webkit-scrollbar { width: 6px; }
-        #chatBox::-webkit-scrollbar-track { background: transparent; }
-        #chatBox::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        /* Chat box */
+        #chatBox {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
 
-        /* Empty State */
+        #chatBox::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #chatBox::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #chatBox::-webkit-scrollbar-thumb {
+            background: #d1d9e6;
+            border-radius: 5px;
+        }
+
+        /* Empty state */
         .empty-state {
             height: 100%;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            color: #94a3b8; text-align: center; padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
         }
 
-        .empty-state i { font-size: 64px; margin-bottom: 20px; color: #cbd5e1; }
-        .empty-state h4 { margin-bottom: 10px; color: #64748b; }
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--msg-me-to));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px var(--primary-glow);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 8px 24px var(--primary-glow);
+            }
+
+            50% {
+                box-shadow: 0 8px 36px rgba(91, 106, 240, 0.32);
+            }
+        }
+
+        .empty-state h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 280px;
+        }
 
         /* Messages */
         .msg-wrapper {
             display: flex;
-            animation: slideIn 0.3s ease-out;
+            animation: msgSlideIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
+        @keyframes msgSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
-        .msg-wrapper.me    { justify-content: flex-end; }
-        .msg-wrapper.other { justify-content: flex-start; }
+        .msg-wrapper.me {
+            justify-content: flex-end;
+        }
+
+        .msg-wrapper.other {
+            justify-content: flex-start;
+        }
+
+        /* Group spacing */
+        .msg-wrapper+.msg-wrapper.me {
+            margin-top: 3px;
+        }
+
+        .msg-wrapper+.msg-wrapper.other {
+            margin-top: 3px;
+        }
+
+        .msg-wrapper.me+.msg-wrapper.other,
+        .msg-wrapper.other+.msg-wrapper.me {
+            margin-top: 14px;
+        }
 
         .msg {
-            max-width: 65%;
-            padding: 12px 18px;
+            max-width: 62%;
+            padding: 11px 16px;
             border-radius: 18px;
             word-wrap: break-word;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .msg.me    { background: var(--message-staff); color: white; border-bottom-right-radius: 4px; }
-        .msg.other { background: var(--message-customer); color: #1e293b; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); }
+        .msg.me {
+            background: linear-gradient(135deg, var(--msg-me-from) 0%, var(--msg-me-to) 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+            box-shadow: 0 4px 12px rgba(91, 106, 240, 0.25);
+        }
 
-        .msg-content  { line-height: 1.5; word-break: break-word; }
-        .msg-time     { font-size: 11px; margin-top: 5px; opacity: 0.7; text-align: right; }
-        .msg.other .msg-time { text-align: left; }
+        .msg.other {
+            background: var(--msg-other-bg);
+            color: var(--text-primary);
+            border-bottom-left-radius: 5px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
 
-        /* Date Divider */
-        .date-divider { text-align: center; margin: 20px 0; }
+        .msg-content {
+            font-size: 14px;
+            line-height: 1.55;
+            word-break: break-word;
+        }
+
+        .msg-time {
+            font-size: 10.5px;
+            margin-top: 5px;
+            opacity: 0.65;
+            text-align: right;
+            font-family: var(--font-mono);
+        }
+
+        .msg.other .msg-time {
+            text-align: left;
+        }
+
+        /* Date divider */
+        .date-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0 10px;
+        }
+
+        .date-divider::before,
+        .date-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
         .date-divider span {
-            background: white; padding: 5px 15px; border-radius: 15px;
-            font-size: 12px; color: #64748b; font-weight: 500;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
-        /* Typing Indicator */
+        /* Typing indicator */
         .typing-indicator {
             display: none;
-            padding: 12px 18px;
-            background: white; border-radius: 18px; border-bottom-left-radius: 4px;
-            width: fit-content; border: 1px solid var(--border-color);
-            animation: slideIn 0.3s ease-out;
-            margin: 0 25px 15px;
+            padding: 10px 16px;
+            background: white;
+            border-radius: 18px;
+            border-bottom-left-radius: 5px;
+            width: fit-content;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            animation: msgSlideIn 0.25s ease-out;
+            margin: 0 28px 12px;
             flex-shrink: 0;
         }
 
-        .typing-indicator.active { display: flex; align-items: center; gap: 8px; }
-        .typing-text { font-size: 13px; color: #64748b; }
+        .typing-indicator.active {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .typing-text {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
 
         .typing-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #94a3b8; animation: typing 1.4s infinite;
-        }
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typing {
-            0%,60%,100% { transform: translateY(0); }
-            30%          { transform: translateY(-5px); }
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #c0c8e0;
+            animation: bounce 1.4s infinite;
         }
 
-        /* Input Area */
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* ══════════════════════════════
+           CHAT FOOTER
+        ══════════════════════════════ */
         .chat-footer {
-            padding: 20px 25px;
-            background: white;
-            border-top: 1px solid var(--border-color);
+            padding: 16px 24px 20px;
+            background: var(--chat-surface);
+            border-top: 1px solid var(--border);
             flex-shrink: 0;
         }
 
-        .input-wrapper { display: flex; gap: 12px; align-items: flex-end; }
-        .input-container { flex: 1; position: relative; }
+        .quick-responses {
+            display: flex;
+            gap: 7px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .quick-response-btn {
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--chat-bg);
+            color: var(--text-secondary);
+            font-size: 12.5px;
+            cursor: pointer;
+            transition: all 0.18s;
+            font-family: var(--font-sans);
+            font-weight: 500;
+        }
+
+        .quick-response-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 3px 10px var(--primary-glow);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
 
         #msg {
             width: 100%;
-            padding: 14px 50px 14px 20px;
-            border: 2px solid var(--border-color);
-            border-radius: 12px; outline: none;
-            font-size: 15px; transition: border-color 0.3s, box-shadow 0.3s;
-            resize: none; max-height: 120px;
-            font-family: inherit; line-height: 1.5;
+            padding: 13px 46px 13px 18px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            resize: none;
+            max-height: 120px;
+            font-family: var(--font-sans);
+            line-height: 1.55;
+            color: var(--text-primary);
+            background: var(--chat-bg);
         }
 
         #msg:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+            background: white;
+            box-shadow: 0 0 0 3px var(--primary-glow);
         }
 
-        .input-actions {
-            position: absolute; right: 10px; bottom: 10px;
-            display: flex; gap: 5px;
+        #msg::placeholder {
+            color: var(--text-muted);
         }
 
-        .input-action-btn {
-            background: none; border: none; font-size: 20px;
-            cursor: pointer; opacity: 0.5; transition: all 0.2s; padding: 5px;
+        .emoji-btn {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            background: none;
+            border: none;
+            font-size: 19px;
+            cursor: pointer;
+            opacity: 0.45;
+            transition: opacity 0.2s, transform 0.2s;
             line-height: 1;
+            padding: 3px;
         }
-        .input-action-btn:hover { opacity: 1; transform: scale(1.1); }
+
+        .emoji-btn:hover {
+            opacity: 1;
+            transform: scale(1.15);
+        }
 
         .send-btn {
-            width: 50px; height: 50px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
-            border: none; color: white; font-size: 18px;
-            cursor: pointer; transition: all 0.3s ease;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--msg-me-to) 100%);
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px var(--primary-glow);
             flex-shrink: 0;
         }
-        .send-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99,102,241,0.4); }
-        .send-btn:active { transform: translateY(0); }
-        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-        /* Quick Responses */
-        .quick-responses { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-
-        .quick-response-btn {
-            padding: 6px 12px; border-radius: 20px;
-            border: 1px solid var(--border-color);
-            background: white; color: #64748b; font-size: 13px;
-            cursor: pointer; transition: all 0.2s;
-            font-family: inherit;
+        .send-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(91, 106, 240, 0.38);
         }
-        .quick-response-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* Connection Status Toast */
+        .send-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ══════════════════════════════
+           CONNECTION STATUS TOAST
+        ══════════════════════════════ */
         .connection-status {
-            position: fixed; top: 20px; right: 20px;
-            padding: 12px 20px; border-radius: 8px;
-            background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            font-size: 13px; font-weight: 500;
-            display: none; align-items: center; gap: 10px;
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            background: var(--chat-surface);
+            box-shadow: var(--shadow-md);
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 8px;
             z-index: 1000;
-        }
-        .connection-status.show { display: flex; animation: slideInRight 0.3s ease-out; }
-
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(20px); }
-            to   { opacity: 1; transform: translateX(0); }
+            border: 1px solid var(--border);
         }
 
-        .connection-status.connected    { color: var(--success); }
-        .connection-status.disconnected { color: var(--danger); }
-        .connection-status.connecting   { color: var(--warning); }
-
-        /* Stats */
-        .stats-bar {
-            display: flex; gap: 15px; padding: 15px;
-            background: #0f172a; border-top: 1px solid #334155;
-            flex-shrink: 0;
+        .connection-status.show {
+            display: flex;
+            animation: toastIn 0.3s ease;
         }
 
-        .stat-item { flex: 1; text-align: center; padding: 10px; background: var(--sidebar-bg); border-radius: 8px; }
-        .stat-value { font-size: 20px; font-weight: 700; color: white; margin-bottom: 3px; }
-        .stat-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(12px);
+            }
 
-        /* Responsive */
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .connection-status.connected {
+            color: var(--success);
+        }
+
+        .connection-status.disconnected {
+            color: var(--danger);
+        }
+
+        .connection-status.connecting {
+            color: var(--warning);
+        }
+
+        /* ══════════════════════════════
+           AVATAR COLORS (cycle by id)
+        ══════════════════════════════ */
+        .av-0 {
+            background: linear-gradient(135deg, #5b6af0, #a78bfa);
+        }
+
+        .av-1 {
+            background: linear-gradient(135deg, #f0705b, #f5a623);
+        }
+
+        .av-2 {
+            background: linear-gradient(135deg, #22c98a, #3b82f6);
+        }
+
+        .av-3 {
+            background: linear-gradient(135deg, #a78bfa, #ec4899);
+        }
+
+        .av-4 {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+        }
+
+        .av-5 {
+            background: linear-gradient(135deg, #06b6d4, #6366f1);
+        }
+
+        .av-6 {
+            background: linear-gradient(135deg, #84cc16, #14b8a6);
+        }
+
+        .av-7 {
+            background: linear-gradient(135deg, #f43f5e, #fb923c);
+        }
+
         @media (max-width: 768px) {
             .sidebar {
-                position: absolute; z-index: 100;
+                position: absolute;
+                z-index: 100;
                 width: 300px;
                 transform: translateX(-100%);
                 transition: transform 0.3s;
             }
-            .sidebar.open { transform: translateX(0); }
-            .msg { max-width: 80%; }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .msg {
+                max-width: 80%;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<!-- Connection Status Toast -->
-<div id="connectionStatus" class="connection-status">
-    <i class="fas fa-circle"></i>
-    <span id="statusText">Đang kết nối...</span>
-</div>
+    <!-- Connection Toast -->
+    <div id="connectionStatus" class="connection-status">
+        <i class="fas fa-circle" style="font-size:8px;"></i>
+        <span id="statusText">Đang kết nối...</span>
+    </div>
 
-<div class="container-fluid p-0">
-    <div class="row g-0">
+    <div class="container-fluid p-0">
+        <div class="row g-0">
 
-        <!-- Sidebar -->
-        <div class="col-lg-3 col-md-4">
-            <div class="sidebar">
+            <!-- ═══ SIDEBAR ═══ -->
+            <div class="col-lg-3 col-md-4">
+                <div class="sidebar">
 
-                <div class="sidebar-header">
-                    <h4><i class="fas fa-headset"></i> CSKH Dashboard</h4>
-                    <div class="staff-info">
-                        <i class="fas fa-user"></i> Staff ID: <span th:text="${staffId}"></span>
-                    </div>
-                </div>
-
-                <div class="search-box">
-                    <div class="search-wrapper">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" id="searchInput"
-                               placeholder="Tìm kiếm khách hàng...">
-                    </div>
-                </div>
-
-                <div class="customers-list" id="customersList">
-                    <div th:each="c : ${customers}"
-                         class="customer-item"
-                         th:attr="data-customer-id=${c}"
-                         th:data-name="|Khách hàng #${c}|">
-                        <div class="customer-info">
-                            <div class="customer-avatar">
-                                <span th:text="${#strings.substring(c.toString(), 0, 1)}">C</span>
-                                <div class="online-indicator"></div>
+                    <div class="sidebar-header">
+                        <div class="brand-row">
+                            <div class="brand-icon">💬</div>
+                            <div class="brand-text">
+                                <h4>CSKH Dashboard</h4>
+                                <span>Chăm sóc khách hàng</span>
                             </div>
-                            <div class="customer-details">
-                                <div class="customer-name" th:text="'Khách hàng #' + ${c}">Customer</div>
-                                <div class="customer-last-msg">Nhấn để xem chat...</div>
-                            </div>
-                            <div class="customer-meta">
-                                <div class="customer-time"></div>
-                                <div class="unread-badge">0</div>
+                        </div>
+                        <div class="staff-badge">
+                            <span class="dot"></span>
+                            Nhân viên <strong th:text="${staffId}">001</strong> đang online
+                        </div>
+                    </div>
+
+                    <div class="search-box">
+                        <div class="search-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" class="search-input" id="searchInput"
+                                placeholder="Tìm tên hoặc ID khách hàng...">
+                        </div>
+                    </div>
+
+                    <div class="list-header">Danh sách khách hàng</div>
+
+                    <div class="customers-list" id="customersList">
+                        <div th:each="c, stat : ${customers}" class="customer-item" th:attr="data-customer-id=${c},
+                                  data-name=${'Khách hàng #' + c},
+                                  data-color-idx=${stat.index % 8}">
+                            <div class="customer-info">
+                                <div th:class="'customer-avatar av-' + ${stat.index % 8}">
+                                    <span th:text="${#strings.substring(c.toString(), 0, 1)}">K</span>
+                                    <div class="online-dot"></div>
+                                </div>
+                                <div class="customer-details">
+                                    <div class="customer-name" th:text="'Khách hàng #' + ${c}">Khách hàng</div>
+                                    <div class="customer-id-tag" th:text="'#' + ${c}">#ID</div>
+                                    <div class="customer-last-msg">Nhấn để xem cuộc trò chuyện...</div>
+                                </div>
+                                <div class="customer-meta">
+                                    <div class="customer-time"></div>
+                                    <div class="unread-badge">0</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="stats-bar">
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalChats">0</div>
-                        <div class="stat-label">Khách hàng</div>
+                    <div class="stats-bar">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalChats">0</div>
+                            <div class="stat-label">Khách hàng</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="activeChats">0</div>
+                            <div class="stat-label">Chờ phản hồi</div>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="activeChats">0</div>
-                        <div class="stat-label">Chờ phản hồi</div>
-                    </div>
-                </div>
 
+                </div>
             </div>
-        </div>
 
-        <!-- Chat Area -->
-        <div class="col-lg-9 col-md-8">
-            <div class="chat-container">
+            <!-- ═══ CHAT AREA ═══ -->
+            <div class="col-lg-9 col-md-8">
+                <div class="chat-container">
 
-                <!-- Chat Header (hidden until customer selected) -->
-                <div class="chat-header" id="chatHeader" style="display:none;">
-                    <div class="chat-header-left">
-                        <div class="chat-customer-avatar">
-                            <span id="chatAvatarText">C</span>
-                            <div class="online-indicator"></div>
-                        </div>
-                        <div class="chat-customer-info">
-                            <h5 id="chatCustomerName">Khách hàng</h5>
-                            <div class="chat-customer-status">
-                                <i class="fas fa-circle" style="color: var(--success); font-size: 8px;"></i>
-                                Đang online
+                    <!-- Chat Header -->
+                    <div class="chat-header" id="chatHeader" style="display:none;">
+                        <div class="chat-header-left">
+                            <div class="chat-customer-avatar" id="chatAvatar">
+                                <span id="chatAvatarText">K</span>
+                                <div class="online-dot"></div>
+                            </div>
+                            <div class="chat-customer-info">
+                                <h5 id="chatCustomerName">Khách hàng</h5>
+                                <div class="chat-customer-meta">
+                                    <div class="chat-customer-status">
+                                        <i class="fas fa-circle" style="font-size:7px;"></i>
+                                        Đang online
+                                    </div>
+                                    <div class="chat-customer-id" id="chatCustomerId">#—</div>
+                                </div>
                             </div>
                         </div>
+                        <div class="chat-header-actions">
+                            <button class="action-btn" type="button" title="Thông tin khách hàng">
+                                <i class="fas fa-user-circle"></i>
+                            </button>
+                            <button class="action-btn" type="button" title="Tìm kiếm tin nhắn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="action-btn" type="button" title="Tùy chọn">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="chat-header-actions">
-                        <button class="action-btn" type="button" title="Thông tin">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                        <button class="action-btn" type="button" title="Tìm kiếm">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <button class="action-btn" type="button" title="Tùy chọn">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                    </div>
-                </div>
 
-                <!-- Chat Box -->
-                <div id="chatBox">
-                    <div class="empty-state">
-                        <i class="fas fa-comments"></i>
-                        <h4>Chọn một khách hàng để bắt đầu</h4>
-                        <p>Chọn khách hàng từ danh sách bên trái để xem lịch sử chat</p>
+                    <!-- Chat Box -->
+                    <div id="chatBox">
+                        <div class="empty-state">
+                            <div class="empty-icon">💬</div>
+                            <h4>Chọn khách hàng để bắt đầu</h4>
+                            <p>Chọn khách hàng từ danh sách bên trái để xem lịch sử và trả lời tin nhắn</p>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Typing Indicator -->
-                <div id="typingIndicator" class="typing-indicator">
-                    <div class="typing-text">Khách hàng đang gõ</div>
-                    <div style="display:flex; gap:3px;">
-                        <span class="typing-dot"></span>
-                        <span class="typing-dot"></span>
-                        <span class="typing-dot"></span>
+                    <!-- Typing Indicator -->
+                    <div id="typingIndicator" class="typing-indicator">
+                        <div class="typing-text" id="typingText">Khách hàng đang gõ</div>
+                        <div style="display:flex; gap:3px;">
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Chat Footer (hidden until customer selected) -->
-                <div class="chat-footer" id="chatFooter" style="display:none;">
-                    <div class="quick-responses">
-                        <button class="quick-response-btn" type="button"
+                    <!-- Chat Footer -->
+                    <div class="chat-footer" id="chatFooter" style="display:none;">
+                        <div class="quick-responses">
+                            <button class="quick-response-btn" type="button"
                                 onclick="insertQuickResponse('Xin chào! Tôi có thể giúp gì cho bạn?')">
-                            👋 Chào hỏi
-                        </button>
-                        <button class="quick-response-btn" type="button"
-                                onclick="insertQuickResponse('Vui lòng chờ trong giây lát...')">
-                            ⏱️ Chờ chút
-                        </button>
-                        <button class="quick-response-btn" type="button"
-                                onclick="insertQuickResponse('Cảm ơn bạn đã liên hệ!')">
-                            🙏 Cảm ơn
-                        </button>
-                    </div>
-                    <div class="input-wrapper">
-                        <div class="input-container">
-                            <textarea id="msg"
-                                      placeholder="Nhập tin nhắn..."
-                                      rows="1"></textarea>
-                            <div class="input-actions">
-                                <button class="input-action-btn" type="button"
-                                        onclick="insertEmoji()" title="Emoji">😊</button>
-                            </div>
+                                👋 Chào hỏi
+                            </button>
+                            <button class="quick-response-btn" type="button"
+                                onclick="insertQuickResponse('Vui lòng chờ trong giây lát nhé!')">
+                                ⏱️ Chờ chút
+                            </button>
+                            <button class="quick-response-btn" type="button"
+                                onclick="insertQuickResponse('Cảm ơn bạn đã liên hệ với chúng tôi!')">
+                                🙏 Cảm ơn
+                            </button>
+                            <button class="quick-response-btn" type="button"
+                                onclick="insertQuickResponse('Vấn đề của bạn đã được ghi nhận. Chúng tôi sẽ xử lý sớm nhất có thể!')">
+                                ✅ Ghi nhận
+                            </button>
                         </div>
-                        <button class="send-btn" id="sendBtn" type="button" title="Gửi" disabled>
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
+                        <div class="input-wrapper">
+                            <div class="input-container">
+                                <textarea id="msg" placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng)"
+                                    rows="1"></textarea>
+                                <button class="emoji-btn" type="button" onclick="insertEmoji()"
+                                    title="Emoji">😊</button>
+                            </div>
+                            <button class="send-btn" id="sendBtn" type="button" title="Gửi tin nhắn" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script th:inline="javascript">
-    (function () {
-        'use strict';
+    <script th:inline="javascript">
+        (function () {
+            'use strict';
 
-        /* ── Config ── */
-        var myId           = [[${staffId}]];
-        var RECONNECT_DELAY = 3000;
-        var EMOJIS = ['😊','👍','❤️','😂','🎉','👋','🙏','✨','💪','🤝'];
+            /* ── Config ── */
+            var myId = [[${ staffId }]];
+            var RECONNECT_DELAY = 3000;
+            var EMOJIS = ['😊', '👍', '❤️', '😂', '🎉', '👋', '🙏', '✨', '💪', '🤝', '🔥', '😎'];
 
-        /* ── State ── */
-        var socket, stomp;
-        var isConnected     = false;
-        var currentCustomer = null;   // number | null
-        var lastDate        = null;
-        var hideTimer       = null;
-        var isCustomerTyping = false;
-        var customerTypingTimer = null;
+            /* Bảng màu avatar (phải khớp với CSS .av-0 … .av-7) */
+            var AV_COLORS = [
+                'linear-gradient(135deg,#5b6af0,#a78bfa)',
+                'linear-gradient(135deg,#f0705b,#f5a623)',
+                'linear-gradient(135deg,#22c98a,#3b82f6)',
+                'linear-gradient(135deg,#a78bfa,#ec4899)',
+                'linear-gradient(135deg,#f59e0b,#ef4444)',
+                'linear-gradient(135deg,#06b6d4,#6366f1)',
+                'linear-gradient(135deg,#84cc16,#14b8a6)',
+                'linear-gradient(135deg,#f43f5e,#fb923c)'
+            ];
 
-        /* ── DOM refs ── */
-        var chatBox      = document.getElementById('chatBox');
-        var msgInput     = document.getElementById('msg');
-        var sendBtn      = document.getElementById('sendBtn');
-        var chatHeader   = document.getElementById('chatHeader');
-        var chatFooter   = document.getElementById('chatFooter');
-        var typingEl     = document.getElementById('typingIndicator');
-        var connStatus   = document.getElementById('connectionStatus');
-        var statusText   = document.getElementById('statusText');
-        var searchInput  = document.getElementById('searchInput');
+            /* ── State ── */
+            var socket, stomp;
+            var isConnected = false;
+            var currentCustomer = null;
+            var currentCustomerName = null;
+            var currentColorIdx = 0;
+            var lastDate = null;
+            var hideTimer = null;
 
-        /* ════════════════════════════════════
-           CONNECTION
-        ════════════════════════════════════ */
-        function initConnection() {
-            showConnectionStatus('Đang kết nối...', 'connecting');
+            /* ── DOM refs ── */
+            var chatBox = document.getElementById('chatBox');
+            var msgInput = document.getElementById('msg');
+            var sendBtn = document.getElementById('sendBtn');
+            var chatHeader = document.getElementById('chatHeader');
+            var chatFooter = document.getElementById('chatFooter');
+            var typingEl = document.getElementById('typingIndicator');
+            var typingText = document.getElementById('typingText');
+            var connStatus = document.getElementById('connectionStatus');
+            var statusText = document.getElementById('statusText');
+            var searchInput = document.getElementById('searchInput');
 
-            socket = new SockJS('/chat');
-            stomp  = Stomp.over(socket);
-            stomp.debug = null;
+            /* ════════════════════════════════
+               CONNECTION
+            ════════════════════════════════ */
+            function initConnection() {
+                showConnectionStatus('Đang kết nối...', 'connecting');
+                socket = new SockJS('/chat');
+                stomp = Stomp.over(socket);
+                stomp.debug = null;
+                stomp.connect({}, onConnected, onError);
+            }
 
-            stomp.connect({}, onConnected, onError);
-        }
+            function onConnected() {
+                isConnected = true;
+                updateSendBtn();
+                showConnectionStatus('Đã kết nối', 'connected');
+                hideConnectionStatusAfter(2800);
 
-        function onConnected() {
-            isConnected = true;
-            updateSendBtn();
-            showConnectionStatus('Đã kết nối', 'connected');
-            hideConnectionStatusAfter(3000);
+                stomp.subscribe('/queue/user-' + myId, function (frame) {
+                    var m = JSON.parse(frame.body);
+                    var cid = Number(m.customerID);
 
-            stomp.subscribe('/queue/user-' + myId, function (frame) {
-                var m = JSON.parse(frame.body);
-                var cid = Number(m.customerID);
+                    updateCustomerLastMessage(cid, m.content);
 
-                /* Update sidebar preview */
-                updateCustomerLastMessage(cid, m.content);
-
-                if (cid === currentCustomer) {
-                    /* ✅ FIX: Chỉ hiển thị tin của KHÁCH (isFromAdmin=false).
-                       Tin của staff đã render ngay khi gửi → không render lại. */
-                    if (!m.isFromAdmin) {
-                        hideTypingIndicator();
-                        appendMessage(m.content, false, m.timestamp);
+                    if (cid === currentCustomer) {
+                        if (!m.isFromAdmin) {
+                            hideTypingIndicator();
+                            appendMessage(m.content, false, m.timestamp);
+                        }
+                    } else {
+                        if (!m.isFromAdmin) showUnreadBadge(cid);
                     }
-                } else {
-                    /* Tin từ khách khác → hiện badge */
-                    if (!m.isFromAdmin) {
-                        showUnreadBadge(cid);
+
+                    updateStats();
+                });
+            }
+
+            function onError(err) {
+                isConnected = false;
+                updateSendBtn();
+                showConnectionStatus('Mất kết nối – đang thử lại...', 'disconnected');
+                console.error('STOMP error:', err);
+                setTimeout(initConnection, RECONNECT_DELAY);
+            }
+
+            /* ════════════════════════════════
+               LOAD CHAT
+            ════════════════════════════════ */
+            function loadChat(id, name, colorIdx) {
+                id = Number(id);
+                colorIdx = Number(colorIdx) || 0;
+
+                currentCustomer = id;
+                currentCustomerName = name || ('Khách hàng #' + id);
+                currentColorIdx = colorIdx;
+                lastDate = null;
+
+                /* Reset UI */
+                chatBox.innerHTML = '';
+                chatHeader.style.display = 'flex';
+                chatFooter.style.display = 'block';
+                hideTypingIndicator();
+
+                /* Sidebar active + clear badge */
+                document.querySelectorAll('.customer-item').forEach(function (item) {
+                    var cid = Number(item.getAttribute('data-customer-id'));
+                    item.classList.toggle('active', cid === id);
+                    item.classList.remove('has-unread');
+                    if (cid === id) {
+                        var badge = item.querySelector('.unread-badge');
+                        if (badge) badge.style.display = 'none';
                     }
-                }
-
-                updateStats();
-            });
-        }
-
-        function onError(err) {
-            isConnected = false;
-            updateSendBtn();
-            showConnectionStatus('Mất kết nối – đang thử lại...', 'disconnected');
-            console.error('STOMP error:', err);
-            setTimeout(initConnection, RECONNECT_DELAY);
-        }
-
-        /* ════════════════════════════════════
-           LOAD CHAT
-        ════════════════════════════════════ */
-        function loadChat(id) {
-            id = Number(id);
-            currentCustomer = id;
-            lastDate = null;
-
-            /* Reset UI */
-            chatBox.innerHTML = '';
-            chatHeader.style.display = 'flex';
-            chatFooter.style.display = 'block';
-            hideTypingIndicator();
-
-            /* Sidebar active state + clear badge */
-            document.querySelectorAll('.customer-item').forEach(function (item) {
-                var cid = Number(item.getAttribute('data-customer-id'));
-                item.classList.toggle('active', cid === id);
-                item.classList.remove('has-unread');
-                if (cid === id) {
-                    var badge = item.querySelector('.unread-badge');
-                    if (badge) badge.style.display = 'none';
-                }
-            });
-
-            /* Header */
-            document.getElementById('chatCustomerName').textContent = 'Khách hàng #' + id;
-            document.getElementById('chatAvatarText').textContent   = String(id).charAt(0);
-
-            /* Load history */
-            fetch('/staff/history/' + id)
-                .then(function (res) {
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
-                    return res.json();
-                })
-                .then(function (data) {
-                    if (data && data.length > 0) {
-                        data.forEach(function (m) {
-                            appendMessage(m.content, m.isFromAdmin, m.timestamp, false);
-                        });
-                    }
-                })
-                .catch(function (err) {
-                    console.error('Lỗi tải lịch sử:', err);
                 });
 
-            msgInput.focus();
-            updateSendBtn();
-            updateStats();
-        }
+                /* Header – tên + ID + avatar */
+                document.getElementById('chatCustomerName').textContent = currentCustomerName;
+                document.getElementById('chatCustomerId').textContent = '#' + id;
 
-        /* ════════════════════════════════════
-           SEND MESSAGE  ← BUG FIX CHÍNH
-        ════════════════════════════════════ */
-        function send() {
-            if (!isConnected) {
-                showConnectionStatus('Chưa kết nối – vui lòng đợi...', 'disconnected');
-                return;
-            }
-            if (currentCustomer === null) return;
+                var avatarEl = document.getElementById('chatAvatar');
+                var avatarText = document.getElementById('chatAvatarText');
+                avatarEl.style.background = AV_COLORS[colorIdx % AV_COLORS.length];
+                avatarText.textContent = currentCustomerName.charAt(0).toUpperCase();
 
-            var text = msgInput.value.trim();
-            if (!text) return;
+                /* Typing indicator label */
+                typingText.textContent = currentCustomerName + ' đang gõ';
 
-            var now = new Date().toISOString();
+                /* Load history */
+                fetch('/staff/history/' + id)
+                    .then(function (res) {
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        return res.json();
+                    })
+                    .then(function (data) {
+                        if (data && data.length) {
+                            data.forEach(function (m) {
+                                appendMessage(m.content, m.isFromAdmin, m.timestamp, false);
+                            });
+                        }
+                    })
+                    .catch(function (err) { console.error('Lỗi tải lịch sử:', err); });
 
-            stomp.send('/app/private-message', {}, JSON.stringify({
-                customerID:  currentCustomer,
-                userID:      myId,
-                content:     text,
-                isFromAdmin: true,
-                timestamp:   now
-            }));
-
-            /* ✅ FIX: Render tin nhắn ngay lập tức, không chờ server echo */
-            appendMessage(text, true, now);
-
-            /* Reset textarea */
-            msgInput.value = '';
-            msgInput.style.height = 'auto';
-            updateSendBtn();
-            msgInput.focus();
-        }
-
-        /* ════════════════════════════════════
-           RENDER MESSAGE
-        ════════════════════════════════════ */
-        function appendMessage(text, isMe, timestamp, animate) {
-            if (animate === undefined) animate = true;
-
-            var msgDate = timestamp ? new Date(timestamp) : new Date();
-            var dateStr = formatDate(msgDate);
-
-            /* Date divider */
-            if (dateStr !== lastDate) {
-                var divider = document.createElement('div');
-                divider.className = 'date-divider';
-                divider.innerHTML = '<span>' + escapeHtml(dateStr) + '</span>';
-                chatBox.appendChild(divider);
-                lastDate = dateStr;
+                msgInput.focus();
+                updateSendBtn();
+                updateStats();
             }
 
-            var wrapper = document.createElement('div');
-            wrapper.className = 'msg-wrapper ' + (isMe ? 'me' : 'other');
-            if (!animate) wrapper.style.animation = 'none';
+            /* ════════════════════════════════
+               SEND MESSAGE
+            ════════════════════════════════ */
+            function send() {
+                if (!isConnected) { showConnectionStatus('Chưa kết nối – vui lòng đợi...', 'disconnected'); return; }
+                if (currentCustomer === null) return;
 
-            var bubble = document.createElement('div');
-            bubble.className = 'msg ' + (isMe ? 'me' : 'other');
+                var text = msgInput.value.trim();
+                if (!text) return;
 
-            var content = document.createElement('div');
-            content.className  = 'msg-content';
-            content.textContent = text; /* ✅ textContent → chống XSS */
+                var now = new Date().toISOString();
 
-            var time = document.createElement('div');
-            time.className  = 'msg-time';
-            time.textContent = formatTime(msgDate);
+                stomp.send('/app/private-message', {}, JSON.stringify({
+                    customerID: currentCustomer,
+                    userID: myId,
+                    content: text,
+                    isFromAdmin: true,
+                    timestamp: now
+                }));
 
-            bubble.appendChild(content);
-            bubble.appendChild(time);
-            wrapper.appendChild(bubble);
-            chatBox.appendChild(wrapper);
+                appendMessage(text, true, now);
 
-            scrollToBottom();
-        }
-
-        /* ════════════════════════════════════
-           TYPING INDICATOR
-        ════════════════════════════════════ */
-        function showTypingIndicator() {
-            typingEl.classList.add('active');
-            scrollToBottom();
-        }
-
-        function hideTypingIndicator() {
-            typingEl.classList.remove('active');
-        }
-
-        /* ════════════════════════════════════
-           SIDEBAR HELPERS
-        ════════════════════════════════════ */
-        function updateCustomerLastMessage(customerId, message) {
-            var item = document.querySelector('[data-customer-id="' + customerId + '"]');
-            if (!item) return;
-            var lastMsg = item.querySelector('.customer-last-msg');
-            if (lastMsg) {
-                lastMsg.textContent = message.length > 35
-                    ? message.substring(0, 35) + '…'
-                    : message;
+                msgInput.value = '';
+                msgInput.style.height = 'auto';
+                updateSendBtn();
+                msgInput.focus();
             }
-            var timeEl = item.querySelector('.customer-time');
-            if (timeEl) timeEl.textContent = formatTime(new Date());
-        }
 
-        function showUnreadBadge(customerId) {
-            if (customerId === currentCustomer) return;
-            var item = document.querySelector('[data-customer-id="' + customerId + '"]');
-            if (!item) return;
-            var badge = item.querySelector('.unread-badge');
-            if (badge) {
-                var count = parseInt(badge.textContent, 10) || 0;
-                badge.textContent  = count + 1;
-                badge.style.display = 'block';
+            /* ════════════════════════════════
+               RENDER MESSAGE
+            ════════════════════════════════ */
+            function appendMessage(text, isMe, timestamp, animate) {
+                if (animate === undefined) animate = true;
+
+                var msgDate = timestamp ? new Date(timestamp) : new Date();
+                var dateStr = formatDate(msgDate);
+
+                if (dateStr !== lastDate) {
+                    var divider = document.createElement('div');
+                    divider.className = 'date-divider';
+                    divider.innerHTML = '<span>' + escapeHtml(dateStr) + '</span>';
+                    chatBox.appendChild(divider);
+                    lastDate = dateStr;
+                }
+
+                var wrapper = document.createElement('div');
+                wrapper.className = 'msg-wrapper ' + (isMe ? 'me' : 'other');
+                if (!animate) wrapper.style.animation = 'none';
+
+                var bubble = document.createElement('div');
+                bubble.className = 'msg ' + (isMe ? 'me' : 'other');
+
+                var content = document.createElement('div');
+                content.className = 'msg-content';
+                content.textContent = text;
+
+                var time = document.createElement('div');
+                time.className = 'msg-time';
+                time.textContent = formatTime(msgDate);
+
+                bubble.appendChild(content);
+                bubble.appendChild(time);
+                wrapper.appendChild(bubble);
+                chatBox.appendChild(wrapper);
+
+                scrollToBottom();
             }
-            item.classList.add('has-unread');
-        }
 
-        /* ════════════════════════════════════
-           STATS
-        ════════════════════════════════════ */
-        function updateStats() {
-            var total  = document.querySelectorAll('.customer-item').length;
-            var active = document.querySelectorAll('.customer-item.has-unread').length;
-            document.getElementById('totalChats').textContent  = total;
-            document.getElementById('activeChats').textContent = active;
-        }
+            /* ════════════════════════════════
+               TYPING
+            ════════════════════════════════ */
+            function showTypingIndicator() { typingEl.classList.add('active'); scrollToBottom(); }
+            function hideTypingIndicator() { typingEl.classList.remove('active'); }
 
-        /* ════════════════════════════════════
-           CONNECTION STATUS TOAST
-        ════════════════════════════════════ */
-        function showConnectionStatus(text, state) {
-            clearTimeout(hideTimer);
-            statusText.textContent = text;
-            connStatus.className   = 'connection-status show ' + state;
-        }
+            /* ════════════════════════════════
+               SIDEBAR HELPERS
+            ════════════════════════════════ */
+            function updateCustomerLastMessage(customerId, message) {
+                var item = document.querySelector('[data-customer-id="' + customerId + '"]');
+                if (!item) return;
+                var el = item.querySelector('.customer-last-msg');
+                if (el) el.textContent = message.length > 38 ? message.substring(0, 38) + '…' : message;
+                var timeEl = item.querySelector('.customer-time');
+                if (timeEl) timeEl.textContent = formatTime(new Date());
+            }
 
-        function hideConnectionStatusAfter(delay) {
-            hideTimer = setTimeout(function () {
-                connStatus.classList.remove('show');
-            }, delay);
-        }
+            function showUnreadBadge(customerId) {
+                if (customerId === currentCustomer) return;
+                var item = document.querySelector('[data-customer-id="' + customerId + '"]');
+                if (!item) return;
+                var badge = item.querySelector('.unread-badge');
+                if (badge) {
+                    badge.textContent = (parseInt(badge.textContent, 10) || 0) + 1;
+                    badge.style.display = 'block';
+                }
+                item.classList.add('has-unread');
+            }
 
-        /* ════════════════════════════════════
-           UTILITIES
-        ════════════════════════════════════ */
-        function scrollToBottom() {
-            requestAnimationFrame(function () {
-                chatBox.scrollTop = chatBox.scrollHeight;
+            /* ════════════════════════════════
+               STATS
+            ════════════════════════════════ */
+            function updateStats() {
+                document.getElementById('totalChats').textContent = document.querySelectorAll('.customer-item').length;
+                document.getElementById('activeChats').textContent = document.querySelectorAll('.customer-item.has-unread').length;
+            }
+
+            /* ════════════════════════════════
+               CONNECTION STATUS TOAST
+            ════════════════════════════════ */
+            function showConnectionStatus(text, state) {
+                clearTimeout(hideTimer);
+                statusText.textContent = text;
+                connStatus.className = 'connection-status show ' + state;
+            }
+
+            function hideConnectionStatusAfter(delay) {
+                hideTimer = setTimeout(function () { connStatus.classList.remove('show'); }, delay);
+            }
+
+            /* ════════════════════════════════
+               UTILITIES
+            ════════════════════════════════ */
+            function scrollToBottom() { requestAnimationFrame(function () { chatBox.scrollTop = chatBox.scrollHeight; }); }
+
+            function formatDate(date) {
+                var today = new Date(), yesterday = new Date(today);
+                yesterday.setDate(today.getDate() - 1);
+                if (date.toDateString() === today.toDateString()) return 'Hôm nay';
+                if (date.toDateString() === yesterday.toDateString()) return 'Hôm qua';
+                return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            }
+
+            function formatTime(date) { return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); }
+
+            function escapeHtml(str) { var d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+            function updateSendBtn() {
+                sendBtn.disabled = !isConnected || currentCustomer === null || msgInput.value.trim() === '';
+            }
+
+            /* ════════════════════════════════
+               EVENT LISTENERS
+            ════════════════════════════════ */
+            msgInput.addEventListener('input', function () {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                updateSendBtn();
             });
-        }
 
-        function formatDate(date) {
-            var today     = new Date();
-            var yesterday = new Date(today);
-            yesterday.setDate(today.getDate() - 1);
-            if (date.toDateString() === today.toDateString())     return 'Hôm nay';
-            if (date.toDateString() === yesterday.toDateString()) return 'Hôm qua';
-            return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        }
-
-        function formatTime(date) {
-            return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        function escapeHtml(str) {
-            var d = document.createElement('div');
-            d.textContent = str;
-            return d.innerHTML;
-        }
-
-        function updateSendBtn() {
-            sendBtn.disabled = !isConnected
-                || currentCustomer === null
-                || msgInput.value.trim() === '';
-        }
-
-        /* ════════════════════════════════════
-           EVENT LISTENERS
-        ════════════════════════════════════ */
-        /* Textarea: auto-resize + enable/disable send */
-        msgInput.addEventListener('input', function () {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-            updateSendBtn();
-        });
-
-        /* Enter to send, Shift+Enter = newline */
-        msgInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                if (!sendBtn.disabled) send();
-            }
-        });
-
-        /* Search filter */
-        searchInput.addEventListener('input', function () {
-            var filter = this.value.toLowerCase().trim();
-            document.querySelectorAll('.customer-item').forEach(function (item) {
-                var name = item.querySelector('.customer-name').textContent.toLowerCase();
-                item.style.display = name.includes(filter) ? '' : 'none';
+            msgInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!sendBtn.disabled) send();
+                }
             });
-        });
 
-        /* Customer item click – delegated */
-        document.getElementById('customersList').addEventListener('click', function (e) {
-            var item = e.target.closest('.customer-item');
-            if (item) loadChat(item.getAttribute('data-customer-id'));
-        });
+            searchInput.addEventListener('input', function () {
+                var filter = this.value.toLowerCase().trim();
+                document.querySelectorAll('.customer-item').forEach(function (item) {
+                    var name = item.getAttribute('data-name').toLowerCase();
+                    var id = item.getAttribute('data-customer-id');
+                    item.style.display = (name.includes(filter) || id.includes(filter)) ? '' : 'none';
+                });
+            });
 
-        /* Send button click */
-        sendBtn.addEventListener('click', send);
+            /* Delegated click on customer list */
+            document.getElementById('customersList').addEventListener('click', function (e) {
+                var item = e.target.closest('.customer-item');
+                if (!item) return;
+                loadChat(
+                    item.getAttribute('data-customer-id'),
+                    item.getAttribute('data-name'),
+                    item.getAttribute('data-color-idx')
+                );
+            });
 
-        /* ════════════════════════════════════
-           PUBLIC (onclick từ HTML)
-        ════════════════════════════════════ */
-        window.insertQuickResponse = function (text) {
-            msgInput.value = text;
-            msgInput.dispatchEvent(new Event('input')); /* trigger resize + sendBtn */
-            msgInput.focus();
-        };
+            sendBtn.addEventListener('click', send);
 
-        window.insertEmoji = function () {
-            var emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
-            var pos   = msgInput.selectionStart != null ? msgInput.selectionStart : msgInput.value.length;
-            msgInput.value = msgInput.value.slice(0, pos) + emoji + msgInput.value.slice(pos);
-            msgInput.setSelectionRange(pos + emoji.length, pos + emoji.length);
-            msgInput.dispatchEvent(new Event('input'));
-            msgInput.focus();
-        };
+            /* ════════════════════════════════
+               PUBLIC (onclick từ HTML)
+            ════════════════════════════════ */
+            window.insertQuickResponse = function (text) {
+                msgInput.value = text;
+                msgInput.dispatchEvent(new Event('input'));
+                msgInput.focus();
+            };
 
-        /* ════════════════════════════════════
-           BOOT
-        ════════════════════════════════════ */
-        window.addEventListener('load', function () {
-            initConnection();
-            updateStats();
-        });
+            window.insertEmoji = function () {
+                var emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+                var pos = msgInput.selectionStart != null ? msgInput.selectionStart : msgInput.value.length;
+                msgInput.value = msgInput.value.slice(0, pos) + emoji + msgInput.value.slice(pos);
+                msgInput.setSelectionRange(pos + emoji.length, pos + emoji.length);
+                msgInput.dispatchEvent(new Event('input'));
+                msgInput.focus();
+            };
 
-    })();
-</script>
+            /* ════════════════════════════════
+               BOOT
+            ════════════════════════════════ */
+            window.addEventListener('load', function () {
+                initConnection();
+                updateStats();
+            });
+
+        })();
+    </script>
 </body>
+
 </html>
