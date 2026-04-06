@@ -20,7 +20,8 @@ public class Booking {
     private LocalDate bookingDate;   // ngày đặt (tự động)
     private LocalDate travelDate;    // ngày khởi hành (khách chọn) ← MỚI
 
-    private int numberOfPeople;
+    private int numberOfPeople; // Người lớn
+    private int numberOfChildren; // Trẻ em (5-10 tuổi)
     private double totalPrice;
     private String status;
     private String specialRequests;
@@ -54,6 +55,9 @@ public class Booking {
 
     public int getNumberOfPeople() { return numberOfPeople; }
     public void setNumberOfPeople(int numberOfPeople) { this.numberOfPeople = numberOfPeople; }
+
+    public int getNumberOfChildren() { return numberOfChildren; }
+    public void setNumberOfChildren(int numberOfChildren) { this.numberOfChildren = numberOfChildren; }
 
     public double getTotalPrice() { return totalPrice; }
     public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }

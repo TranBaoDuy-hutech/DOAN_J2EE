@@ -1,508 +1,1293 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle} ?: 'Quản lý Booking - Admin'">Quản lý Booking</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
-            --ink:        #0d0f14;
-            --ink-mid:    #4b5168;
-            --ink-light:  #9aa0b8;
-            --bg:         #f2f4f9;
-            --surface:    #ffffff;
-            --accent:     #4361ee;
-            --accent-2:   #3a0ca3;
-            --accent-soft:#eef0fd;
-            --accent-glow:rgba(67,97,238,.14);
-            --border:     #e4e7f2;
-            --danger:     #e63946;
-            --warning:    #f4a261;
-            --info:       #4895ef;
-            --success:    #2dc653;
-            --radius:     14px;
-            --shadow-sm:  0 1px 3px rgba(13,15,20,.06), 0 4px 16px rgba(13,15,20,.06);
-            --shadow-md:  0 2px 8px rgba(13,15,20,.08), 0 12px 32px rgba(13,15,20,.08);
+            --ink: #0d0f14;
+            --ink-mid: #4b5168;
+            --ink-light: #9aa0b8;
+            --bg: #f2f4f9;
+            --surface: #ffffff;
+            --accent: #4361ee;
+            --accent-2: #3a0ca3;
+            --accent-soft: #eef0fd;
+            --accent-glow: rgba(67, 97, 238, .14);
+            --border: #e4e7f2;
+            --danger: #e63946;
+            --warning: #f4a261;
+            --info: #4895ef;
+            --success: #2dc653;
+            --radius: 14px;
+            --shadow-sm: 0 1px 3px rgba(13, 15, 20, .06), 0 4px 16px rgba(13, 15, 20, .06);
+            --shadow-md: 0 2px 8px rgba(13, 15, 20, .08), 0 12px 32px rgba(13, 15, 20, .08);
         }
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg);
             min-height: 100vh;
-            padding: 2rem 1.5rem 3rem;
+            padding: 2rem 1rem 3rem;
             color: var(--ink);
         }
 
         body::before {
             content: '';
-            position: fixed; inset: 0; z-index: 0;
+            position: fixed;
+            inset: 0;
+            z-index: 0;
             background:
-                radial-gradient(ellipse 80% 50% at -5% 0%, rgba(67,97,238,.08) 0%, transparent 55%),
-                radial-gradient(ellipse 60% 60% at 105% 100%, rgba(58,12,163,.06) 0%, transparent 55%);
+                radial-gradient(ellipse 80% 50% at -5% 0%, rgba(67, 97, 238, .08) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 60% at 105% 100%, rgba(58, 12, 163, .06) 0%, transparent 55%);
             pointer-events: none;
         }
 
-        .page { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
 
         .topbar {
-            display: flex; align-items: center;
-            justify-content: space-between; gap: 1rem;
-            margin-bottom: 2rem; flex-wrap: wrap;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
-        .page-heading { display: flex; align-items: center; gap: 1rem; }
+
+        .page-heading {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
         .heading-icon {
-            width: 48px; height: 48px; border-radius: 13px;
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
             background: linear-gradient(140deg, var(--accent), var(--accent-2));
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 1.2rem;
-            box-shadow: 0 6px 18px rgba(67,97,238,.35); flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+            box-shadow: 0 6px 18px rgba(67, 97, 238, .35);
+            flex-shrink: 0;
         }
+
         .heading-text h1 {
-            font-size: 1.45rem; font-weight: 800;
-            letter-spacing: -0.03em; color: var(--ink); line-height: 1.15;
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1.15;
         }
-        .heading-text p { font-size: 0.8rem; color: var(--ink-light); margin-top: 2px; font-weight: 500; }
+
+        .heading-text p {
+            font-size: 0.8rem;
+            color: var(--ink-light);
+            margin-top: 2px;
+            font-weight: 500;
+        }
 
         .btn {
-            font-size: 0.82rem; font-weight: 600;
-            padding: 0.55rem 1.1rem; border-radius: 9px;
-            border: none; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 0.45rem;
-            text-decoration: none; transition: all .2s ease; white-space: nowrap;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.55rem 1.1rem;
+            border-radius: 9px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            text-decoration: none;
+            transition: all .2s ease;
+            white-space: nowrap;
         }
+
         .btn-ghost {
-            background: var(--surface); color: var(--ink-mid);
-            border: 1.5px solid var(--border); box-shadow: var(--shadow-sm);
+            background: var(--surface);
+            color: var(--ink-mid);
+            border: 1.5px solid var(--border);
+            box-shadow: var(--shadow-sm);
         }
-        .btn-ghost:hover { background: #eceef7; color: var(--ink); border-color: #c8cce0; }
+
+        .btn-ghost:hover {
+            background: #eceef7;
+            color: var(--ink);
+            border-color: #c8cce0;
+        }
+
         .btn-primary {
-            background: var(--accent); color: #fff;
-            box-shadow: 0 4px 14px rgba(67,97,238,.35);
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(67, 97, 238, .35);
         }
-        .btn-primary:hover { background: #3454d1; }
+
+        .btn-primary:hover {
+            background: #3454d1;
+        }
 
         .alert {
-            padding: .85rem 1.2rem; border-radius: 10px;
-            font-size: .875rem; margin-bottom: 1.25rem;
-            display: flex; align-items: center; gap: .6rem;
-            border: 1px solid transparent; font-weight: 500;
+            padding: .85rem 1.2rem;
+            border-radius: 10px;
+            font-size: .875rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            border: 1px solid transparent;
+            font-weight: 500;
         }
-        .alert-success { background: #d8f5e0; color: #176332; border-color: #a9e6b8; }
-        .alert-danger  { background: #ffe3e3; color: #9b1b1b; border-color: #ffb8b8; }
+
+        .alert-success {
+            background: #d8f5e0;
+            color: #176332;
+            border-color: #a9e6b8;
+        }
+
+        .alert-danger {
+            background: #ffe3e3;
+            color: #9b1b1b;
+            border-color: #ffb8b8;
+        }
 
         /* ── BULK ACTION BAR ── */
         .bulk-bar {
-            display: none; align-items: center; gap: .75rem;
-            background: #fff8e7; border: 1.5px solid #f4c875;
-            border-radius: 10px; padding: .65rem 1.1rem;
-            margin-bottom: 1rem; font-size: .82rem; font-weight: 600; color: #633806;
+            display: none;
+            align-items: center;
+            gap: .75rem;
+            background: #fff8e7;
+            border: 1.5px solid #f4c875;
+            border-radius: 10px;
+            padding: .65rem 1.1rem;
+            margin-bottom: 1rem;
+            font-size: .82rem;
+            font-weight: 600;
+            color: #633806;
             flex-wrap: wrap;
         }
-        .bulk-bar.active { display: flex; }
-        .bulk-bar .bulk-cnt { font-weight: 800; color: #412402; }
-        .bulk-bar .sep { color: #f4c875; }
-        .btn-ok  { background: #d8f5e0; color: #176332; border: 1px solid #a9e6b8; border-radius: 8px; }
-        .btn-ok:hover  { background: #c5edd5; }
-        .btn-err { background: #ffe3e3; color: #9b1b1b; border: 1px solid #ffb8b8; border-radius: 8px; }
-        .btn-err:hover { background: #ffd5d5; }
+
+        .bulk-bar.active {
+            display: flex;
+        }
+
+        .bulk-bar .bulk-cnt {
+            font-weight: 800;
+            color: #412402;
+        }
+
+        .bulk-bar .sep {
+            color: #f4c875;
+        }
+
+        .btn-ok {
+            background: #d8f5e0;
+            color: #176332;
+            border: 1px solid #a9e6b8;
+            border-radius: 8px;
+        }
+
+        .btn-ok:hover {
+            background: #c5edd5;
+        }
+
+        .btn-err {
+            background: #ffe3e3;
+            color: #9b1b1b;
+            border: 1px solid #ffb8b8;
+            border-radius: 8px;
+        }
+
+        .btn-err:hover {
+            background: #ffd5d5;
+        }
 
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: .75rem; margin-bottom: 1.5rem;
+            gap: .75rem;
+            margin-bottom: 1.5rem;
         }
+
         .stat-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 12px; padding: 1rem 1.2rem;
-            display: flex; align-items: center; gap: .85rem;
-            box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
         }
+
         .stat-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: var(--stat-color, var(--accent)); border-radius: 12px 12px 0 0;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--stat-color, var(--accent));
+            border-radius: 12px 12px 0 0;
         }
+
         .stat-icon {
-            width: 38px; height: 38px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; flex-shrink: 0;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
             background: color-mix(in srgb, var(--stat-color, var(--accent)) 12%, transparent);
             color: var(--stat-color, var(--accent));
         }
-        .stat-value { font-size: 1.5rem; font-weight: 800; line-height: 1; letter-spacing: -0.04em; }
-        .stat-label { font-size: 0.72rem; color: var(--ink-light); margin-top: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.04em;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--ink-light);
+            margin-top: 3px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
 
         .card {
-            background: var(--surface); border-radius: var(--radius);
-            box-shadow: var(--shadow-md); border: 1px solid var(--border); overflow: hidden;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            overflow: hidden;
         }
 
         .filter-bar {
-            padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            flex-wrap: wrap;
             background: #fafbff;
         }
-        .search-wrap { position: relative; flex: 1; min-width: 200px; }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
         .search-wrap i {
-            position: absolute; left: .9rem; top: 50%;
-            transform: translateY(-50%); color: var(--ink-light); font-size: .875rem;
+            position: absolute;
+            left: .9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink-light);
+            font-size: .875rem;
             pointer-events: none;
         }
+
         .search-wrap input {
-            width: 100%; padding: .58rem .9rem .58rem 2.4rem;
-            font-family: inherit; font-size: .875rem; font-weight: 500;
-            border: 1.5px solid var(--border); border-radius: 9px;
-            color: var(--ink); background: var(--surface); outline: none; transition: all .2s;
+            width: 100%;
+            padding: .58rem .9rem .58rem 2.4rem;
+            font-family: inherit;
+            font-size: .875rem;
+            font-weight: 500;
+            border: 1.5px solid var(--border);
+            border-radius: 9px;
+            color: var(--ink);
+            background: var(--surface);
+            outline: none;
+            transition: all .2s;
         }
-        .search-wrap input::placeholder { color: var(--ink-light); font-weight: 400; }
-        .search-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+        .search-wrap input::placeholder {
+            color: var(--ink-light);
+            font-weight: 400;
+        }
+
+        .search-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
         .filter-select {
             padding: .58rem 2.2rem .58rem .9rem;
-            font-family: inherit; font-size: .875rem; font-weight: 500;
-            border: 1.5px solid var(--border); border-radius: 9px; color: var(--ink-mid);
+            font-family: inherit;
+            font-size: .875rem;
+            font-weight: 500;
+            border: 1.5px solid var(--border);
+            border-radius: 9px;
+            color: var(--ink-mid);
             background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%239aa0b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right .75rem center;
-            appearance: none; outline: none; cursor: pointer;
+            appearance: none;
+            outline: none;
+            cursor: pointer;
         }
-        .filter-select:focus { border-color: var(--accent); }
-        .filter-count { font-size: .78rem; color: var(--ink-light); margin-left: auto; white-space: nowrap; font-weight: 500; }
 
-        table { width: 100%; border-collapse: collapse; }
+        .filter-select:focus {
+            border-color: var(--accent);
+        }
+
+        .filter-count {
+            font-size: .78rem;
+            color: var(--ink-light);
+            margin-left: auto;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
         thead th {
-            font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
-            color: var(--ink-light); padding: .8rem 1rem;
-            border-bottom: 1px solid var(--border); background: #fafbff;
-            text-align: left; white-space: nowrap;
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            color: var(--ink-light);
+            padding: .8rem 1rem;
+            border-bottom: 1px solid var(--border);
+            background: #fafbff;
+            text-align: left;
+            white-space: nowrap;
         }
-        /* sortable column header */
-        thead th.sortable { cursor: pointer; user-select: none; }
-        thead th.sortable:hover { color: var(--accent); }
-        thead th.sortable .sort-icon { margin-left: .3rem; opacity: .4; }
-        thead th.sortable.asc .sort-icon::after  { content: '↑'; opacity: 1; }
-        thead th.sortable.desc .sort-icon::after { content: '↓'; opacity: 1; }
-        thead th.sortable:not(.asc):not(.desc) .sort-icon::after { content: '↕'; }
 
-        tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; cursor: pointer; }
-        tbody tr:last-child { border-bottom: none; }
-        tbody tr:hover { background: #f7f8ff; }
-        tbody tr.row-selected { background: #eef0fd; }
-        td { padding: .85rem 1rem; font-size: .875rem; color: var(--ink); vertical-align: middle; }
+        thead th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
 
-        .user-cell { display: flex; align-items: center; gap: .75rem; }
+        thead th.sortable:hover {
+            color: var(--accent);
+        }
+
+        thead th.sortable .sort-icon {
+            margin-left: .3rem;
+            opacity: .4;
+        }
+
+        thead th.sortable.asc .sort-icon::after {
+            content: '↑';
+            opacity: 1;
+        }
+
+        thead th.sortable.desc .sort-icon::after {
+            content: '↓';
+            opacity: 1;
+        }
+
+        thead th.sortable:not(.asc):not(.desc) .sort-icon::after {
+            content: '↕';
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background .15s;
+            cursor: pointer;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #f7f8ff;
+        }
+
+        tbody tr.row-selected {
+            background: #eef0fd;
+        }
+
+        td {
+            padding: .85rem 1rem;
+            font-size: .875rem;
+            color: var(--ink);
+            vertical-align: middle;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
         .avatar {
-            width: 36px; height: 36px; border-radius: 9px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: .82rem; flex-shrink: 0; color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: .82rem;
+            flex-shrink: 0;
+            color: #fff;
         }
-        .user-name { font-weight: 600; font-size: .875rem; line-height: 1.2; }
-        .text-sub  { font-size: .73rem; color: var(--ink-light); margin-top: 2px; }
+
+        .user-name {
+            font-weight: 600;
+            font-size: .875rem;
+            line-height: 1.2;
+        }
+
+        .text-sub {
+            font-size: .73rem;
+            color: var(--ink-light);
+            margin-top: 2px;
+        }
 
         .tour-name {
-            font-weight: 600; max-width: 180px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-weight: 600;
+            max-width: 260px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .date-cell { font-size: .8rem; color: var(--ink-mid); font-weight: 500; white-space: nowrap; }
+        .date-cell {
+            font-size: .8rem;
+            color: var(--ink-mid);
+            font-weight: 500;
+            white-space: nowrap;
+        }
 
         .travel-badge {
-            display: inline-flex; align-items: center; gap: .35rem;
-            background: var(--accent-soft); color: var(--accent);
-            padding: .28rem .7rem; border-radius: 7px;
-            font-size: .78rem; font-weight: 700; white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            background: var(--accent-soft);
+            color: var(--accent);
+            padding: .28rem .7rem;
+            border-radius: 7px;
+            font-size: .78rem;
+            font-weight: 700;
+            white-space: nowrap;
         }
-        .travel-badge i { font-size: .72rem; }
-        .no-date { font-size: .78rem; color: var(--ink-light); font-style: italic; }
+
+        .travel-badge i {
+            font-size: .72rem;
+        }
+
+        .no-date {
+            font-size: .78rem;
+            color: var(--ink-light);
+            font-style: italic;
+        }
 
         .people-cell {
-            display: inline-flex; align-items: center; gap: .35rem;
-            font-size: .82rem; font-weight: 600; color: var(--ink-mid);
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            background: #f0f4ff;
+            color: var(--accent);
+            padding: .28rem .7rem;
+            border-radius: 7px;
+            font-size: .82rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .people-cell i {
+            font-size: .75rem;
+        }
+
+        .guide-cell {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            background: #e0f7fa;
+            color: #00695c;
+            padding: .28rem .7rem;
+            border-radius: 7px;
+            font-size: .78rem;
+            font-weight: 700;
+            white-space: nowrap;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .guide-cell i {
+            font-size: .72rem;
+            flex-shrink: 0;
+        }
+
+        .guide-none {
+            font-size: .78rem;
+            color: var(--ink-light);
+            font-style: italic;
         }
 
         .price {
             font-family: 'IBM Plex Mono', monospace;
-            display: inline-flex; align-items: baseline; gap: .2rem; white-space: nowrap;
+            display: inline-flex;
+            align-items: baseline;
+            gap: .2rem;
+            white-space: nowrap;
         }
-        .price-amount { font-weight: 600; font-size: .85rem; color: var(--ink); }
-        .price-unit   { font-size: .7rem; font-weight: 700; color: var(--accent); font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        .price-amount {
+            font-weight: 600;
+            font-size: .85rem;
+            color: var(--ink);
+        }
+
+        .price-unit {
+            font-size: .7rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
         .status-badge {
-            display: inline-flex; align-items: center; gap: .3rem;
-            padding: .28rem .75rem; border-radius: 99px;
-            font-size: .68rem; font-weight: 700;
-            letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            padding: .28rem .75rem;
+            border-radius: 99px;
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
-        .status-badge.pending   { background: #fff4e0; color: #8a5000; }
-        .status-badge.confirmed { background: #d8f5e0; color: #176332; }
-        .status-badge.cancelled { background: #ffe3e3; color: #9b1b1b; }
-        .status-badge.paid      { background: #dff3ff; color: #0a5a8a; }
-        .status-badge.failed    { background: #ffe3e3; color: #9b1b1b; }
 
-        /* ── INLINE STATUS SELECT ── */
-        .status-form { display: flex; align-items: center; gap: .35rem; }
+        .status-badge.pending {
+            background: #fff4e0;
+            color: #8a5000;
+        }
+
+        .status-badge.confirmed {
+            background: #d8f5e0;
+            color: #176332;
+        }
+
+        .status-badge.cancelled {
+            background: #ffe3e3;
+            color: #9b1b1b;
+        }
+
+        .status-badge.paid {
+            background: #dff3ff;
+            color: #0a5a8a;
+        }
+
+        .status-badge.failed {
+            background: #ffe3e3;
+            color: #9b1b1b;
+        }
+
+        .status-form {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+        }
+
         .status-select {
             padding: .3rem 1.8rem .3rem .6rem;
-            font-family: inherit; font-size: .775rem; font-weight: 600;
-            border: 1.5px solid var(--border); border-radius: 8px; color: var(--ink-mid);
+            font-family: inherit;
+            font-size: .775rem;
+            font-weight: 600;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            color: var(--ink-mid);
             background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 12 12'%3E%3Cpath fill='%239aa0b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right .5rem center;
-            appearance: none; outline: none; cursor: pointer;
+            appearance: none;
+            outline: none;
+            cursor: pointer;
         }
-        .status-select:focus { border-color: var(--accent); }
 
-        .actions { display: flex; gap: .3rem; align-items: center; }
+        .status-select:focus {
+            border-color: var(--accent);
+        }
+
+        .actions {
+            display: flex;
+            gap: .3rem;
+            align-items: center;
+        }
+
         .icon-btn {
-            width: 30px; height: 30px; border-radius: 8px;
-            border: 1.5px solid var(--border); background: var(--surface);
-            color: var(--ink-mid); display: inline-flex; align-items: center; justify-content: center;
-            font-size: .8rem; cursor: pointer; text-decoration: none;
-            transition: all .18s ease; flex-shrink: 0;
-        }
-        .icon-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.1); }
-        .icon-btn.view:hover { background: #e7f3ff; border-color: var(--info);   color: var(--info); }
-        .icon-btn.sync:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-        .icon-btn.del:hover  { background: #fff0f0; border-color: var(--danger); color: var(--danger); }
-        .icon-btn button {
-            background: none; border: none; padding: 0;
-            display: flex; align-items: center; justify-content: center;
-            color: inherit; cursor: pointer; width: 100%; height: 100%; font-size: inherit;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--ink-mid);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .8rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all .18s ease;
+            flex-shrink: 0;
         }
 
-        .empty-state { padding: 5rem 2rem; text-align: center; color: var(--ink-light); }
-        .empty-icon {
-            width: 72px; height: 72px; border-radius: 18px;
-            background: var(--accent-soft); margin: 0 auto 1.25rem;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; color: var(--accent);
+        .icon-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, .1);
         }
-        .empty-state h4 { font-weight: 700; color: var(--ink-mid); font-size: 1rem; margin-bottom: .35rem; }
-        .empty-state p  { font-size: .85rem; }
+
+        .icon-btn.view:hover {
+            background: #e7f3ff;
+            border-color: var(--info);
+            color: var(--info);
+        }
+
+        .icon-btn.sync:hover {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .icon-btn.del:hover {
+            background: #fff0f0;
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .icon-btn button {
+            background: none;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: inherit;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            font-size: inherit;
+        }
+
+        .empty-state {
+            padding: 5rem 2rem;
+            text-align: center;
+            color: var(--ink-light);
+        }
+
+        .empty-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            background: var(--accent-soft);
+            margin: 0 auto 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .empty-state h4 {
+            font-weight: 700;
+            color: var(--ink-mid);
+            font-size: 1rem;
+            margin-bottom: .35rem;
+        }
+
+        .empty-state p {
+            font-size: .85rem;
+        }
 
         @media (max-width: 640px) {
-            body { padding: 1rem 1rem 2rem; }
-            .topbar { flex-direction: column; align-items: flex-start; }
-            .stats-bar { grid-template-columns: 1fr 1fr; }
+            body {
+                padding: 1rem 1rem 2rem;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
-        /* hint "click để xem chi tiết" */
-        .row-hint { font-size: .68rem; color: var(--ink-light); font-style: italic; margin-top: 2px; }
+        .row-hint {
+            font-size: .68rem;
+            color: var(--ink-light);
+            font-style: italic;
+            margin-top: 2px;
+        }
 
-        /* ── MODAL ── */
+        /* ── DETAIL MODAL (CENTER) ── */
+        .detail-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .52);
+            z-index: 900;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .detail-overlay.active {
+            display: flex;
+        }
+
+        .detail-modal {
+            background: var(--surface);
+            width: 100%;
+            max-width: 700px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            max-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            animation: modalIn .22s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(.96) translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .detail-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid var(--border);
+            background: #fafbff;
+            flex-shrink: 0;
+        }
+
+        .detail-head-left {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+        }
+
+        .detail-head h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: -.02em;
+        }
+
+        .detail-close {
+            background: none;
+            border: none;
+            font-size: 1.35rem;
+            cursor: pointer;
+            color: var(--ink-light);
+            line-height: 1;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s;
+        }
+
+        .detail-close:hover {
+            background: #f0f2ff;
+            color: var(--ink);
+        }
+
+        .detail-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.4rem;
+        }
+
+        /* customer hero row */
+        .detail-customer {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-bottom: 1.1rem;
+            border-bottom: 1.5px solid var(--border);
+            margin-bottom: 1.1rem;
+        }
+
+        .detail-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .detail-customer-info {
+            flex: 1;
+        }
+
+        .detail-customer-name {
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: -.02em;
+        }
+
+        .detail-customer-email {
+            font-size: .78rem;
+            color: var(--ink-light);
+            margin-top: 3px;
+        }
+
+        /* 2-column grid */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 1.5rem;
+            margin-bottom: .5rem;
+        }
+
+        @media (max-width: 520px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .detail-section-label {
+            font-size: .63rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--ink-light);
+            margin: 1rem 0 .5rem;
+            padding-bottom: .35rem;
+            border-bottom: 1px solid var(--border);
+            grid-column: 1 / -1;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: .42rem 0;
+            border-bottom: 1px solid var(--border);
+            gap: .5rem;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-lbl {
+            font-size: .76rem;
+            color: var(--ink-mid);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .detail-val {
+            font-size: .82rem;
+            font-weight: 600;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        /* note box */
+        .note-box {
+            background: #fafbff;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: .65rem .85rem;
+            font-size: .8rem;
+            color: var(--ink-mid);
+            font-weight: 500;
+            line-height: 1.6;
+            margin-top: .35rem;
+            white-space: pre-wrap;
+        }
+
+        .note-empty {
+            font-size: .78rem;
+            color: var(--ink-light);
+            font-style: italic;
+        }
+
+        /* price highlight */
+        .price-highlight {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .detail-footer {
+            padding: .9rem 1.4rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: .5rem;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            background: #fafbff;
+            flex-wrap: wrap;
+        }
+
+        /* ── MODAL GOM KHÁCH ── */
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-            z-index: 1000; display: none; align-items: center; justify-content: center;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
         }
-        .modal-overlay.active { display: flex; }
-        .modal-content {
-            background: var(--surface); width: 90%; max-width: 500px;
-            border-radius: var(--radius); padding: 1.5rem;
-            box-shadow: var(--shadow-md); position: relative;
-        }
-        .modal-close {
-            position: absolute; top: 1rem; right: 1rem;
-            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--ink-light);
-        }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.85rem; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 0.6rem; border: 1.5px solid var(--border);
-            border-radius: 8px; font-family: inherit; font-size: 0.85rem;
-        }
-        .form-group input:focus, .form-group select:focus { border-color: var(--accent); outline: none; }
 
-        /* ── DRAWER (chi tiết booking) ── */
-        .drawer-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,.35);
-            z-index: 900; display: none;
+        .modal-overlay.active {
+            display: flex;
         }
-        .drawer-overlay.active { display: block; }
-        .drawer {
-            position: fixed; top: 0; right: 0; bottom: 0; width: 360px;
-            background: var(--surface); box-shadow: -8px 0 32px rgba(13,15,20,.12);
-            z-index: 901; transform: translateX(100%);
-            transition: transform .25s cubic-bezier(.4,0,.2,1);
-            display: flex; flex-direction: column; overflow: hidden;
+
+        .modal-content {
+            background: var(--surface);
+            width: 90%;
+            max-width: 500px;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
         }
-        .drawer.active { transform: none; }
-        .drawer-head {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--ink-light);
         }
-        .drawer-head h3 { font-size: 1rem; font-weight: 800; letter-spacing: -.02em; }
-        .drawer-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--ink-light); line-height: 1; }
-        .drawer-body { flex: 1; overflow-y: auto; padding: 1.25rem; }
-        .drawer-section { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-light); margin: 1.1rem 0 .5rem; }
-        .drawer-row { display: flex; justify-content: space-between; align-items: center; padding: .4rem 0; border-bottom: 1px solid var(--border); }
-        .drawer-row:last-child { border-bottom: none; }
-        .drawer-lbl { font-size: .78rem; color: var(--ink-mid); }
-        .drawer-val { font-size: .78rem; font-weight: 600; text-align: right; }
-        .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border); display: flex; gap: .5rem; flex-shrink: 0; }
-        .drawer-footer .btn { flex: 1; justify-content: center; }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
 
         /* ── TOAST ── */
         .toast-stack {
-            position: fixed; bottom: 1.5rem; right: 1.5rem;
-            z-index: 9999; display: flex; flex-direction: column; gap: .5rem;
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
             pointer-events: none;
         }
-        .toast {
-            background: var(--ink); color: #fff;
-            padding: .65rem 1rem; border-radius: 10px;
-            font-size: .82rem; font-weight: 600;
-            display: flex; align-items: center; gap: .5rem;
-            box-shadow: 0 4px 20px rgba(13,15,20,.25);
-            transform: translateY(12px) scale(.97); opacity: 0;
-            transition: all .22s cubic-bezier(.4,0,.2,1);
-            pointer-events: none;
-        }
-        .toast.show { transform: none; opacity: 1; }
-        .toast.t-ok   { background: #176332; }
-        .toast.t-warn { background: #8a5000; }
-        .toast.t-err  { background: #9b1b1b; }
 
-        .badge { display: inline-block; padding: 0.25em 0.4em; font-size: 0.75rem; font-weight: 700; line-height: 1; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: 0.25rem; }
-        .bg-info { background-color: #0dcaf0 !important; }
-        .text-dark { color: #212529 !important; }
-        .bg-secondary { background-color: #6c757d !important; color: white; }
+        .toast {
+            background: var(--ink);
+            color: #fff;
+            padding: .65rem 1rem;
+            border-radius: 10px;
+            font-size: .82rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            box-shadow: 0 4px 20px rgba(13, 15, 20, .25);
+            transform: translateY(12px) scale(.97);
+            opacity: 0;
+            transition: all .22s cubic-bezier(.4, 0, .2, 1);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: none;
+            opacity: 1;
+        }
+
+        .toast.t-ok {
+            background: #176332;
+        }
+
+        .toast.t-warn {
+            background: #8a5000;
+        }
+
+        .toast.t-err {
+            background: #9b1b1b;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.4em;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+
+        .bg-info {
+            background-color: #0dcaf0 !important;
+        }
+
+        .text-dark {
+            color: #212529 !important;
+        }
+
+        .bg-secondary {
+            background-color: #6c757d !important;
+            color: white;
+        }
+
+        /* status update inline form in modal */
+        .status-update-form {
+            display: flex;
+            gap: .6rem;
+            align-items: center;
+            background: #fafbff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: .75rem 1rem;
+            margin-top: .5rem;
+        }
+
+        /* FIX: badge cảnh báo booking lớn (>= 5 người) - không gom được nhưng vẫn phân công HDV được */
+        .no-group-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            background: #fff8e7;
+            color: #8a5000;
+            border: 1px solid #f4c875;
+            border-radius: 6px;
+            padding: .18rem .55rem;
+            font-size: .7rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
     </style>
 </head>
+
 <body>
 
-<div th:replace="fragments/admin-header :: adminHeader"></div>
+    <div th:replace="fragments/admin-header :: adminHeader"></div>
 
-<div class="page">
+    <div class="page">
 
-    <!-- Top bar -->
-    <div class="topbar">
-        <div class="page-heading">
-            <div class="heading-icon"><i class="bi bi-calendar2-check-fill"></i></div>
-            <div class="heading-text">
-                <h1>Quản lý Booking</h1>
-                <p>Theo dõi đặt tour &amp; cập nhật trạng thái</p>
+        <!-- Top bar -->
+        <div class="topbar">
+            <div class="page-heading">
+                <div class="heading-icon"><i class="bi bi-calendar2-check-fill"></i></div>
+                <div class="heading-text">
+                    <h1>Quản lý Booking</h1>
+                    <p>Theo dõi đặt tour &amp; cập nhật trạng thái</p>
+                </div>
             </div>
-        </div>
-        <div style="display:flex;gap:.6rem;align-items:center;">
-            <a th:href="@{/admin}" href="#" class="btn btn-ghost">
-                <i class="bi bi-layout-sidebar"></i> Dashboard
-            </a>
-            <button type="button" class="btn btn-primary" onclick="openAssignModal()"
+            <div style="display:flex;gap:.6rem;align-items:center;">
+                <a th:href="@{/admin}" href="#" class="btn btn-ghost">
+                    <i class="bi bi-layout-sidebar"></i> Dashboard
+                </a>
+                <button type="button" class="btn btn-primary" onclick="openAssignModal()"
                     th:if="${bookings != null and !#lists.isEmpty(bookings)}">
-                <i class="bi bi-people-fill"></i> Gom Khách / Phân công HDV
+                    <i class="bi bi-people-fill"></i> Gom Khách / Phân công HDV
+                </button>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            <span th:text="${successMessage}">Thao tác thành công.</span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span th:text="${errorMessage}">Có lỗi xảy ra.</span>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar" th:if="${bookings != null and !#lists.isEmpty(bookings)}">
+            <div class="stat-card" style="--stat-color:#4361ee;">
+                <div class="stat-icon"><i class="bi bi-calendar2-check"></i></div>
+                <div>
+                    <div class="stat-value" th:text="${#lists.size(bookings)}">0</div>
+                    <div class="stat-label">Tổng booking</div>
+                </div>
+            </div>
+            <div class="stat-card" style="--stat-color:#f4a261;" th:if="${stats != null}">
+                <div class="stat-icon"><i class="bi bi-clock-fill"></i></div>
+                <div>
+                    <div class="stat-value" th:text="${stats.pendingCount != null ? stats.pendingCount : 0}">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+            <div class="stat-card" style="--stat-color:#2dc653;" th:if="${stats != null}">
+                <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
+                <div>
+                    <div class="stat-value" th:text="${stats.confirmedCount != null ? stats.confirmedCount : 0}">0</div>
+                    <div class="stat-label">Confirmed</div>
+                </div>
+            </div>
+            <div class="stat-card" style="--stat-color:#e63946;" th:if="${stats != null}">
+                <div class="stat-icon"><i class="bi bi-x-circle-fill"></i></div>
+                <div>
+                    <div class="stat-value" th:text="${stats.cancelledCount != null ? stats.cancelledCount : 0}">0</div>
+                    <div class="stat-label">Cancelled</div>
+                </div>
+            </div>
+            <div class="stat-card" style="--stat-color:#9c27b0;">
+                <div class="stat-icon"><i class="bi bi-wallet2"></i></div>
+                <div>
+                    <div class="stat-value"
+                        th:text="${depositRevenue != null} ? ${#numbers.formatDecimal(depositRevenue, 0, 'POINT', 0, 'NONE')} + ' ₫' : '0 ₫'">
+                        0 ₫</div>
+                    <div class="stat-label">Doanh thu cọc (70%)</div>
+                </div>
+            </div>
+            <div class="stat-card" style="--stat-color:#ff9800;">
+                <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+                <div>
+                    <div class="stat-value"
+                        th:text="${totalRevenue != null} ? ${#numbers.formatDecimal(totalRevenue, 0, 'POINT', 0, 'NONE')} + ' ₫' : '0 ₫'">
+                        0 ₫</div>
+                    <div class="stat-label">Tổng doanh thu (100%)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── BULK ACTION BAR ── -->
+        <div class="bulk-bar" id="bulkBar" th:if="${bookings != null and !#lists.isEmpty(bookings)}">
+            <i class="bi bi-check-square-fill"></i>
+            Đã chọn <span class="bulk-cnt" id="bulkCount">0</span> booking
+            <span class="sep">|</span>
+            <form th:action="@{/admin/bookings/bulk-confirm}" method="post" id="bulkConfirmForm"
+                style="display:inline;">
+                <div id="bulkConfirmInputs"></div>
+                <button type="submit" class="btn btn-ok btn-sm" onclick="return injectBulkIds('bulkConfirmInputs')">
+                    <i class="bi bi-check-circle"></i> Confirm tất cả
+                </button>
+            </form>
+            <form th:action="@{/admin/bookings/bulk-cancel}" method="post" id="bulkCancelForm" style="display:inline;">
+                <div id="bulkCancelInputs"></div>
+                <button type="submit" class="btn btn-err btn-sm"
+                    onclick="return injectBulkIds('bulkCancelInputs') && confirm('Huỷ ' + selectedIds.size + ' booking?')">
+                    <i class="bi bi-x-circle"></i> Huỷ tất cả
+                </button>
+            </form>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="openAssignModal()">
+                <i class="bi bi-person-check"></i> Phân công HDV
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="clearSelection()" style="margin-left:auto;">
+                <i class="bi bi-x"></i> Bỏ chọn
             </button>
         </div>
-    </div>
 
-    <!-- Alerts -->
-    <div th:if="${successMessage}" class="alert alert-success">
-        <i class="bi bi-check-circle-fill"></i>
-        <span th:text="${successMessage}">Thao tác thành công.</span>
-    </div>
-    <div th:if="${errorMessage}" class="alert alert-danger">
-        <i class="bi bi-exclamation-circle-fill"></i>
-        <span th:text="${errorMessage}">Có lỗi xảy ra.</span>
-    </div>
+        <!-- Table card -->
+        <div class="card" th:unless="${bookings == null or #lists.isEmpty(bookings)}">
 
-    <!-- Stats -->
-    <div class="stats-bar" th:if="${bookings != null and !#lists.isEmpty(bookings)}">
-        <div class="stat-card" style="--stat-color:#4361ee;">
-            <div class="stat-icon"><i class="bi bi-calendar2-check"></i></div>
-            <div>
-                <div class="stat-value" th:text="${#lists.size(bookings)}">0</div>
-                <div class="stat-label">Tổng booking</div>
+            <div class="filter-bar">
+                <div class="search-wrap">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="searchInput" placeholder="Tìm theo khách hàng, tour, email...">
+                </div>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Paid 70% Deposit">Paid 70% Deposit</option>
+                    <option value="Paid 100%">Paid 100%</option>
+                    <option value="Payment Failed">Payment Failed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+                <select class="filter-select" id="hdvFilter">
+                    <option value="">Tất cả HDV</option>
+                    <option th:each="guide : ${guides}" th:value="${guide.fullName}" th:text="${guide.fullName}">
+                    </option>
+                    <option value="__none__">Chưa phân công</option>
+                </select>
+                <span class="filter-count" id="filterCount"></span>
             </div>
-        </div>
-        <div class="stat-card" style="--stat-color:#f4a261;" th:if="${stats != null}">
-            <div class="stat-icon"><i class="bi bi-clock-fill"></i></div>
-            <div>
-                <div class="stat-value" th:text="${stats.pendingCount != null ? stats.pendingCount : 0}">0</div>
-                <div class="stat-label">Pending</div>
-            </div>
-        </div>
-        <div class="stat-card" style="--stat-color:#2dc653;" th:if="${stats != null}">
-            <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
-            <div>
-                <div class="stat-value" th:text="${stats.confirmedCount != null ? stats.confirmedCount : 0}">0</div>
-                <div class="stat-label">Confirmed</div>
-            </div>
-        </div>
-        <div class="stat-card" style="--stat-color:#e63946;" th:if="${stats != null}">
-            <div class="stat-icon"><i class="bi bi-x-circle-fill"></i></div>
-            <div>
-                <div class="stat-value" th:text="${stats.cancelledCount != null ? stats.cancelledCount : 0}">0</div>
-                <div class="stat-label">Cancelled</div>
-            </div>
-        </div>
-    </div>
 
-    <!-- ── BULK ACTION BAR ── -->
-    <div class="bulk-bar" id="bulkBar" th:if="${bookings != null and !#lists.isEmpty(bookings)}">
-        <i class="bi bi-check-square-fill"></i>
-        Đã chọn <span class="bulk-cnt" id="bulkCount">0</span> booking
-        <span class="sep">|</span>
-        <form th:action="@{/admin/bookings/bulk-confirm}" method="post" id="bulkConfirmForm" style="display:inline;">
-            <div id="bulkConfirmInputs"></div>
-            <button type="submit" class="btn btn-ok btn-sm" onclick="return injectBulkIds('bulkConfirmInputs')">
-                <i class="bi bi-check-circle"></i> Confirm tất cả
-            </button>
-        </form>
-        <form th:action="@{/admin/bookings/bulk-cancel}" method="post" id="bulkCancelForm" style="display:inline;">
-            <div id="bulkCancelInputs"></div>
-            <button type="submit" class="btn btn-err btn-sm" onclick="return injectBulkIds('bulkCancelInputs') && confirm('Huỷ ' + selectedIds.size + ' booking?')">
-                <i class="bi bi-x-circle"></i> Huỷ tất cả
-            </button>
-        </form>
-        <button type="button" class="btn btn-ghost btn-sm" onclick="openAssignModal()">
-            <i class="bi bi-person-check"></i> Phân công HDV
-        </button>
-        <button type="button" class="btn btn-ghost btn-sm" onclick="clearSelection()" style="margin-left:auto;">
-            <i class="bi bi-x"></i> Bỏ chọn
-        </button>
-    </div>
-
-    <!-- Table card -->
-    <div class="card" th:unless="${bookings == null or #lists.isEmpty(bookings)}">
-
-        <div class="filter-bar">
-            <div class="search-wrap">
-                <i class="bi bi-search"></i>
-                <input type="text" id="searchInput" placeholder="Tìm theo khách hàng, tour, email...">
-            </div>
-            <select class="filter-select" id="statusFilter">
-                <option value="">Tất cả trạng thái</option>
-                <option value="Pending">Pending</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Paid 70% Deposit">Paid 70% Deposit</option>
-                <option value="Paid 100%">Paid 100%</option>
-                <option value="Payment Failed">Payment Failed</option>
-                <option value="Cancelled">Cancelled</option>
-            </select>
-            <select class="filter-select" id="hdvFilter">
-                <option value="">Tất cả HDV</option>
-                <option th:each="guide : ${guides}" th:value="${guide.fullName}" th:text="${guide.fullName}"></option>
-                <option value="__none__">Chưa phân công</option>
-            </select>
-            <span class="filter-count" id="filterCount"></span>
-        </div>
-
-        <div style="overflow-x:auto;">
-            <table id="bookingTable">
-                <thead>
-                <tr>
-                    <th style="width: 40px; text-align: center;">
-                        <input type="checkbox" id="selectAll" title="Chọn tất cả">
-                    </th>
-                    <th class="sortable" data-col="name">Khách hàng <span class="sort-icon"></span></th>
-                    <th class="sortable" data-col="tour">Tour <span class="sort-icon"></span></th>
-                    <th class="sortable" data-col="travel">Khởi hành <span class="sort-icon"></span></th>
-                    <th class="sortable" data-col="price">Tổng tiền <span class="sort-icon"></span></th>
-                    <th>Trạng thái</th>
-                    <th style="text-align:right;">Hành động</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="booking : ${bookings}" class="booking-row"
-                    th:attr="data-name=${booking.customer != null ? booking.customer.userName : ''},
+            <div style="overflow-x:auto;">
+                <table id="bookingTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px; text-align: center;">
+                                <input type="checkbox" id="selectAll" title="Chọn tất cả">
+                            </th>
+                            <th class="sortable" data-col="name">Khách hàng <span class="sort-icon"></span></th>
+                            <th class="sortable" data-col="tour">Tour <span class="sort-icon"></span></th>
+                            <th class="sortable" data-col="travel">Khởi hành <span class="sort-icon"></span></th>
+                            <th class="sortable" data-col="ppl">Số người <span class="sort-icon"></span></th>
+                            <th class="sortable" data-col="hdv">HDV <span class="sort-icon"></span></th>
+                            <th class="sortable" data-col="price">Tổng tiền <span class="sort-icon"></span></th>
+                            <th>Trạng thái</th>
+                            <th style="text-align:right;">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="booking : ${bookings}" class="booking-row" th:attr="data-name=${booking.customer != null ? booking.customer.userName : ''},
                              data-tour=${booking.tour != null ? booking.tour.tourName : ''},
                              data-email=${booking.customer != null ? booking.customer.email : ''},
                              data-tour-id=${booking.tourID},
@@ -513,418 +1298,776 @@
                              data-travel=${booking.travelDate != null ? booking.travelDate : ''},
                              data-booking-id=${booking.bookingID},
                              data-guide-name=${booking.tourGuide != null ? booking.tourGuide.fullName : ''},
-                             data-ppl=${booking.numberOfPeople != null ? booking.numberOfPeople : 0}"
-                    onclick="openDrawer(this)">
+                             data-ppl=${booking.numberOfPeople != null ? booking.numberOfPeople : 0},
+                             data-children=${booking.numberOfChildren != null ? booking.numberOfChildren : 0},
+                             data-note=${booking.specialRequests != null ? booking.specialRequests : ''}"
+                            onclick="openDetail(this)">
 
-                    <!-- Checkbox -->
-                    <td style="text-align: center;" onclick="event.stopPropagation()">
-                        <input type="checkbox" class="booking-checkbox" th:value="${booking.bookingID}"
-                               onclick="event.stopPropagation()">
-                    </td>
+                            <!-- Checkbox:
+                                 - Booking Paid 100%: không có checkbox (không cần thao tác gì nữa)
+                                 - Booking >= 5 người lớn: có checkbox nhưng DISABLED (không gom tour được)
+                                   → vẫn có thể phân công HDV riêng lẻ qua modal chi tiết
+                                 - Booking bình thường: checkbox đầy đủ
+                            -->
+                            <td style="text-align: center;" onclick="event.stopPropagation()">
+                                <th:block th:if="${booking.status != 'Paid 100%'}">
+                                    <input type="checkbox" class="booking-checkbox" th:value="${booking.bookingID}"
+                                        th:disabled="${booking.numberOfPeople >= 5}"
+                                        th:title="${booking.numberOfPeople >= 5} ? 'Booking từ 5 người lớn trở lên không thể gom tour (vẫn phân công HDV được qua nút Chi tiết)' : ''"
+                                        onclick="event.stopPropagation()">
+                                </th:block>
+                            </td>
 
-                    <!-- Customer -->
-                    <td>
-                        <div class="user-cell">
-                            <div class="avatar" th:style="'background: hsl(' + (${booking.bookingID} * 53 % 360) + ', 52%, 48%);'">
-                                <span th:text="${booking.customer != null and booking.customer.userName != null} ? ${#strings.toUpperCase(#strings.substring(booking.customer.userName, 0, 1))} : 'K'">K</span>
-                            </div>
-                            <div>
-                                <div class="user-name" th:text="${booking.customer != null and booking.customer.userName != null} ? ${booking.customer.userName} : 'Khách vãng lai'">Khách</div>
-                                <div class="text-sub"  th:text="${booking.customer != null and booking.customer.email != null} ? ${booking.customer.email} : '—'">email</div>
-                            </div>
-                        </div>
-                    </td>
+                            <!-- Customer -->
+                            <td>
+                                <div class="user-cell">
+                                    <div class="avatar"
+                                        th:style="'background: hsl(' + (${booking.bookingID} * 53 % 360) + ', 52%, 48%);'">
+                                        <span
+                                            th:text="${booking.customer != null and booking.customer.userName != null} ? ${#strings.toUpperCase(#strings.substring(booking.customer.userName, 0, 1))} : 'K'">K</span>
+                                    </div>
+                                    <div>
+                                        <div class="user-name"
+                                            th:text="${booking.customer != null and booking.customer.userName != null} ? ${booking.customer.userName} : 'Khách vãng lai'">
+                                            Khách</div>
+                                        <div class="text-sub"
+                                            th:text="${booking.customer != null and booking.customer.email != null} ? ${booking.customer.email} : '—'">
+                                            email</div>
+                                    </div>
+                                </div>
+                            </td>
 
-                    <!-- Tour -->
-                    <td>
-                        <div class="tour-name" th:text="${booking.tour != null and booking.tour.tourName != null} ? ${booking.tour.tourName} : 'Tour đã xóa'">Tên tour</div>
-                        <div class="row-hint">click để xem chi tiết</div>
-                    </td>
+                            <!-- Tour -->
+                            <td>
+                                <div class="tour-name"
+                                    th:text="${booking.tour != null and booking.tour.tourName != null} ? ${booking.tour.tourName} : 'Tour đã xóa'">
+                                    Tên tour</div>
+                                <div class="row-hint">click để xem chi tiết</div>
+                            </td>
 
-                    <!-- Travel date — giữ lại, gọn hơn -->
-                    <td>
-                        <span th:if="${booking.travelDate != null}" class="travel-badge">
-                            <i class="bi bi-airplane-fill"></i>
-                            <span th:text="${booking.travelDate}">—</span>
-                        </span>
-                        <span th:if="${booking.travelDate == null}" class="no-date">Chưa chọn</span>
-                    </td>
+                            <!-- Travel date -->
+                            <td>
+                                <span th:if="${booking.travelDate != null}" class="travel-badge">
+                                    <i class="bi bi-airplane-fill"></i>
+                                    <span th:text="${booking.travelDate}">—</span>
+                                </span>
+                                <span th:if="${booking.travelDate == null}" class="no-date">Chưa chọn</span>
+                            </td>
 
-                    <!-- Price -->
-                    <td>
-                        <span class="price">
-                            <span th:text="${booking.totalPrice != null} ? ${#numbers.formatDecimal(booking.totalPrice, 0, 'POINT', 0, 'NONE')} + ' ₫' : '0 ₫'">0 ₫</span>
-                        </span>
-                    </td>
+                            <!-- Số người -->
+                            <td>
+                                <span class="people-cell">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span
+                                        th:text="${booking.numberOfPeople} + ' L, ' + ${booking.numberOfChildren} + ' TE'">1
+                                        L, 0 TE</span>
+                                </span>
+                                <!-- Badge cảnh báo: >= 5 người lớn, không gom tour nhưng vẫn phân công HDV được -->
+                                <div th:if="${booking.numberOfPeople >= 5}" style="margin-top:3px;">
+                                    <span class="no-group-badge">
+                                        <i class="bi bi-exclamation-triangle-fill" style="font-size:.65rem;"></i>
+                                        Không gom tour
+                                    </span>
+                                </div>
+                            </td>
 
-                    <!-- Status — inline quick-change -->
-                    <td onclick="event.stopPropagation()">
-                        <form th:action="@{/admin/bookings/{id}/update-status(id=${booking.bookingID})}"
-                              method="post" class="status-form">
-                            <select name="status" class="status-select"
-                                    onchange="this.form.submit(); showToast('Đã cập nhật trạng thái','t-ok')">
-                                <option value="Pending"          th:selected="${booking.status == 'Pending'}">⏳ Pending</option>
-                                <option value="Confirmed"        th:selected="${booking.status == 'Confirmed'}">✅ Confirmed</option>
-                                <option value="Paid 70% Deposit" th:selected="${booking.status == 'Paid 70% Deposit'}">💳 Paid 70%</option>
-                                <option value="Paid 100%"        th:selected="${booking.status == 'Paid 100%'}">💰 Paid 100%</option>
-                                <option value="Payment Failed"   th:selected="${booking.status == 'Payment Failed'}">❌ Pmt Failed</option>
-                                <option value="Cancelled"        th:selected="${booking.status == 'Cancelled'}">🚫 Cancelled</option>
-                            </select>
-                        </form>
-                    </td>
+                            <!-- Hướng dẫn viên -->
+                            <td>
+                                <span th:if="${booking.tourGuide != null and booking.tourGuide.fullName != null}"
+                                    class="guide-cell">
+                                    <i class="bi bi-person-badge-fill"></i>
+                                    <span th:text="${booking.tourGuide.fullName}">HDV</span>
+                                </span>
+                                <span th:if="${booking.tourGuide == null or booking.tourGuide.fullName == null}"
+                                    class="guide-none">Chưa phân công</span>
+                            </td>
 
-                    <!-- Actions -->
-                    <td onclick="event.stopPropagation()">
-                        <div class="actions" style="justify-content:flex-end;">
-                            <a th:href="@{/admin/bookings/{id}(id=${booking.bookingID})}"
-                               href="#" class="icon-btn view" title="Xem chi tiết">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            <span class="icon-btn del" title="Xóa">
-                                <form th:action="@{/admin/bookings/{id}/delete(id=${booking.bookingID})}"
-                                      method="post"
-                                      onsubmit="return confirm('Xóa booking này?');">
-                                    <button type="submit"><i class="bi bi-trash3"></i></button>
+                            <!-- Price -->
+                            <td>
+                                <span class="price">
+                                    <span
+                                        th:text="${booking.totalPrice != null} ? ${#numbers.formatDecimal(booking.totalPrice, 0, 'POINT', 0, 'NONE')} + ' ₫' : '0 ₫'">0
+                                        ₫</span>
+                                </span>
+                            </td>
+
+                            <!-- Status -->
+                            <td onclick="event.stopPropagation()">
+                                <form th:if="${booking.status != 'Paid 100%'}"
+                                    th:action="@{/admin/bookings/{id}/update-status(id=${booking.bookingID})}"
+                                    method="post" class="status-form">
+                                    <select name="status" class="status-select"
+                                        onchange="this.form.submit(); showToast('Đã cập nhật trạng thái','t-ok')">
+                                        <option value="Pending" th:selected="${booking.status == 'Pending'}">⏳ Pending
+                                        </option>
+                                        <option value="Confirmed" th:selected="${booking.status == 'Confirmed'}">✅
+                                            Confirmed</option>
+                                        <option value="Paid 70% Deposit"
+                                            th:selected="${booking.status == 'Paid 70% Deposit'}">💳 Paid 70%</option>
+                                        <option value="Paid 100%" th:selected="${booking.status == 'Paid 100%'}">💰 Paid
+                                            100%</option>
+                                        <option value="Payment Failed"
+                                            th:selected="${booking.status == 'Payment Failed'}">❌ Pmt Failed</option>
+                                        <option value="Cancelled" th:selected="${booking.status == 'Cancelled'}">🚫
+                                            Cancelled</option>
+                                    </select>
                                 </form>
-                            </span>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                                <span th:if="${booking.status == 'Paid 100%'}" class="status-badge paid"
+                                    title="Đã hoàn thành và nhận đủ doanh thu">
+                                    <i class="bi bi-check2-all"></i> 💰 Paid 100%
+                                </span>
+                            </td>
+
+                            <!-- Actions -->
+                            <td onclick="event.stopPropagation()">
+                                <div class="actions" style="justify-content:flex-end;">
+                                    <a th:href="@{/admin/bookings/{id}(id=${booking.bookingID})}" href="#"
+                                        class="icon-btn view" title="Xem chi tiết">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <span th:if="${booking.status != 'Paid 100%'}" class="icon-btn del" title="Xóa">
+                                        <form th:action="@{/admin/bookings/{id}/delete(id=${booking.bookingID})}"
+                                            method="post" onsubmit="return confirm('Xóa booking này?');">
+                                            <button type="submit"><i class="bi bi-trash3"></i></button>
+                                        </form>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty state -->
+        <div th:if="${bookings == null or #lists.isEmpty(bookings)}" class="card empty-state">
+            <div class="empty-icon"><i class="bi bi-calendar-x"></i></div>
+            <h4>Chưa có booking nào</h4>
+            <p>Booking mới sẽ xuất hiện ở đây khi khách hàng đặt tour.</p>
+        </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════
+     MODAL CHI TIẾT BOOKING (GIỮA MÀN HÌNH)
+══════════════════════════════════════════ -->
+    <div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+        <div class="detail-modal" id="detailModal">
+            <div class="detail-head">
+                <div class="detail-head-left">
+                    <i class="bi bi-calendar2-check-fill" style="color:var(--accent);font-size:1rem;"></i>
+                    <h3 id="detailTitle">Chi tiết Booking</h3>
+                </div>
+                <button class="detail-close" onclick="closeDetail()">✕</button>
+            </div>
+            <div class="detail-body" id="detailBody"></div>
+            <div class="detail-footer" id="detailFooter"></div>
         </div>
     </div>
 
-    <!-- Empty state -->
-    <div th:if="${bookings == null or #lists.isEmpty(bookings)}" class="card empty-state">
-        <div class="empty-icon"><i class="bi bi-calendar-x"></i></div>
-        <h4>Chưa có booking nào</h4>
-        <p>Booking mới sẽ xuất hiện ở đây khi khách hàng đặt tour.</p>
+    <!-- ── MODAL GOM KHÁCH / PHÂN CÔNG HDV ── -->
+    <div class="modal-overlay" id="assignModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAssignModal()">&times;</button>
+            <h3 style="margin-bottom: .3rem; font-size: 1.1rem; font-weight: 800;" id="assignModalTitle">Gom Khách &amp;
+                Phân công HDV</h3>
+            <p style="font-size: 0.82rem; color: var(--ink-mid); margin-bottom: 1.1rem;" id="assignModalDesc">
+                Chỉ các Booking được tích chọn mới được cập nhật.
+            </p>
+            <form th:action="@{/admin/bookings/assign-guide}" method="post" id="assignForm">
+                <div id="hiddenBookingInputs"></div>
+                <div class="form-group">
+                    <label>Ngày khởi hành mới (Tùy chọn)</label>
+                    <input type="date" name="travelDate" id="assignTravelDate">
+                    <p style="font-size: 0.75rem; color: var(--ink-light); margin-top: 4px;">Bỏ trống nếu giữ nguyên
+                        ngày cũ của từng Booking.</p>
+                </div>
+                <div class="form-group">
+                    <label>Chọn Hướng dẫn viên</label>
+                    <select name="guideId">
+                        <option value="">-- Bỏ trống nếu chưa phân công --</option>
+                        <option th:each="guide : ${guides}" th:value="${guide.guideId}" th:text="${guide.fullName}">
+                        </option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.25rem;">
+                    <button type="button" class="btn btn-ghost" onclick="closeAssignModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary" onclick="return prepareAssignForm(event)">
+                        <i class="bi bi-check2"></i> Cập nhật
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
-</div>
+    <!-- ── TOAST STACK ── -->
+    <div class="toast-stack" id="toastStack"></div>
 
-<!-- ── DRAWER CHI TIẾT BOOKING ── -->
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-<div class="drawer" id="drawerPanel">
-    <div class="drawer-head">
-        <h3 id="drawerTitle">Chi tiết Booking</h3>
-        <button class="drawer-close" onclick="closeDrawer()">✕</button>
-    </div>
-    <div class="drawer-body" id="drawerBody"></div>
-    <div class="drawer-footer" id="drawerFooter"></div>
-</div>
+    <div th:replace="fragments/admin-footer :: adminFooter"></div>
 
-<!-- ── MODAL GOM KHÁCH / PHÂN CÔNG HDV ── -->
-<div class="modal-overlay" id="assignModal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeAssignModal()">&times;</button>
-        <h3 style="margin-bottom: .3rem; font-size: 1.1rem; font-weight: 800;">Gom Khách &amp; Phân công HDV</h3>
-        <p style="font-size: 0.82rem; color: var(--ink-mid); margin-bottom: 1.1rem;">
-            Chỉ các Booking được tích chọn mới được cập nhật.
-        </p>
-        <form th:action="@{/admin/bookings/assign-guide}" method="post" id="assignForm">
-            <div id="hiddenBookingInputs"></div>
-            <div class="form-group">
-                <label>Ngày khởi hành mới (Tùy chọn)</label>
-                <input type="date" name="travelDate">
-                <p style="font-size: 0.75rem; color: var(--ink-light); margin-top: 4px;">Bỏ trống nếu giữ nguyên ngày cũ của từng Booking.</p>
-            </div>
-            <div class="form-group">
-                <label>Chọn Hướng dẫn viên</label>
-                <select name="guideId">
-                    <option value="">-- Bỏ trống nếu chưa phân công --</option>
-                    <option th:each="guide : ${guides}" th:value="${guide.guideId}" th:text="${guide.fullName}"></option>
-                </select>
-            </div>
-            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.25rem;">
-                <button type="button" class="btn btn-ghost" onclick="closeAssignModal()">Hủy</button>
-                <button type="submit" class="btn btn-primary" onclick="return prepareAssignForm(event)">
-                    <i class="bi bi-check2"></i> Cập nhật
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+    <script>
+        /* ─────────────────────────────────────────
+           FILTER + SEARCH + HDV FILTER
+        ───────────────────────────────────────── */
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const hdvFilter = document.getElementById('hdvFilter');
+        const rows = document.querySelectorAll('.booking-row');
+        const countEl = document.getElementById('filterCount');
 
-<!-- ── TOAST STACK ── -->
-<div class="toast-stack" id="toastStack"></div>
+        function filterTable() {
+            const q = searchInput.value.toLowerCase().trim();
+            const status = statusFilter.value;
+            const hdv = hdvFilter ? hdvFilter.value : '';
+            let visible = 0;
 
-<div th:replace="fragments/admin-footer :: adminFooter"></div>
+            rows.forEach(row => {
+                const name = (row.dataset.name || '').toLowerCase();
+                const tour = (row.dataset.tour || '').toLowerCase();
+                const email = (row.dataset.email || '').toLowerCase();
+                const st = row.dataset.status || '';
+                const rHdv = row.dataset.hdv || '__none__';
 
-<script>
-    /* ─────────────────────────────────────────
-       FILTER + SEARCH + HDV FILTER
-    ───────────────────────────────────────── */
-    const searchInput  = document.getElementById('searchInput');
-    const statusFilter = document.getElementById('statusFilter');
-    const hdvFilter    = document.getElementById('hdvFilter');
-    const rows         = document.querySelectorAll('.booking-row');
-    const countEl      = document.getElementById('filterCount');
+                const matchSearch = !q || name.includes(q) || tour.includes(q) || email.includes(q);
+                const matchStatus = !status || st === status;
+                const matchHdv = !hdv || rHdv === hdv;
 
-    function filterTable() {
-        const q      = searchInput.value.toLowerCase().trim();
-        const status = statusFilter.value;
-        const hdv    = hdvFilter ? hdvFilter.value : '';
-        let visible  = 0;
+                const show = matchSearch && matchStatus && matchHdv;
+                row.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
 
-        rows.forEach(row => {
-            const name  = (row.dataset.name  || '').toLowerCase();
-            const tour  = (row.dataset.tour  || '').toLowerCase();
-            const email = (row.dataset.email || '').toLowerCase();
-            const st    =  row.dataset.status || '';
-            const rHdv  =  row.dataset.hdv    || '__none__';
-
-            const matchSearch = !q || name.includes(q) || tour.includes(q) || email.includes(q);
-            const matchStatus = !status || st === status;
-            const matchHdv    = !hdv    || rHdv === hdv;
-
-            const show = matchSearch && matchStatus && matchHdv;
-            row.style.display = show ? '' : 'none';
-            if (show) visible++;
-        });
-
-        countEl.textContent = 'Hiển thị ' + visible + ' / ' + rows.length + ' booking';
-    }
-
-    if (searchInput)  searchInput.addEventListener('input', filterTable);
-    if (statusFilter) statusFilter.addEventListener('change', filterTable);
-    if (hdvFilter)    hdvFilter.addEventListener('change', filterTable);
-    filterTable();
-
-    /* ─────────────────────────────────────────
-       SORT BY COLUMN
-    ───────────────────────────────────────── */
-    let sortCol = null, sortDir = 1;
-    document.querySelectorAll('thead th.sortable').forEach(th => {
-        th.addEventListener('click', () => {
-            const col = th.dataset.col;
-            if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
-            document.querySelectorAll('thead th.sortable').forEach(t => t.classList.remove('asc','desc'));
-            th.classList.add(sortDir === 1 ? 'asc' : 'desc');
-            sortTable(col, sortDir);
-        });
-    });
-
-    function sortTable(col, dir) {
-        const tbody = document.querySelector('#bookingTable tbody');
-        const rowsArr = Array.from(rows);
-        rowsArr.sort((a, b) => {
-            let va = a.dataset[col] || '';
-            let vb = b.dataset[col] || '';
-            if (col === 'price') { va = parseFloat(va)||0; vb = parseFloat(vb)||0; return (va - vb) * dir; }
-            return va.localeCompare(vb, 'vi') * dir;
-        });
-        rowsArr.forEach(r => tbody.appendChild(r));
-    }
-
-    /* ─────────────────────────────────────────
-       CHECKBOX + BULK SELECTION
-    ───────────────────────────────────────── */
-    const selectAll       = document.getElementById('selectAll');
-    const bulkBar         = document.getElementById('bulkBar');
-    const bulkCountEl     = document.getElementById('bulkCount');
-    let selectedIds       = new Set();
-
-    function updateBulkBar() {
-        if (!bulkBar) return;
-        if (selectedIds.size > 0) {
-            bulkBar.classList.add('active');
-            bulkCountEl.textContent = selectedIds.size;
-        } else {
-            bulkBar.classList.remove('active');
+            countEl.textContent = 'Hiển thị ' + visible + ' / ' + rows.length + ' booking';
         }
-    }
 
-    function clearSelection() {
-        selectedIds.clear();
-        document.querySelectorAll('.booking-checkbox').forEach(cb => cb.checked = false);
-        document.querySelectorAll('.booking-row').forEach(r => r.classList.remove('row-selected'));
-        if (selectAll) selectAll.checked = false;
-        updateBulkBar();
-    }
+        if (searchInput) searchInput.addEventListener('input', filterTable);
+        if (statusFilter) statusFilter.addEventListener('change', filterTable);
+        if (hdvFilter) hdvFilter.addEventListener('change', filterTable);
+        filterTable();
 
-    document.querySelectorAll('.booking-checkbox').forEach(cb => {
-        cb.addEventListener('change', function () {
-            const id = parseInt(this.value);
-            const row = this.closest('tr');
-            if (this.checked) { selectedIds.add(id); row.classList.add('row-selected'); }
-            else              { selectedIds.delete(id); row.classList.remove('row-selected'); }
-
-            // Same-tour constraint
-            enforceSameTour();
-            updateBulkBar();
+        /* ─────────────────────────────────────────
+           SORT BY COLUMN
+        ───────────────────────────────────────── */
+        let sortCol = null, sortDir = 1;
+        document.querySelectorAll('thead th.sortable').forEach(th => {
+            th.addEventListener('click', () => {
+                const col = th.dataset.col;
+                if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+                document.querySelectorAll('thead th.sortable').forEach(t => t.classList.remove('asc', 'desc'));
+                th.classList.add(sortDir === 1 ? 'asc' : 'desc');
+                sortTable(col, sortDir);
+            });
         });
-    });
 
-    if (selectAll) {
-        selectAll.addEventListener('change', function () {
+        function sortTable(col, dir) {
+            const tbody = document.querySelector('#bookingTable tbody');
+            const rowsArr = Array.from(rows);
+            rowsArr.sort((a, b) => {
+                let va = a.dataset[col] || '';
+                let vb = b.dataset[col] || '';
+                if (col === 'price' || col === 'ppl') {
+                    va = parseFloat(va) || 0; vb = parseFloat(vb) || 0;
+                    return (va - vb) * dir;
+                }
+                return va.localeCompare(vb, 'vi') * dir;
+            });
+            rowsArr.forEach(r => tbody.appendChild(r));
+        }
+
+        /* ─────────────────────────────────────────
+           CHECKBOX + BULK SELECTION
+        ───────────────────────────────────────── */
+        const selectAll = document.getElementById('selectAll');
+        const bulkBar = document.getElementById('bulkBar');
+        const bulkCountEl = document.getElementById('bulkCount');
+        let selectedIds = new Set();
+
+        function updateBulkBar() {
+            if (!bulkBar) return;
+            if (selectedIds.size > 0) {
+                bulkBar.classList.add('active');
+                bulkCountEl.textContent = selectedIds.size;
+            } else {
+                bulkBar.classList.remove('active');
+            }
+        }
+
+        function clearSelection() {
+            selectedIds.clear();
+            document.querySelectorAll('.booking-checkbox').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.booking-row').forEach(r => r.classList.remove('row-selected'));
+            if (selectAll) selectAll.checked = false;
+            updateBulkBar();
+        }
+
+        document.querySelectorAll('.booking-checkbox').forEach(cb => {
+            cb.addEventListener('change', function () {
+                const id = parseInt(this.value);
+                const row = this.closest('tr');
+                if (this.checked) { selectedIds.add(id); row.classList.add('row-selected'); }
+                else { selectedIds.delete(id); row.classList.remove('row-selected'); }
+                enforceSameTour();
+                updateBulkBar();
+            });
+        });
+
+        if (selectAll) {
+            selectAll.addEventListener('change', function () {
+                document.querySelectorAll('.booking-checkbox').forEach(cb => {
+                    // Bỏ qua checkbox đã disabled (booking >= 5 người)
+                    if (cb.disabled) return;
+                    if (cb.closest('tr').style.display !== 'none') {
+                        cb.checked = this.checked;
+                        const id = parseInt(cb.value);
+                        const row = cb.closest('tr');
+                        if (this.checked) { selectedIds.add(id); row.classList.add('row-selected'); }
+                        else { selectedIds.delete(id); row.classList.remove('row-selected'); }
+                    }
+                });
+                enforceSameTour();
+                updateBulkBar();
+            });
+        }
+
+        /**
+         * FIX: enforceSameTour chỉ xử lý checkbox của booking < 5 người.
+         * Booking >= 5 người đã disabled sẵn từ server-side (th:disabled),
+         * không cần disable thêm hay thay đổi opacity của row.
+         */
+        function enforceSameTour() {
+            let firstTourId = null;
             document.querySelectorAll('.booking-checkbox').forEach(cb => {
-                if (!cb.disabled && cb.closest('tr').style.display !== 'none') {
-                    cb.checked = this.checked;
-                    const id = parseInt(cb.value);
-                    const row = cb.closest('tr');
-                    if (this.checked) { selectedIds.add(id); row.classList.add('row-selected'); }
-                    else              { selectedIds.delete(id); row.classList.remove('row-selected'); }
+                if (cb.checked) {
+                    firstTourId = cb.closest('tr').dataset.tourId;
+                    return false;
                 }
             });
-            enforceSameTour();
-            updateBulkBar();
-        });
-    }
+            document.querySelectorAll('.booking-checkbox').forEach(cb => {
+                const row = cb.closest('tr');
+                const ppl = parseInt(row.dataset.ppl) || 0;
+                // QUAN TRỌNG: Không động vào checkbox của booking >= 5 người
+                // Chúng đã bị disabled từ server-side để không gom tour được
+                // nhưng vẫn phân công HDV được qua modal chi tiết
+                if (ppl >= 5) return;
 
-    function enforceSameTour() {
-        let firstTourId = null;
-        document.querySelectorAll('.booking-checkbox').forEach(cb => {
-            if (cb.checked) { firstTourId = cb.closest('tr').dataset.tourId; return false; }
-        });
-        document.querySelectorAll('.booking-checkbox').forEach(cb => {
-            const row = cb.closest('tr');
-            if (firstTourId && row.dataset.tourId !== firstTourId) {
-                cb.disabled = true; row.style.opacity = '.5';
+                if (firstTourId && row.dataset.tourId !== firstTourId) {
+                    cb.disabled = true;
+                    row.style.opacity = '.5';
+                } else {
+                    cb.disabled = false;
+                    row.style.opacity = '1';
+                }
+            });
+        }
+
+        function injectBulkIds(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            selectedIds.forEach(id => {
+                const inp = document.createElement('input');
+                inp.type = 'hidden'; inp.name = 'bookingIds'; inp.value = id;
+                container.appendChild(inp);
+            });
+            if (selectedIds.size === 0) { showToast('Chọn ít nhất 1 booking!', 't-warn'); return false; }
+            return true;
+        }
+
+        /* ─────────────────────────────────────────
+           HELPER: FORMAT TIỀN VIỆT
+        ───────────────────────────────────────── */
+        function fmtVND(val) {
+            const num = Number(String(val).replace(/[^\d.-]/g, '')) || 0;
+            return num.toLocaleString('vi-VN', { maximumFractionDigits: 0 }) + ' ₫';
+        }
+
+        /* ─────────────────────────────────────────
+           MODAL CHI TIẾT BOOKING
+        ───────────────────────────────────────── */
+        function openDetail(row) {
+            const d = row.dataset;
+            document.getElementById('detailTitle').textContent = 'Booking #' + d.bookingId;
+
+            const statusMap = {
+                'Confirmed': { cls: 'confirmed', lbl: '✅ Confirmed' },
+                'Pending': { cls: 'pending', lbl: '⏳ Pending' },
+                'Cancelled': { cls: 'cancelled', lbl: '🚫 Cancelled' },
+                'Paid 70% Deposit': { cls: 'paid', lbl: '💳 Paid 70%' },
+                'Paid 100%': { cls: 'paid', lbl: '💰 Paid 100%' },
+                'Payment Failed': { cls: 'failed', lbl: '❌ Payment Failed' }
+            };
+            const st = statusMap[d.status] || { cls: 'pending', lbl: d.status };
+
+            const avatarBg = row.querySelector('.avatar').style.background;
+            const isPaid100 = d.status === 'Paid 100%';
+            const isLargeGroup = parseInt(d.ppl) >= 5;
+
+            /* ── PRICE: lấy thẳng từ text ngoài bảng ── */
+            const priceCell = row.querySelector('td .price span');
+            const priceFormatted = priceCell ? priceCell.textContent.trim() : '—';
+
+            /* ── NOTE ── */
+            const noteHtml = (d.note && d.note.trim())
+                ? `<div class="note-box">${d.note.trim()}</div>`
+                : `<span class="note-empty">Không có ghi chú</span>`;
+
+            /* ── STATUS UPDATE FORM ── */
+            const statusFormHtml = isPaid100
+                ? `<span class="status-badge paid" style="font-size:.8rem;padding:.4rem 1rem;">
+               <i class="bi bi-check2-all"></i> 💰 Paid 100% — Không thể thay đổi
+           </span>`
+                : `<div class="status-update-form">
+               <select name="status" class="status-select" id="drawerStatusSelect" style="flex:1;padding:.48rem 2rem .48rem .75rem;font-size:.82rem;">
+                   <option value="Pending"          ${d.status === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
+                   <option value="Confirmed"        ${d.status === 'Confirmed' ? 'selected' : ''}>✅ Confirmed</option>
+                   <option value="Paid 70% Deposit" ${d.status === 'Paid 70% Deposit' ? 'selected' : ''}>💳 Paid 70%</option>
+                   <option value="Paid 100%"        ${d.status === 'Paid 100%' ? 'selected' : ''}>💰 Paid 100%</option>
+                   <option value="Payment Failed"   ${d.status === 'Payment Failed' ? 'selected' : ''}>❌ Pmt Failed</option>
+                   <option value="Cancelled"        ${d.status === 'Cancelled' ? 'selected' : ''}>🚫 Cancelled</option>
+               </select>
+               <button type="button" class="btn btn-primary" style="padding:.48rem 1rem;white-space:nowrap;"
+                       onclick="submitStatusUpdate('${d.bookingId}')">
+                   <i class="bi bi-check2"></i> Lưu
+               </button>
+           </div>`;
+
+            /* ── BADGE CẢNH BÁO NHÓM LỚN ── */
+            const largeGroupBadge = isLargeGroup
+                ? `<div style="margin-top:.5rem;padding:.55rem .85rem;background:#fff8e7;border:1px solid #f4c875;border-radius:8px;font-size:.78rem;color:#633806;font-weight:600;display:flex;align-items:center;gap:.5rem;">
+                    <i class="bi bi-exclamation-triangle-fill" style="color:#e67700;"></i>
+                    Booking từ <strong>${d.ppl} người lớn</strong> — không thể gom tour, nhưng vẫn có thể phân công HDV riêng lẻ.
+                  </div>`
+                : '';
+
+            document.getElementById('detailBody').innerHTML = `
+        <!-- Customer hero -->
+        <div class="detail-customer">
+            <div class="detail-avatar" style="background:${avatarBg};">
+                ${(d.name || 'K')[0].toUpperCase()}
+            </div>
+            <div class="detail-customer-info">
+                <div class="detail-customer-name">${d.name || 'Khách vãng lai'}</div>
+                <div class="detail-customer-email">${d.email || '—'}</div>
+            </div>
+            <span class="status-badge ${st.cls}" style="margin-left:auto;flex-shrink:0;">${st.lbl}</span>
+        </div>
+
+        ${largeGroupBadge}
+
+        <!-- 2-col grid -->
+        <div class="detail-grid">
+
+            <!-- CỘT TRÁI: Thông tin đặt tour -->
+            <div>
+                <div class="detail-section-label" style="grid-column:unset;">Thông tin đặt tour</div>
+                <div class="detail-row">
+                    <span class="detail-lbl">Mã booking</span>
+                    <span class="detail-val" style="font-family:'IBM Plex Mono',monospace;color:var(--accent);">#${d.bookingId}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-lbl">Ngày đặt</span>
+                    <span class="detail-val">${d.booked || '—'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-lbl">Ngày khởi hành</span>
+                    <span class="detail-val">
+                        ${d.travel
+                    ? `<span style="background:var(--accent-soft);color:var(--accent);padding:.18rem .6rem;border-radius:6px;font-size:.76rem;font-weight:700;">✈ ${d.travel}</span>`
+                    : `<span style="color:var(--ink-light);font-style:italic;font-size:.78rem;">Chưa chọn</span>`}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-lbl">Số người lớn</span>
+                    <span class="detail-val">
+                        <span style="background:#f0f4ff;color:var(--accent);padding:.18rem .6rem;border-radius:6px;font-size:.78rem;font-weight:700;">
+                            <i class="bi bi-person-fill" style="font-size:.7rem;"></i> ${d.ppl || '0'} người lớn
+                        </span>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-lbl">Số trẻ em</span>
+                    <span class="detail-val">
+                        <span style="background:#fff8e7;color:#8a5000;padding:.18rem .6rem;border-radius:6px;font-size:.78rem;font-weight:700;">
+                            <i class="bi bi-people-fill" style="font-size:.7rem;"></i> ${d.children || '0'} trẻ em
+                        </span>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-lbl">Tổng tiền</span>
+                    <span class="detail-val price-highlight">${priceFormatted}</span>
+                </div>
+            </div>
+
+            <!-- CỘT PHẢI: Tour & HDV -->
+            <div>
+                <div class="detail-section-label" style="grid-column:unset;">Tour &amp; Hướng dẫn viên</div>
+                <div class="detail-row">
+                    <span class="detail-lbl">Tên tour</span>
+                    <span class="detail-val" style="max-width:170px;font-size:.78rem;">${d.tour || '—'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-lbl">Tour ID</span>
+                    <span class="detail-val" style="font-family:'IBM Plex Mono',monospace;color:var(--ink-mid);">#${d.tourId || '—'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-lbl">Hướng dẫn viên</span>
+                    <span class="detail-val">
+                        ${d.guideName
+                    ? `<span style="background:#e0f7fa;color:#00695c;padding:.18rem .6rem;border-radius:6px;font-size:.78rem;font-weight:700;">
+                                   <i class="bi bi-person-badge-fill" style="font-size:.7rem;"></i> ${d.guideName}
+                               </span>`
+                    : `<span style="color:var(--ink-light);font-style:italic;font-size:.78rem;">Chưa phân công</span>`}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- GHI CHÚ full width -->
+        <div style="margin-top:.75rem;">
+            <div class="detail-section-label" style="margin-top:.5rem;">Ghi chú / Yêu cầu đặc biệt</div>
+            ${noteHtml}
+        </div>
+
+        <!-- CẬP NHẬT TRẠNG THÁI -->
+        <div style="margin-top:1rem;">
+            <div class="detail-section-label" style="margin-top:.5rem;">Cập nhật trạng thái</div>
+            ${statusFormHtml}
+        </div>
+    `;
+
+            document.getElementById('detailFooter').innerHTML = `
+        <button class="btn btn-ghost" onclick="assignFromDetail('${d.bookingId}')">
+            <i class="bi bi-person-check"></i> Phân công HDV
+        </button>
+    `;
+
+            document.getElementById('detailOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        /**
+         * FIX CHÍNH: assignFromDetail
+         *
+         * Luồng cũ (bị lỗi với booking >= 5 người):
+         *   1. Tìm checkbox theo bookingId
+         *   2. Nếu không có checkbox → dùng _forceBookingId
+         *   3. Mở modal assign
+         *
+         * Vấn đề: booking >= 5 người có checkbox nhưng bị disabled.
+         * querySelector tìm thấy checkbox → không dùng _forceBookingId
+         * → nhưng checkbox disabled không được check → selectedIds rỗng
+         * → prepareAssignForm() báo lỗi "Chọn ít nhất 1 booking"
+         *
+         * FIX: Kiểm tra thêm cb.disabled. Nếu disabled → dùng _forceBookingId.
+         */
+        function assignFromDetail(bookingId) {
+            closeDetail();
+            const cb = document.querySelector('.booking-checkbox[value="' + bookingId + '"]');
+
+            if (cb && !cb.disabled) {
+                // Booking bình thường (< 5 người): dùng checkbox như cũ
+                if (!cb.checked) {
+                    cb.checked = true;
+                    cb.dispatchEvent(new Event('change'));
+                }
             } else {
-                cb.disabled = false; row.style.opacity = '1';
+                // Booking >= 5 người (cb disabled) hoặc không có checkbox (Paid 100% đã bị ẩn):
+                // Inject bookingId trực tiếp vào form, bỏ qua checkbox
+                window._forceBookingId = bookingId;
             }
-        });
-    }
 
-    function injectBulkIds(containerId) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = '';
-        selectedIds.forEach(id => {
+            setTimeout(function () { openAssignModal(); }, 150);
+        }
+
+        function closeDetail() {
+            document.getElementById('detailOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function submitStatusUpdate(bookingId) {
+            const sel = document.getElementById('drawerStatusSelect');
+            if (!sel) return;
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = '/admin/bookings/' + bookingId + '/update-status';
             const inp = document.createElement('input');
-            inp.type = 'hidden'; inp.name = 'bookingIds'; inp.value = id;
-            container.appendChild(inp);
+            inp.type = 'hidden'; inp.name = 'status'; inp.value = sel.value;
+            form.appendChild(inp);
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        /* ─────────────────────────────────────────
+           MODAL GOM KHÁCH / PHÂN CÔNG HDV
+        ───────────────────────────────────────── */
+        const assignModal = document.getElementById('assignModal');
+
+        function openAssignModal() {
+            const titleEl = document.getElementById('assignModalTitle');
+            const descEl = document.getElementById('assignModalDesc');
+            const dateInput = document.getElementById('assignTravelDate');
+
+            // ── CASE: Phân công HDV riêng lẻ cho booking >= 5 người (force inject) ──
+            if (window._forceBookingId) {
+                const container = document.getElementById('hiddenBookingInputs');
+                container.innerHTML = '';
+                const inp = document.createElement('input');
+                inp.type = 'hidden'; inp.name = 'bookingIds'; inp.value = window._forceBookingId;
+                container.appendChild(inp);
+                window._forceBookingId = null;
+
+                // Cập nhật tiêu đề modal cho rõ ràng
+                if (titleEl) titleEl.textContent = 'Phân công Hướng dẫn viên';
+                if (descEl) descEl.textContent = 'Phân công HDV cho booking này (nhóm lớn, không gom tour).';
+
+                // Không giới hạn ngày khởi hành
+                if (dateInput) {
+                    dateInput.removeAttribute('min');
+                    dateInput.removeAttribute('max');
+                    dateInput.disabled = false;
+                }
+
+                assignModal.classList.add('active');
+                return;
+            }
+
+            // ── CASE: Gom tour / phân công từ checkbox ──
+            let checkedCount = 0;
+            let firstTourId = null;
+            let diffTour = false;
+            let minAllowedDate = new Date('1900-01-01');
+            let maxAllowedDate = new Date('2100-01-01');
+            let hasDate = false;
+
+            document.querySelectorAll('.booking-checkbox').forEach(cb => {
+                if (!cb.checked) return;
+                checkedCount++;
+                const row = cb.closest('tr');
+                const tourId = row.dataset.tourId;
+                const travel = row.dataset.travel;
+
+                if (!firstTourId) firstTourId = tourId;
+                else if (firstTourId !== tourId) diffTour = true;
+
+                if (travel) {
+                    let tDate = new Date(travel);
+                    let tMin = new Date(tDate); tMin.setDate(tDate.getDate() - 10);
+                    let tMax = new Date(tDate); tMax.setDate(tDate.getDate() + 10);
+                    if (!hasDate) {
+                        minAllowedDate = tMin; maxAllowedDate = tMax; hasDate = true;
+                    } else {
+                        if (tMin > minAllowedDate) minAllowedDate = tMin;
+                        if (tMax < maxAllowedDate) maxAllowedDate = tMax;
+                    }
+                }
+            });
+
+            if (checkedCount === 0) { showToast('Chọn ít nhất một booking để gom!', 't-warn'); return; }
+            if (diffTour) { showToast('Chỉ gom booking cùng 1 tour!', 't-err'); return; }
+
+            if (hasDate && minAllowedDate <= maxAllowedDate) {
+                if (dateInput) {
+                    dateInput.min = minAllowedDate.toISOString().split('T')[0];
+                    dateInput.max = maxAllowedDate.toISOString().split('T')[0];
+                    dateInput.disabled = false;
+                }
+            } else if (hasDate && minAllowedDate > maxAllowedDate) {
+                showToast('Các booking có ngày khởi hành lệch nhau quá 10 ngày, không thể gom chung!', 't-err');
+                return;
+            } else {
+                if (dateInput) {
+                    dateInput.removeAttribute('min');
+                    dateInput.removeAttribute('max');
+                }
+            }
+
+            // Reset tiêu đề về mặc định
+            if (titleEl) titleEl.innerHTML = 'Gom Khách &amp; Phân công HDV';
+            if (descEl) descEl.textContent = 'Chỉ các Booking được tích chọn mới được cập nhật.';
+
+            assignModal.classList.add('active');
+        }
+
+        /**
+         * FIX: closeAssignModal phải reset hiddenBookingInputs
+         * để lần mở kế tiếp không bị dính data cũ từ _forceBookingId
+         */
+        function closeAssignModal() {
+            assignModal.classList.remove('active');
+            // Reset hidden inputs để tránh data cũ lẫn vào lần mở sau
+            document.getElementById('hiddenBookingInputs').innerHTML = '';
+        }
+
+        /**
+         * FIX CHÍNH: prepareAssignForm
+         *
+         * Vấn đề cũ: hàm luôn innerHTML = '' rồi inject từ checkbox
+         * → Xóa mất bookingId đã inject sẵn bởi assignFromDetail() qua _forceBookingId
+         *
+         * FIX: Nếu hiddenBookingInputs đã có data (từ _forceBookingId path) → dùng luôn, không clear.
+         */
+        function prepareAssignForm(event) {
+            const container = document.getElementById('hiddenBookingInputs');
+
+            // Nếu đã có inputs được inject sẵn (từ assignFromDetail cho booking >= 5 người)
+            // thì dùng luôn, không override
+            if (container.querySelectorAll('input[name="bookingIds"]').length > 0) {
+                return true;
+            }
+
+            // Ngược lại: inject từ checkbox đang được chọn
+            container.innerHTML = '';
+            let checkedCount = 0;
+            document.querySelectorAll('.booking-checkbox').forEach(cb => {
+                if (!cb.checked) return;
+                checkedCount++;
+                const inp = document.createElement('input');
+                inp.type = 'hidden'; inp.name = 'bookingIds'; inp.value = cb.value;
+                container.appendChild(inp);
+            });
+
+            if (checkedCount === 0) {
+                showToast('Chọn ít nhất một booking!', 't-warn');
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
+        /* ─────────────────────────────────────────
+           TOAST
+        ───────────────────────────────────────── */
+        function showToast(msg, type = '') {
+            const stack = document.getElementById('toastStack');
+            const el = document.createElement('div');
+            el.className = 'toast ' + type;
+            const icon = type === 't-ok' ? 'bi-check-circle-fill' : type === 't-err' ? 'bi-x-circle-fill' : 'bi-exclamation-triangle-fill';
+            el.innerHTML = `<i class="bi ${icon}"></i> ${msg}`;
+            stack.appendChild(el);
+            requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
+            setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2800);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sMsg = document.querySelector('.alert-success span');
+            const eMsg = document.querySelector('.alert-danger span');
+            if (sMsg && sMsg.textContent.trim()) showToast(sMsg.textContent.trim(), 't-ok');
+            if (eMsg && eMsg.textContent.trim()) showToast(eMsg.textContent.trim(), 't-err');
+
+            /**
+             * FIX: Booking >= 5 người lớn
+             * - Chỉ style riêng checkbox (opacity + cursor), KHÔNG làm mờ cả row
+             * - Row vẫn click được để mở modal chi tiết và phân công HDV
+             */
+            document.querySelectorAll('.booking-checkbox').forEach(cb => {
+                if (cb.disabled) {
+                    cb.style.opacity = '.35';
+                    cb.style.cursor = 'not-allowed';
+                    // KHÔNG set row.style.opacity ở đây
+                }
+            });
         });
-        if (selectedIds.size === 0) { showToast('Chọn ít nhất 1 booking!', 't-warn'); return false; }
-        return true;
-    }
-
-    /* ─────────────────────────────────────────
-       DRAWER CHI TIẾT
-    ───────────────────────────────────────── */
-    function openDrawer(row) {
-        const d = row.dataset;
-        document.getElementById('drawerTitle').textContent = 'Booking #' + d.bookingId;
-
-        const stClass = {
-            'Confirmed':'confirmed','Pending':'pending','Cancelled':'cancelled',
-            'Paid 70% Deposit':'paid','Paid 100%':'paid','Payment Failed':'failed'
-        }[d.status] || 'pending';
-
-        const avatarBg = row.querySelector('.avatar').style.background;
-
-        document.getElementById('drawerBody').innerHTML = `
-            <div style="display:flex;align-items:center;gap:.85rem;padding:.25rem 0 1.1rem;border-bottom:1px solid var(--border);margin-bottom:.75rem;">
-                <div style="width:48px;height:48px;border-radius:12px;background:${avatarBg};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;color:#fff;flex-shrink:0;">
-                    ${(d.name||'K')[0].toUpperCase()}
-                </div>
-                <div>
-                    <div style="font-weight:800;font-size:1rem;line-height:1.2;">${d.name||'Khách vãng lai'}</div>
-                    <div style="font-size:.75rem;color:var(--ink-light);margin-top:2px;">${d.email||'—'}</div>
-                </div>
-            </div>
-
-            <div class="drawer-section">Thông tin booking</div>
-            <div class="drawer-row"><span class="drawer-lbl">Tour</span><span class="drawer-val">${d.tour||'—'}</span></div>
-            <div class="drawer-row"><span class="drawer-lbl">Ngày đặt</span><span class="drawer-val">${d.booked||'—'}</span></div>
-            <div class="drawer-row"><span class="drawer-lbl">Ngày khởi hành</span><span class="drawer-val">${d.travel||'Chưa chọn'}</span></div>
-            <div class="drawer-row"><span class="drawer-lbl">Số người</span><span class="drawer-val">${d.ppl||'—'} người</span></div>
-            <div class="drawer-row"><span class="drawer-lbl">Hướng dẫn viên</span>
-                <span class="drawer-val">${d.guideName
-                    ? '<span style="background:#e0f7fa;color:#00695c;padding:.15rem .55rem;border-radius:5px;font-size:.78rem;font-weight:700;">'+d.guideName+'</span>'
-                    : '<span style="color:var(--ink-light);font-style:italic;font-size:.78rem;">Chưa phân công</span>'}</span>
-            </div>
-            <div class="drawer-row"><span class="drawer-lbl">Tổng tiền</span>
-                <span class="drawer-val" style="color:var(--accent);font-size:.95rem;">
-                    ${parseInt(d.price||0).toLocaleString('vi-VN')} ₫
-                </span>
-            </div>
-
-            <div class="drawer-section">Cập nhật trạng thái</div>
-            <form action="/admin/bookings/${d.bookingId}/update-status" method="post"
-                  style="display:flex;gap:.5rem;align-items:center;">
-                <select name="status" class="status-select" style="flex:1;padding:.45rem 2rem .45rem .7rem;">
-                    <option value="Pending"          ${d.status==='Pending'?'selected':''}>⏳ Pending</option>
-                    <option value="Confirmed"        ${d.status==='Confirmed'?'selected':''}>✅ Confirmed</option>
-                    <option value="Paid 70% Deposit" ${d.status==='Paid 70% Deposit'?'selected':''}>💳 Paid 70%</option>
-                    <option value="Paid 100%"        ${d.status==='Paid 100%'?'selected':''}>💰 Paid 100%</option>
-                    <option value="Payment Failed"   ${d.status==='Payment Failed'?'selected':''}>❌ Pmt Failed</option>
-                    <option value="Cancelled"        ${d.status==='Cancelled'?'selected':''}>🚫 Cancelled</option>
-                </select>
-                <button type="submit" class="btn btn-primary" style="padding:.45rem .85rem;">
-                    <i class="bi bi-check2"></i> Lưu
-                </button>
-            </form>`;
-
-        document.getElementById('drawerFooter').innerHTML = `
-            <a href="/admin/bookings/${d.bookingId}" class="btn btn-ghost">
-                <i class="bi bi-eye"></i> Trang đầy đủ
-            </a>
-            <button class="btn btn-primary" onclick="closeDrawer();openAssignModal()">
-                <i class="bi bi-person-check"></i> Phân công HDV
-            </button>`;
-
-        document.getElementById('drawerOverlay').classList.add('active');
-        requestAnimationFrame(() => document.getElementById('drawerPanel').classList.add('active'));
-    }
-
-    function closeDrawer() {
-        document.getElementById('drawerPanel').classList.remove('active');
-        document.getElementById('drawerOverlay').classList.remove('active');
-    }
-
-    /* ─────────────────────────────────────────
-       MODAL GOM KHÁCH
-    ───────────────────────────────────────── */
-    const assignModal = document.getElementById('assignModal');
-    function openAssignModal()  { assignModal.classList.add('active'); }
-    function closeAssignModal() { assignModal.classList.remove('active'); }
-
-    function prepareAssignForm(event) {
-        const container = document.getElementById('hiddenBookingInputs');
-        container.innerHTML = '';
-        let checkedCount = 0, firstTourId = null, diffTour = false;
-
-        document.querySelectorAll('.booking-checkbox').forEach(cb => {
-            if (!cb.checked) return;
-            checkedCount++;
-            const row    = cb.closest('tr');
-            const tourId = row.dataset.tourId;
-            if (!firstTourId) firstTourId = tourId;
-            else if (firstTourId !== tourId) diffTour = true;
-            const inp = document.createElement('input');
-            inp.type = 'hidden'; inp.name = 'bookingIds'; inp.value = cb.value;
-            container.appendChild(inp);
-        });
-
-        if (checkedCount === 0) { showToast('Chọn ít nhất một booking!', 't-warn'); event.preventDefault(); return false; }
-        if (diffTour)           { showToast('Chỉ gom booking cùng 1 tour!', 't-err'); event.preventDefault(); return false; }
-        return true;
-    }
-
-    /* ─────────────────────────────────────────
-       TOAST NOTIFICATION
-    ───────────────────────────────────────── */
-    function showToast(msg, type = '') {
-        const stack = document.getElementById('toastStack');
-        const el = document.createElement('div');
-        el.className = 'toast ' + type;
-        const icon = type === 't-ok' ? 'bi-check-circle-fill' : type === 't-err' ? 'bi-x-circle-fill' : 'bi-exclamation-triangle-fill';
-        el.innerHTML = `<i class="bi ${icon}"></i> ${msg}`;
-        stack.appendChild(el);
-        requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
-        setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2800);
-    }
-
-    // Auto-toast nếu có successMessage / errorMessage trong DOM
-    document.addEventListener('DOMContentLoaded', () => {
-        const sMsg = document.querySelector('.alert-success span');
-        const eMsg = document.querySelector('.alert-danger span');
-        if (sMsg && sMsg.textContent.trim()) showToast(sMsg.textContent.trim(), 't-ok');
-        if (eMsg && eMsg.textContent.trim()) showToast(eMsg.textContent.trim(), 't-err');
-    });
-</script>
+    </script>
 
 </body>
+
 </html>

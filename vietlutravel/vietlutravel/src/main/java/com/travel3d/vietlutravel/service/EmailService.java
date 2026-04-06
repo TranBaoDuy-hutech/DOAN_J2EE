@@ -76,7 +76,7 @@ public class EmailService {
                             </tr>
                             <tr>
                                 <td style="padding:10px;border:1px solid #ddd;">Số lượng khách</td>
-                                <td style="padding:10px;border:1px solid #ddd;">%d người</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%d người lớn, %d trẻ em</td>
                             </tr>
                             <tr>
                                 <td style="padding:10px;border:1px solid #ddd;">Tổng chi phí</td>
@@ -121,6 +121,7 @@ public class EmailService {
                     booking.getTour().getTourName(),
                     booking.getTravelDate().format(dateFormat),
                     booking.getNumberOfPeople(),
+                    booking.getNumberOfChildren(),
                     totalPrice,
                     depositPrice,
                     booking.getBookingDate().format(dateFormat)
@@ -199,7 +200,7 @@ public class EmailService {
                             </tr>
                             <tr>
                                 <td style="padding:10px;border:1px solid #ddd;">Số lượng khách</td>
-                                <td style="padding:10px;border:1px solid #ddd;">%d người</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%d người lớn, %d trẻ em</td>
                             </tr>
                             <tr>
                                 <td style="padding:10px;border:1px solid #ddd;">Hướng dẫn viên</td>
@@ -241,6 +242,7 @@ public class EmailService {
                     booking.getTour().getTourName(),
                     booking.getTravelDate().format(dateFormat),
                     booking.getNumberOfPeople(),
+                    booking.getNumberOfChildren(),
                     guideName,
                     totalPrice,
                     depositPrice
@@ -515,7 +517,7 @@ public class EmailService {
                             </tr>
                             <tr>
                                 <td style="padding:10px;border:1px solid #ddd;">Số lượng khách</td>
-                                <td style="padding:10px;border:1px solid #ddd;">%d người</td>
+                                <td style="padding:10px;border:1px solid #ddd;">%d người lớn, %d trẻ em</td>
                             </tr>
                             <tr>
                                 <td style="padding:10px;border:1px solid #ddd;">Tên khách hàng</td>
@@ -558,6 +560,7 @@ public class EmailService {
                     booking.getTour().getTourName(),
                     booking.getTravelDate().format(dateFormat),
                     booking.getNumberOfPeople(),
+                    booking.getNumberOfChildren(),
                     customerName,
                     customerEmail,
                     customerPhone,

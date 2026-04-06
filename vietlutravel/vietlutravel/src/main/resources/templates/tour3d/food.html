@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,23 +9,34 @@
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
             --gold: #c9a84c;
-            --gold-glow: rgba(201,168,76,0.18);
+            --gold-glow: rgba(201, 168, 76, 0.18);
             --spice: #b5451b;
             --deep: #05060a;
             --dark1: #090b12;
             --dark2: #10131e;
-            --glass-border: rgba(255,255,255,0.07);
+            --glass-border: rgba(255, 255, 255, 0.07);
             --text: #f5ede0;
-            --text-dim: rgba(245,237,224,0.5);
+            --text-dim: rgba(245, 237, 224, 0.5);
         }
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             font-family: 'Rajdhani', sans-serif;
@@ -36,54 +48,147 @@
         }
 
         /* Cursor */
-        #cur { position: fixed; width: 7px; height: 7px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.1s; mix-blend-mode: difference; }
-        #curR { position: fixed; width: 28px; height: 28px; border: 1px solid rgba(201,168,76,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transition: all 0.14s ease; }
+        #cur {
+            position: fixed;
+            width: 7px;
+            height: 7px;
+            background: var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s;
+            mix-blend-mode: difference;
+        }
+
+        #curR {
+            position: fixed;
+            width: 28px;
+            height: 28px;
+            border: 1px solid rgba(201, 168, 76, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.14s ease;
+        }
 
         /* BG canvas */
-        #bgc { position: fixed; inset: 0; z-index: 0; opacity: 0.5; pointer-events: none; }
+        #bgc {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.5;
+            pointer-events: none;
+        }
 
         /* Grain */
         body::after {
             content: '';
-            position: fixed; inset: 0; z-index: 1; pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
             opacity: 0.025;
         }
 
-        .page { position: relative; z-index: 2; }
+        .page {
+            position: relative;
+            z-index: 2;
+        }
 
         /* Header */
         .header {
             padding: 36px 70px 0;
-            display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 40px;
         }
 
         .header-eyebrow {
             font-family: 'Space Mono', monospace;
-            font-size: 0.6rem; letter-spacing: 5px; color: var(--gold);
-            text-transform: uppercase; display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+            font-size: 0.6rem;
+            letter-spacing: 5px;
+            color: var(--gold);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
         }
-        .header-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--gold); opacity: 0.6; }
+
+        .header-eyebrow::before {
+            content: '';
+            width: 28px;
+            height: 1px;
+            background: var(--gold);
+            opacity: 0.6;
+        }
 
         .header-title {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(2.8rem, 6vw, 5.5rem);
-            font-weight: 300; line-height: 0.95; letter-spacing: -1px;
+            font-weight: 300;
+            line-height: 0.95;
+            letter-spacing: -1px;
         }
-        .header-title em { font-style: italic; color: var(--gold); }
-        .header-title .outline { -webkit-text-stroke: 1px rgba(245,237,224,0.3); color: transparent; }
 
-        .header-right { text-align: right; flex-shrink: 0; }
-        .header-desc { font-size: 0.95rem; line-height: 1.8; color: var(--text-dim); font-weight: 300; max-width: 320px; margin-bottom: 20px; }
+        .header-title em {
+            font-style: italic;
+            color: var(--gold);
+        }
+
+        .header-title .outline {
+            -webkit-text-stroke: 1px rgba(245, 237, 224, 0.3);
+            color: transparent;
+        }
+
+        .header-right {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .header-desc {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+            font-weight: 300;
+            max-width: 320px;
+            margin-bottom: 20px;
+        }
 
         .header-stat {
-            display: inline-flex; align-items: center; gap: 10px;
-            border: 1px solid var(--glass-border); padding: 10px 20px;
-            font-family: 'Space Mono', monospace; font-size: 0.6rem;
-            letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--glass-border);
+            padding: 10px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-transform: uppercase;
         }
-        .stat-dot { width: 6px; height: 6px; background: var(--spice); border-radius: 50%; animation: blink 2s infinite; }
-        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+
+        .stat-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--spice);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+        }
 
         .h-div {
             height: 1px;
@@ -93,408 +198,652 @@
 
         /* Filter bar */
         .filter-bar {
-            display: flex; align-items: center;
-            padding: 0 70px; border-bottom: 1px solid var(--glass-border); overflow-x: auto;
+            display: flex;
+            align-items: center;
+            padding: 0 70px;
+            border-bottom: 1px solid var(--glass-border);
+            overflow-x: auto;
         }
+
         .filter-btn {
-            padding: 18px 24px; background: transparent;
-            border: none; border-bottom: 2px solid transparent;
-            color: var(--text-dim); cursor: none;
-            font-family: 'Rajdhani', sans-serif; font-size: 0.85rem;
-            font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
-            transition: all 0.3s; white-space: nowrap; margin-bottom: -1px;
+            padding: 18px 24px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-dim);
+            cursor: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            white-space: nowrap;
+            margin-bottom: -1px;
         }
-        .filter-btn:hover { color: var(--text); }
-        .filter-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+        .filter-btn:hover {
+            color: var(--text);
+        }
+
+        .filter-btn.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
 
         /* Gallery */
-        .gallery-wrap { padding: 50px 70px 80px; max-width: 1600px; margin: 0 auto; }
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2px; }
+        .gallery-wrap {
+            padding: 50px 70px 80px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2px;
+        }
 
         /* Card */
         .card {
-            position: relative; background: var(--dark1);
-            overflow: hidden; transition: background 0.4s; cursor: none;
+            position: relative;
+            background: var(--dark1);
+            overflow: hidden;
+            transition: background 0.4s;
+            cursor: none;
         }
-        .card:hover { background: var(--dark2); }
+
+        .card:hover {
+            background: var(--dark2);
+        }
+
         .card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
             background: linear-gradient(to right, transparent, var(--gold), transparent);
-            transform: scaleX(0); transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); z-index: 10;
+            transform: scaleX(0);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
         }
-        .card:hover::before { transform: scaleX(1); }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
 
         .card-num {
-            position: absolute; top: 18px; left: 20px;
-            font-family: 'Space Mono', monospace; font-size: 0.55rem;
-            letter-spacing: 2px; color: rgba(201,168,76,0.5); z-index: 10; transition: color 0.3s;
+            position: absolute;
+            top: 18px;
+            left: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 2px;
+            color: rgba(201, 168, 76, 0.5);
+            z-index: 10;
+            transition: color 0.3s;
         }
-        .card:hover .card-num { color: var(--gold); }
+
+        .card:hover .card-num {
+            color: var(--gold);
+        }
 
         .ar-badge {
-            position: absolute; top: 16px; right: 16px;
-            background: rgba(5,6,10,0.85); backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border); padding: 5px 10px;
-            font-family: 'Space Mono', monospace; font-size: 0.5rem;
-            letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase;
-            z-index: 10; opacity: 0; transform: translateY(-4px); transition: all 0.3s 0.1s;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(5, 6, 10, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 5px 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: all 0.3s 0.1s;
         }
-        .card:hover .ar-badge { opacity: 1; transform: translateY(0); }
+
+        .card:hover .ar-badge {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         model-viewer {
-            width: 100%; height: 280px;
+            width: 100%;
+            height: 280px;
             background: transparent;
             --poster-color: transparent;
         }
-        model-viewer::part(default-progress-bar) { height: 2px; background: var(--gold); }
+
+        model-viewer::part(default-progress-bar) {
+            height: 2px;
+            background: var(--gold);
+        }
 
         .model-bg {
-            position: absolute; inset: 0 0 auto 0; height: 280px;
-            background: radial-gradient(ellipse at 50% 60%, rgba(201,168,76,0.05) 0%, transparent 70%);
-            pointer-events: none; z-index: 1;
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 280px;
+            background: radial-gradient(ellipse at 50% 60%, rgba(201, 168, 76, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
         }
 
         /* Loading overlay */
         .model-loading {
-            position: absolute; inset: 0 0 auto 0; height: 280px;
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 280px;
             background: var(--dark1);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
-            z-index: 20; transition: opacity 0.6s, visibility 0.6s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            z-index: 20;
+            transition: opacity 0.6s, visibility 0.6s;
         }
-        .model-loading.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        .model-loading.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
 
         .load-ring {
-            width: 44px; height: 44px;
-            border: 1px solid var(--glass-border); border-top-color: var(--gold);
-            border-radius: 50%; animation: spin 1s linear infinite;
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--glass-border);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .load-text { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; }
-        .load-err { color: var(--spice); }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .load-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .load-err {
+            color: var(--spice);
+        }
 
         /* Card info */
-        .info { padding: 24px 28px 28px; border-top: 1px solid var(--glass-border); }
-        .info-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+        .info {
+            padding: 24px 28px 28px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .info-inner {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+        }
 
         .food-tag {
-            font-family: 'Space Mono', monospace; font-size: 0.55rem;
-            letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 8px;
-            opacity: 0; transform: translateY(4px); transition: all 0.4s;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 3px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: all 0.4s;
         }
-        .card:hover .food-tag { opacity: 1; transform: translateY(0); }
+
+        .card:hover .food-tag {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         .food-name {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.6rem; font-weight: 600; color: var(--text);
-            line-height: 1.15; text-decoration: none; display: block; transition: color 0.3s;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.15;
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s;
         }
-        .food-name:hover { color: var(--gold); }
+
+        .food-name:hover {
+            color: var(--gold);
+        }
 
         .info-cta {
-            width: 44px; height: 44px; border: 1px solid var(--glass-border);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--text-dim); text-decoration: none; font-size: 1rem; flex-shrink: 0;
-            transition: all 0.3s; opacity: 0; transform: translateX(6px);
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 1rem;
+            flex-shrink: 0;
+            transition: all 0.3s;
+            opacity: 0;
+            transform: translateX(6px);
         }
-        .card:hover .info-cta { opacity: 1; transform: translateX(0); border-color: var(--gold); color: var(--gold); }
-        .info-cta:hover { background: var(--gold); color: var(--deep) !important; }
+
+        .card:hover .info-cta {
+            opacity: 1;
+            transform: translateX(0);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .info-cta:hover {
+            background: var(--gold);
+            color: var(--deep) !important;
+        }
 
         /* Marquee */
-        .marquee { overflow: hidden; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); padding: 14px 0; }
-        .marquee-track { display: flex; gap: 50px; width: max-content; animation: marquee 25s linear infinite; }
-        .marquee-item {
-            font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
-            font-style: italic; font-weight: 300; color: var(--text-dim);
-            white-space: nowrap; display: flex; align-items: center; gap: 24px;
+        .marquee {
+            overflow: hidden;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 14px 0;
         }
-        .m-sep { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; flex-shrink: 0; }
-        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        .marquee-track {
+            display: flex;
+            gap: 50px;
+            width: max-content;
+            animation: marquee 25s linear infinite;
+        }
+
+        .marquee-item {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            font-weight: 300;
+            color: var(--text-dim);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .m-sep {
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        @keyframes marquee {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
 
         /* Empty */
-        .empty { grid-column: 1 / -1; padding: 100px 40px; text-align: center; }
-        .empty i { font-size: 3rem; color: var(--text-dim); margin-bottom: 20px; display: block; }
-        .empty-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; margin-bottom: 10px; }
-        .empty-text { color: var(--text-dim); font-weight: 300; }
+        .empty {
+            grid-column: 1 / -1;
+            padding: 100px 40px;
+            text-align: center;
+        }
+
+        .empty i {
+            font-size: 3rem;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .empty-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .empty-text {
+            color: var(--text-dim);
+            font-weight: 300;
+        }
 
         /* Footer */
         footer {
-            padding: 40px 70px; border-top: 1px solid var(--glass-border);
-            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 70px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 300; letter-spacing: 4px; color: var(--gold); }
-        .footer-copy { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 2px; color: var(--text-dim); }
+
+        .footer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: var(--gold);
+        }
+
+        .footer-copy {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+        }
 
         /* Responsive */
         @media (max-width: 900px) {
-            .header { padding: 28px 24px 0; flex-direction: column; align-items: flex-start; gap: 24px; }
-            .header-right { text-align: left; }
-            .h-div { margin: 28px 24px 0; }
-            .filter-bar { padding: 0 24px; }
-            .gallery-wrap { padding: 32px 24px 60px; }
-            .gallery { grid-template-columns: 1fr; }
-            footer { padding: 30px 24px; flex-direction: column; gap: 12px; text-align: center; }
+            .header {
+                padding: 28px 24px 0;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 24px;
+            }
+
+            .header-right {
+                text-align: left;
+            }
+
+            .h-div {
+                margin: 28px 24px 0;
+            }
+
+            .filter-bar {
+                padding: 0 24px;
+            }
+
+            .gallery-wrap {
+                padding: 32px 24px 60px;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                padding: 30px 24px;
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
         }
+
         @media (max-width: 600px) {
-            model-viewer { height: 240px; }
-            .model-loading { height: 240px; }
-            .model-bg { height: 240px; }
+            model-viewer {
+                height: 240px;
+            }
+
+            .model-loading {
+                height: 240px;
+            }
+
+            .model-bg {
+                height: 240px;
+            }
         }
+
         .header-link {
-        text-decoration: none;
-        color: inherit;
-        display: inline-block;
+            text-decoration: none;
+            color: inherit;
+            display: inline-block;
         }
     </style>
 </head>
+
 <body>
 
-<div id="cur"></div>
-<div id="curR"></div>
-<canvas id="bgc"></canvas>
+    <div id="cur"></div>
+    <div id="curR"></div>
+    <canvas id="bgc"></canvas>
 
-<div class="page">
+    <div class="page">
 
-    <!-- Marquee -->
-    <div class="marquee">
-        <div class="marquee-track">
-            <span class="marquee-item">Bun Nuoc Leo <span class="m-sep"></span></span>
-            <span class="marquee-item">Ca Linh Kho To <span class="m-sep"></span></span>
-            <span class="marquee-item">Banh Xeo Mien Tay <span class="m-sep"></span></span>
-            <span class="marquee-item">Nem Nuong Bay Nui <span class="m-sep"></span></span>
-            <span class="marquee-item">Lau Mam <span class="m-sep"></span></span>
-            <span class="marquee-item">Chao Ca Loc <span class="m-sep"></span></span>
-            <span class="marquee-item">Mam Thai <span class="m-sep"></span></span>
-            <span class="marquee-item">Bun Nuoc Leo <span class="m-sep"></span></span>
-            <span class="marquee-item">Ca Linh Kho To <span class="m-sep"></span></span>
-            <span class="marquee-item">Banh Xeo Mien Tay <span class="m-sep"></span></span>
-            <span class="marquee-item">Nem Nuong Bay Nui <span class="m-sep"></span></span>
-            <span class="marquee-item">Lau Mam <span class="m-sep"></span></span>
-            <span class="marquee-item">Chao Ca Loc <span class="m-sep"></span></span>
-            <span class="marquee-item">Mam Thai <span class="m-sep"></span></span>
-        </div>
-    </div>
-
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <div class="header-eyebrow">Am thuc · Kham pha · 3D Experience</div>
-
-            <a th:href="@{/tour3d}" class="header-link">
-                <h1 class="header-title">
-                    Dac <em>San</em><br>
-                    <span class="outline">An Giang</span>
-                </h1>
-            </a>
-        </div>
-
-        <div class="header-right">
-            <p class="header-desc">
-                Trai nghiem am thuc dac trung mien Tay qua mo hinh 3D tuong tac.
-                Xoay, phong to va kham pha tung mon an theo goc nhin hoan toan moi.
-            </p>
-            <div class="header-stat">
-                <div class="stat-dot"></div>
-                3D Interactive · AR Ready
+        <!-- Marquee -->
+        <div class="marquee">
+            <div class="marquee-track">
+                <span class="marquee-item">Bun Nuoc Leo <span class="m-sep"></span></span>
+                <span class="marquee-item">Ca Linh Kho To <span class="m-sep"></span></span>
+                <span class="marquee-item">Banh Xeo Mien Tay <span class="m-sep"></span></span>
+                <span class="marquee-item">Nem Nuong Bay Nui <span class="m-sep"></span></span>
+                <span class="marquee-item">Lau Mam <span class="m-sep"></span></span>
+                <span class="marquee-item">Chao Ca Loc <span class="m-sep"></span></span>
+                <span class="marquee-item">Mam Thai <span class="m-sep"></span></span>
+                <span class="marquee-item">Bun Nuoc Leo <span class="m-sep"></span></span>
+                <span class="marquee-item">Ca Linh Kho To <span class="m-sep"></span></span>
+                <span class="marquee-item">Banh Xeo Mien Tay <span class="m-sep"></span></span>
+                <span class="marquee-item">Nem Nuong Bay Nui <span class="m-sep"></span></span>
+                <span class="marquee-item">Lau Mam <span class="m-sep"></span></span>
+                <span class="marquee-item">Chao Ca Loc <span class="m-sep"></span></span>
+                <span class="marquee-item">Mam Thai <span class="m-sep"></span></span>
             </div>
         </div>
-    </header>
 
-    <div class="h-div"></div>
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="header-eyebrow">Am thuc · Kham pha · 3D Experience</div>
 
-    <!-- Filter bar -->
-    <div class="filter-bar">
-        <button class="filter-btn active" data-filter="all">Tat ca</button>
-        <button class="filter-btn" data-filter="main">Mon chinh</button>
-        <button class="filter-btn" data-filter="soup">Canh - Lau</button>
-        <button class="filter-btn" data-filter="snack">An vat</button>
-        <button class="filter-btn" data-filter="condiment">Gia vi</button>
-    </div>
+                <a th:href="@{/tour3d}" class="header-link">
+                    <h1 class="header-title">
+                        Dac <em>San</em><br>
+                        <span class="outline">An Giang</span>
+                    </h1>
+                </a>
+            </div>
 
-    <!-- Gallery -->
-    <div class="gallery-wrap">
-        <div class="gallery" id="gallery">
-
-            <!-- Thymeleaf card loop -->
-            <div class="card"
-                 th:each="food, iter : ${foods}"
-                 data-category="all">
-
-                <span class="card-num" th:text="${iter.index + 1 < 10 ? '0' + (iter.index + 1) : iter.index + 1}">01</span>
-                <div class="ar-badge">AR &middot; 3D</div>
-                <div class="model-bg"></div>
-
-                <!-- FIX: removed invalid id="'loading-' + ${food.id}" -->
-                <div class="model-loading">
-                    <div class="load-ring"></div>
-                    <div class="load-text">Dang tai mo hinh</div>
+            <div class="header-right">
+                <p class="header-desc">
+                    Trai nghiem am thuc dac trung mien Tay qua mo hinh 3D tuong tac.
+                    Xoay, phong to va kham pha tung mon an theo goc nhin hoan toan moi.
+                </p>
+                <div class="header-stat">
+                    <div class="stat-dot"></div>
+                    3D Interactive · AR Ready
                 </div>
+            </div>
+        </header>
 
-                <model-viewer
-                        th:src="${food.modelPath}"
-                        th:poster="${food.posterPath}"
-                        th:alt="${food.altText}"
-                        auto-rotate
-                        rotation-per-second="25deg"
-                        camera-controls
-                        ar
-                        ar-modes="webxr scene-viewer quick-look"
-                        shadow-intensity="1.2"
-                        exposure="0.9"
+        <div class="h-div"></div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all">Tat ca</button>
+        </div>
+
+        <!-- Gallery -->
+        <div class="gallery-wrap">
+            <div class="gallery" id="gallery">
+
+                <!-- Thymeleaf card loop -->
+                <div class="card" th:each="food, iter : ${foods}" data-category="all">
+
+                    <span class="card-num"
+                        th:text="${iter.index + 1 < 10 ? '0' + (iter.index + 1) : iter.index + 1}">01</span>
+                    <div class="ar-badge">AR &middot; 3D</div>
+                    <div class="model-bg"></div>
+
+                    <!-- FIX: removed invalid id="'loading-' + ${food.id}" -->
+                    <div class="model-loading">
+                        <div class="load-ring"></div>
+                        <div class="load-text">Dang tai mo hinh</div>
+                    </div>
+
+                    <model-viewer th:src="${food.modelPath}" th:poster="${food.posterPath}" th:alt="${food.altText}"
+                        auto-rotate rotation-per-second="25deg" camera-controls ar
+                        ar-modes="webxr scene-viewer quick-look" shadow-intensity="1.2" exposure="0.9"
                         environment-image="neutral">
-                </model-viewer>
+                    </model-viewer>
 
-                <div class="info">
-                    <div class="info-inner">
-                        <div>
-                            <div class="food-tag">Dac san &middot; An Giang</div>
-                            <a class="food-name"
-                               th:href="@{/tour3d/food/{id}(id=${food.id})}"
-                               th:text="${food.name}">Ten Mon An</a>
+                    <div class="info">
+                        <div class="info-inner">
+                            <div>
+                                <div class="food-tag">Dac san &middot; An Giang</div>
+                                <a class="food-name" th:href="@{/tour3d/food/{id}(id=${food.id})}"
+                                    th:text="${food.name}">Ten Mon An</a>
+                            </div>
+                            <a class="info-cta" th:href="@{/tour3d/food/{id}(id=${food.id})}" title="Xem chi tiet">
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
                         </div>
-                        <a class="info-cta"
-                           th:href="@{/tour3d/food/{id}(id=${food.id})}"
-                           title="Xem chi tiet">
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
                     </div>
                 </div>
-            </div>
 
-            <!-- Empty fallback -->
-            <div class="empty" th:if="${foods == null or foods.empty}">
-                <i class="bi bi-basket3"></i>
-                <div class="empty-title">Chua co mon an nao</div>
-                <p class="empty-text">Cac mo hinh 3D dang duoc chuan bi...</p>
-            </div>
+                <!-- Empty fallback -->
+                <div class="empty" th:if="${foods == null or foods.empty}">
+                    <i class="bi bi-basket3"></i>
+                    <div class="empty-title">Chua co mon an nao</div>
+                    <p class="empty-text">Cac mo hinh 3D dang duoc chuan bi...</p>
+                </div>
 
+            </div>
         </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-logo">AN GIANG</div>
+            <div class="footer-copy">&copy; 2025 Dac San 3D &middot; Powered by WebXR</div>
+        </footer>
+
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-logo">AN GIANG</div>
-        <div class="footer-copy">&copy; 2025 Dac San 3D &middot; Powered by WebXR</div>
-    </footer>
-
-</div>
-
-<script>
-    // Cursor
-    const cur = document.getElementById('cur');
-    const curR = document.getElementById('curR');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    document.addEventListener('mousemove', e => {
-        mx = e.clientX; my = e.clientY;
-        cur.style.left = (mx - 3.5) + 'px';
-        cur.style.top  = (my - 3.5) + 'px';
-    });
-    (function loop() {
-        rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-        curR.style.left = (rx - 14) + 'px';
-        curR.style.top  = (ry - 14) + 'px';
-        requestAnimationFrame(loop);
-    })();
-    document.querySelectorAll('a, button').forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            cur.style.transform = 'scale(3)';
-            curR.style.transform = 'scale(1.4)';
-            curR.style.borderColor = 'rgba(201,168,76,1)';
+    <script>
+        // Cursor
+        const cur = document.getElementById('cur');
+        const curR = document.getElementById('curR');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cur.style.left = (mx - 3.5) + 'px';
+            cur.style.top = (my - 3.5) + 'px';
         });
-        el.addEventListener('mouseleave', () => {
-            cur.style.transform = 'scale(1)';
-            curR.style.transform = 'scale(1)';
-            curR.style.borderColor = 'rgba(201,168,76,0.5)';
-        });
-    });
-
-    // BG Canvas
-    const c = document.getElementById('bgc');
-    const ctx = c.getContext('2d');
-    function rsz() { c.width = window.innerWidth; c.height = window.innerHeight; }
-    rsz();
-    window.addEventListener('resize', rsz);
-
-    const pts = Array.from({length: 45}, () => ({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        r: Math.random() * 1.2 + 0.3,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        o: Math.random() * 0.4 + 0.1
-    }));
-
-    function draw() {
-        ctx.clearRect(0, 0, c.width, c.height);
-        const g1 = ctx.createRadialGradient(c.width * 0.2, c.height * 0.3, 0, c.width * 0.2, c.height * 0.3, c.width * 0.55);
-        g1.addColorStop(0, 'rgba(181,69,27,0.06)'); g1.addColorStop(1, 'rgba(5,6,10,0)');
-        ctx.fillStyle = g1; ctx.fillRect(0, 0, c.width, c.height);
-        const g2 = ctx.createRadialGradient(c.width * 0.8, c.height * 0.7, 0, c.width * 0.8, c.height * 0.7, c.width * 0.5);
-        g2.addColorStop(0, 'rgba(201,168,76,0.05)'); g2.addColorStop(1, 'rgba(5,6,10,0)');
-        ctx.fillStyle = g2; ctx.fillRect(0, 0, c.width, c.height);
-        pts.forEach((p, i) => {
-            p.x += p.vx; p.y += p.vy;
-            if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
-            if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(201,168,76,' + p.o + ')'; ctx.fill();
-            for (let j = i + 1; j < pts.length; j++) {
-                const q = pts[j];
-                const d = Math.hypot(p.x - q.x, p.y - q.y);
-                if (d < 110) {
-                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
-                    ctx.strokeStyle = 'rgba(201,168,76,' + (0.035 * (1 - d / 110)) + ')';
-                    ctx.lineWidth = 0.5; ctx.stroke();
-                }
-            }
-        });
-        requestAnimationFrame(draw);
-    }
-    draw();
-
-    // Model loading state
-    document.querySelectorAll('model-viewer').forEach(mv => {
-        const card = mv.closest('.card');
-        const loading = card ? card.querySelector('.model-loading') : null;
-        if (!loading) return;
-        mv.addEventListener('load', () => loading.classList.add('hidden'));
-        mv.addEventListener('error', () => {
-            const ring = loading.querySelector('.load-ring');
-            const txt  = loading.querySelector('.load-text');
-            if (ring) ring.style.display = 'none';
-            if (txt)  { txt.textContent = 'Loi tai mo hinh'; txt.classList.add('load-err'); }
-        });
-    });
-
-    // Filter
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const filter = btn.dataset.filter;
-            document.querySelectorAll('.card').forEach(card => {
-                const cat = card.dataset.category || 'all';
-                card.style.display = (filter === 'all' || cat === filter) ? '' : 'none';
+        (function loop() {
+            rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+            curR.style.left = (rx - 14) + 'px';
+            curR.style.top = (ry - 14) + 'px';
+            requestAnimationFrame(loop);
+        })();
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cur.style.transform = 'scale(3)';
+                curR.style.transform = 'scale(1.4)';
+                curR.style.borderColor = 'rgba(201,168,76,1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cur.style.transform = 'scale(1)';
+                curR.style.transform = 'scale(1)';
+                curR.style.borderColor = 'rgba(201,168,76,0.5)';
             });
         });
-    });
 
-    // Reveal animation
-    const io = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-            if (e.isIntersecting) {
-                e.target.style.opacity = '1';
-                e.target.style.transform = 'translateY(0)';
-                io.unobserve(e.target);
-            }
+        // BG Canvas
+        const c = document.getElementById('bgc');
+        const ctx = c.getContext('2d');
+        function rsz() { c.width = window.innerWidth; c.height = window.innerHeight; }
+        rsz();
+        window.addEventListener('resize', rsz);
+
+        const pts = Array.from({ length: 45 }, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 1.2 + 0.3,
+            vx: (Math.random() - 0.5) * 0.25,
+            vy: (Math.random() - 0.5) * 0.25,
+            o: Math.random() * 0.4 + 0.1
+        }));
+
+        function draw() {
+            ctx.clearRect(0, 0, c.width, c.height);
+            const g1 = ctx.createRadialGradient(c.width * 0.2, c.height * 0.3, 0, c.width * 0.2, c.height * 0.3, c.width * 0.55);
+            g1.addColorStop(0, 'rgba(181,69,27,0.06)'); g1.addColorStop(1, 'rgba(5,6,10,0)');
+            ctx.fillStyle = g1; ctx.fillRect(0, 0, c.width, c.height);
+            const g2 = ctx.createRadialGradient(c.width * 0.8, c.height * 0.7, 0, c.width * 0.8, c.height * 0.7, c.width * 0.5);
+            g2.addColorStop(0, 'rgba(201,168,76,0.05)'); g2.addColorStop(1, 'rgba(5,6,10,0)');
+            ctx.fillStyle = g2; ctx.fillRect(0, 0, c.width, c.height);
+            pts.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
+                if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(201,168,76,' + p.o + ')'; ctx.fill();
+                for (let j = i + 1; j < pts.length; j++) {
+                    const q = pts[j];
+                    const d = Math.hypot(p.x - q.x, p.y - q.y);
+                    if (d < 110) {
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+                        ctx.strokeStyle = 'rgba(201,168,76,' + (0.035 * (1 - d / 110)) + ')';
+                        ctx.lineWidth = 0.5; ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+        // Model loading state
+        document.querySelectorAll('model-viewer').forEach(mv => {
+            const card = mv.closest('.card');
+            const loading = card ? card.querySelector('.model-loading') : null;
+            if (!loading) return;
+            mv.addEventListener('load', () => loading.classList.add('hidden'));
+            mv.addEventListener('error', () => {
+                const ring = loading.querySelector('.load-ring');
+                const txt = loading.querySelector('.load-text');
+                if (ring) ring.style.display = 'none';
+                if (txt) { txt.textContent = 'Loi tai mo hinh'; txt.classList.add('load-err'); }
+            });
         });
-    }, { threshold: 0.08 });
 
-    document.querySelectorAll('.card').forEach((card, i) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = 'opacity 0.6s ' + (i * 0.05) + 's, transform 0.6s ' + (i * 0.05) + 's';
-        io.observe(card);
-    });
-</script>
+        // Filter
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+                document.querySelectorAll('.card').forEach(card => {
+                    const cat = card.dataset.category || 'all';
+                    card.style.display = (filter === 'all' || cat === filter) ? '' : 'none';
+                });
+            });
+        });
+
+        // Reveal animation
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.style.opacity = '1';
+                    e.target.style.transform = 'translateY(0)';
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.08 });
+
+        document.querySelectorAll('.card').forEach((card, i) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ' + (i * 0.05) + 's, transform 0.6s ' + (i * 0.05) + 's';
+            io.observe(card);
+        });
+    </script>
 </body>
+
 </html>

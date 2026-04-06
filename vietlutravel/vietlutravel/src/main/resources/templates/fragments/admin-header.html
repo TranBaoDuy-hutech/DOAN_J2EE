@@ -12,7 +12,7 @@
         .adm-header {
             background: linear-gradient(135deg, #0d1117 0%, #161b27 60%, #1a1f35 100%);
             border-bottom: 1px solid rgba(99, 120, 255, 0.18);
-            box-shadow: 0 2px 24px rgba(0,0,0,0.45), 0 1px 0 rgba(99,120,255,0.1) inset;
+            box-shadow: 0 2px 24px rgba(0,0,0,0.45);
             padding: 0 2rem;
             height: 64px;
             display: flex;
@@ -24,26 +24,14 @@
             font-family: 'Sora', system-ui, sans-serif;
         }
 
-        /* Subtle noise texture overlay */
-        .adm-header::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-            pointer-events: none;
-            opacity: 0.4;
-        }
-
-        /* Left: logo + title */
+        /* Brand */
         .adm-brand {
             display: flex;
             align-items: center;
             gap: 0.85rem;
-            position: relative;
-            z-index: 1;
             text-decoration: none;
+            flex-shrink: 0;
         }
-
         .adm-logo-ring {
             width: 36px;
             height: 36px;
@@ -57,8 +45,6 @@
             box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 4px 12px rgba(79,110,247,0.4);
             flex-shrink: 0;
         }
-
-        .adm-title-wrap {}
         .adm-title-main {
             font-size: 0.88rem;
             font-weight: 700;
@@ -78,59 +64,100 @@
             font-weight: 400;
         }
 
-        /* Center: nav links */
-        .adm-nav {
+        /* Hamburger button */
+        .adm-hamburger {
             display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1;
-
-            flex-wrap: nowrap;        /* ❗ không cho xuống dòng */
-            white-space: nowrap;      /* ❗ giữ text 1 dòng */
-            overflow-x: auto;         /* ❗ tràn thì scroll */
-            max-width: 60%;           /* ❗ tránh đè avatar */
-        }
-
-        .adm-nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.45rem 0.85rem;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px 10px;
             border-radius: 8px;
-            font-size: 0.78rem;
-            font-weight: 500;
-            color: rgba(165,180,252,0.6);
-            text-decoration: none;
-            letter-spacing: 0.03em;
-            transition: all 0.2s ease;
             border: 1px solid transparent;
+            transition: all 0.2s ease;
+            background: none;
         }
-        .adm-nav-link:hover {
-            color: #a5b4fc;
+        .adm-hamburger:hover {
             background: rgba(99,120,255,0.1);
             border-color: rgba(99,120,255,0.2);
         }
-        .adm-nav-link.active {
+        .adm-hamburger span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: rgba(165,180,252,0.7);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .adm-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .adm-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .adm-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* Dropdown */
+        .adm-dropdown {
+            position: absolute;
+            top: 68px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #161b27;
+            border: 1px solid rgba(99,120,255,0.2);
+            border-radius: 14px;
+            padding: 0.5rem;
+            min-width: 240px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,120,255,0.08);
+            display: none;
+            z-index: 1001;
+        }
+        .adm-dropdown.open {
+            display: block;
+            animation: admFadeDown 0.2s ease;
+        }
+        @keyframes admFadeDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .adm-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.6rem 0.85rem;
+            border-radius: 9px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: rgba(165,180,252,0.65);
+            text-decoration: none;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+        }
+        .adm-dropdown-item:hover {
+            color: #a5b4fc;
+            background: rgba(99,120,255,0.1);
+            border-color: rgba(99,120,255,0.15);
+        }
+        .adm-dropdown-item.active {
             color: #a5b4fc;
             background: rgba(99,120,255,0.15);
             border-color: rgba(99,120,255,0.25);
         }
+        .adm-dropdown-item i {
+            font-size: 15px;
+            width: 18px;
+            text-align: center;
+            opacity: 0.8;
+        }
+        .adm-dropdown-sep {
+            height: 1px;
+            background: rgba(255,255,255,0.06);
+            margin: 0.35rem 0.5rem;
+        }
 
-        /* Right: avatar + logout */
+        /* Right side */
         .adm-right {
             display: flex;
             align-items: center;
             gap: 1rem;
-            position: relative;
-            z-index: 1;
+            flex-shrink: 0;
         }
-
-        .adm-avatar-wrap {
-            position: relative;
-        }
+        .adm-avatar-wrap { position: relative; }
         .adm-avatar {
             width: 36px;
             height: 36px;
@@ -155,15 +182,11 @@
             border: 2px solid #0d1117;
             border-radius: 50%;
         }
-
-        /* Divider */
         .adm-divider {
             width: 1px;
             height: 22px;
             background: rgba(255,255,255,0.08);
         }
-
-        /* Logout button */
         .adm-logout {
             display: flex;
             align-items: center;
@@ -176,7 +199,6 @@
             background: rgba(239,68,68,0.08);
             border: 1px solid rgba(239,68,68,0.25);
             text-decoration: none;
-            letter-spacing: 0.03em;
             transition: all 0.2s ease;
             cursor: pointer;
         }
@@ -188,9 +210,10 @@
             box-shadow: 0 4px 14px rgba(239,68,68,0.2);
         }
 
-        @media (max-width: 768px) {
-            .adm-nav { display: none; }
+        @media (max-width: 480px) {
             .adm-header { padding: 0 1rem; }
+            .adm-title-sub { display: none; }
+            .adm-logout span { display: none; }
         }
     </style>
 
@@ -207,55 +230,88 @@
             </div>
         </a>
 
-        <!-- Nav links -->
-        <nav class="adm-nav">
-            <a th:href="@{/admin}" href="#" class="adm-nav-link">
+        <!-- Hamburger button -->
+        <div class="adm-hamburger" id="admHamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <!-- Dropdown menu -->
+        <div class="adm-dropdown" id="admDropdown">
+            <a th:href="@{/admin}" href="#" class="adm-dropdown-item">
                 <i class="bi bi-grid-1x2"></i> Dashboard
             </a>
-            <a th:href="@{/admin/tours}" href="#" class="adm-nav-link">
+            <a th:href="@{/admin/tours}" href="#" class="adm-dropdown-item">
                 <i class="bi bi-globe2"></i> Tours
             </a>
-
-            <!-- THÊM Ở ĐÂY -->
-            <a th:href="@{/admin/tour3d}" href="#" class="adm-nav-link">
+            <a th:href="@{/admin/tour3d}" href="#" class="adm-dropdown-item">
                 <i class="bi bi-badge-3d"></i> Tour 3D
             </a>
-            <a th:href="@{/admin/food3d}" href="#" class="adm-nav-link">
+            <a th:href="@{/admin/food3d}" href="#" class="adm-dropdown-item">
                 <i class="bi bi-egg-fried"></i> Food
             </a>
-            <a th:href="@{/admin/vanhoa3d}" href="#" class="adm-nav-link">
+            <a th:href="@{/admin/vanhoa3d}" href="#" class="adm-dropdown-item">
                 <i class="bi bi-bank"></i> Văn hóa
             </a>
-            <!-- END -->
-
-            <a th:href="@{/admin/tour-guides}" href="#" class="adm-nav-link">
+            <div class="adm-dropdown-sep"></div>
+            <a th:href="@{/admin/tour-guides}" href="#" class="adm-dropdown-item">
                 <i class="bi bi-person-badge"></i> Hướng dẫn viên
             </a>
-            <a th:href="@{/admin/customers}" href="#" class="adm-nav-link">
+            <a th:href="@{/admin/customers}" href="#" class="adm-dropdown-item">
                 <i class="bi bi-people"></i> Người dùng
             </a>
-            <a th:href="@{/admin/bookings}" href="#" class="adm-nav-link">
+            <a th:href="@{/admin/bookings}" href="#" class="adm-dropdown-item">
                 <i class="bi bi-box-seam"></i> Bookings
             </a>
-            <a th:href="@{/admin/contacts}" href="#" class="adm-nav-link">
+            <a th:href="@{/admin/contacts}" href="#" class="adm-dropdown-item">
                 <i class="bi bi-receipt"></i> Liên hệ
             </a>
-        </nav>
+        </div>
 
-        <!-- Right -->
+        <!-- Right: avatar + logout -->
         <div class="adm-right">
             <div class="adm-avatar-wrap">
                 <img th:src="@{/image/logo3.jpg}" src="#" alt="Admin" class="adm-avatar">
                 <span class="adm-avatar-dot"></span>
             </div>
-
             <div class="adm-divider"></div>
-
             <a th:href="@{/logout}" href="#" class="adm-logout">
-                <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Đăng xuất</span>
             </a>
         </div>
     </nav>
+
+    <script>
+        (function () {
+            const hamburger = document.getElementById('admHamburger');
+            const dropdown  = document.getElementById('admDropdown');
+
+            hamburger.addEventListener('click', function (e) {
+                e.stopPropagation();
+                hamburger.classList.toggle('open');
+                dropdown.classList.toggle('open');
+            });
+
+            // Đóng khi click ra ngoài
+            document.addEventListener('click', function (e) {
+                if (!hamburger.contains(e.target) && !dropdown.contains(e.target)) {
+                    hamburger.classList.remove('open');
+                    dropdown.classList.remove('open');
+                }
+            });
+
+            // Đánh dấu active link theo URL hiện tại
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.adm-dropdown-item').forEach(function (link) {
+                const href = link.getAttribute('href');
+                if (href && currentPath === href) {
+                    link.classList.add('active');
+                }
+            });
+        })();
+    </script>
 </header>
 
 </body>

@@ -66,6 +66,7 @@ public class BookingController {
     public ResponseEntity<byte[]> previewContract(
             @RequestParam int tourID,
             @RequestParam int numberOfPeople,
+            @RequestParam(defaultValue = "0") int numberOfChildren,
             @RequestParam(required = false) String travelDate,
             HttpSession session) {
 
@@ -83,10 +84,14 @@ public class BookingController {
         booking.setTour(tour);
         booking.setCustomer(customer);
         booking.setNumberOfPeople(numberOfPeople);
+        booking.setNumberOfChildren(numberOfChildren);
         booking.setBookingDate(LocalDate.now());
         booking.setTravelDate(travelDate != null && !travelDate.isBlank()
                 ? LocalDate.parse(travelDate) : null);
-        booking.setTotalPrice(tour.getPrice().doubleValue() * numberOfPeople);
+                
+        double adultPrice = tour.getPrice().doubleValue() * numberOfPeople;
+        double childPrice = tour.getPrice().doubleValue() * 0.75 * numberOfChildren;
+        booking.setTotalPrice(adultPrice + childPrice);
 
         byte[] pdf = contractService.generateContract(booking);
 
@@ -105,6 +110,7 @@ public class BookingController {
     public String bookTour(
             @RequestParam("tourID") int tourID,
             @RequestParam("numberOfPeople") int numberOfPeople,
+            @RequestParam(value = "numberOfChildren", defaultValue = "0") int numberOfChildren,
             @RequestParam(value = "travelDate", required = false) String travelDateStr,
             @RequestParam(value = "note", required = false) String note,
             HttpSession session,
@@ -161,7 +167,12 @@ public class BookingController {
         booking.setBookingDate(LocalDate.now());
         booking.setTravelDate(travelDate);
         booking.setNumberOfPeople(numberOfPeople);
-        booking.setTotalPrice(tour.getPrice().doubleValue() * numberOfPeople);
+        booking.setNumberOfChildren(numberOfChildren);
+        
+        double adultP = tour.getPrice().doubleValue() * numberOfPeople;
+        double childP = tour.getPrice().doubleValue() * 0.75 * numberOfChildren;
+        booking.setTotalPrice(adultP + childP);
+        
         booking.setStatus("Pending");
         booking.setSpecialRequests(note);
         booking.setTour(tour);

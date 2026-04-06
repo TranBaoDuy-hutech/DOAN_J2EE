@@ -708,7 +708,7 @@
                             <!-- Số người -->
                             <div class="field-item">
                                 <label class="field-label">
-                                    Số lượng người <span class="req">*</span>
+                                    Số lượng người lớn <span class="req">*</span>
                                 </label>
                                 <div class="counter-wrap">
                                     <button type="button" class="counter-btn" id="btnMinus">
@@ -718,6 +718,25 @@
                                            class="counter-input"
                                            value="1" min="1" max="50" required readonly>
                                     <button type="button" class="counter-btn" id="btnPlus">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Số lượng trẻ em -->
+                            <div class="field-item">
+                                <label class="field-label">
+                                    Số lượng trẻ em (5 - 10 tuổi)
+                                    <span style="text-transform: none; font-weight: normal; margin-left: 6px; color: var(--sea);">(75% giá vé)</span>
+                                </label>
+                                <div class="counter-wrap">
+                                    <button type="button" class="counter-btn" id="btnMinusChild">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input type="number" id="numberOfChildren" name="numberOfChildren"
+                                           class="counter-input"
+                                           value="0" min="0" max="50" required readonly>
+                                    <button type="button" class="counter-btn" id="btnPlusChild">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -803,9 +822,15 @@
                     </div>
                     <div class="summary-row">
                         <span class="summary-row-label">
-                            <i class="bi bi-people"></i> Số người
+                            <i class="bi bi-people"></i> Số người lớn
                         </span>
                         <span class="summary-row-value" id="summaryPeople">1</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-row-label">
+                            <i class="bi bi-person-hearts"></i> Trẻ em
+                        </span>
+                        <span class="summary-row-value" id="summaryChildren">0</span>
                     </div>
                     <div class="summary-row">
                         <span class="summary-row-label">
@@ -887,9 +912,13 @@
 
         var basePrice   = [[${tour.price}]];
         var peopleInput = document.getElementById('numberOfPeople');
+        var childInput  = document.getElementById('numberOfChildren');
         var btnMinus    = document.getElementById('btnMinus');
         var btnPlus     = document.getElementById('btnPlus');
+        var btnMinusChild = document.getElementById('btnMinusChild');
+        var btnPlusChild  = document.getElementById('btnPlusChild');
         var summaryPpl  = document.getElementById('summaryPeople');
+        var summaryChd  = document.getElementById('summaryChildren');
         var totalEl     = document.getElementById('dynamicTotal');
         var depositEl   = document.getElementById('dynamicDeposit');
 
@@ -898,13 +927,24 @@
         }
 
         function updateTotal() {
-            var qty = parseInt(peopleInput.value, 10) || 1;
-            summaryPpl.textContent  = qty;
-            var total = basePrice * qty;
+            var qtyAdult = parseInt(peopleInput.value, 10) || 1;
+            var qtyChild = parseInt(childInput.value, 10) || 0;
+            
+            summaryPpl.textContent  = qtyAdult;
+            summaryChd.textContent  = qtyChild;
+            
+            var adultTotal = basePrice * qtyAdult;
+            var childTotal = basePrice * 0.75 * qtyChild;
+            var total = adultTotal + childTotal;
+            
             totalEl.textContent     = formatVND(total);
             depositEl.textContent   = formatVND(total * 0.7);
-            btnMinus.disabled = qty <= 1;
-            btnPlus.disabled  = qty >= 50;
+            
+            btnMinus.disabled = qtyAdult <= 1;
+            btnPlus.disabled  = qtyAdult >= 50;
+            
+            btnMinusChild.disabled = qtyChild <= 0;
+            btnPlusChild.disabled  = qtyChild >= 50;
         }
 
         btnMinus.addEventListener('click', function () {
@@ -917,6 +957,16 @@
             if (v < 50) { peopleInput.value = v + 1; updateTotal(); }
         });
 
+        btnMinusChild.addEventListener('click', function () {
+            var v = parseInt(childInput.value, 10);
+            if (v > 0) { childInput.value = v - 1; updateTotal(); }
+        });
+
+        btnPlusChild.addEventListener('click', function () {
+            var v = parseInt(childInput.value, 10);
+            if (v < 50) { childInput.value = v + 1; updateTotal(); }
+        });
+
         updateTotal();
     })();
 
@@ -924,12 +974,14 @@ function previewContract() {
     const tourID = document.querySelector("input[name='tourID']").value;
     const travelDate = document.getElementById("travelDate").value;
     const people = document.getElementById("numberOfPeople").value;
+    const children = document.getElementById("numberOfChildren").value;
     const note   = document.getElementById("note").value;
 
     const url =
         `/preview-contract?tourID=${tourID}`
         + `&travelDate=${travelDate}`
         + `&numberOfPeople=${people}`
+        + `&numberOfChildren=${children}`
         + `&note=${encodeURIComponent(note)}`;
 
     window.open(url, "_blank");

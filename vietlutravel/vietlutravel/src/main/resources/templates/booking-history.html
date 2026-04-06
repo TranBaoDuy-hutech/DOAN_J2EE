@@ -406,7 +406,7 @@
                     <td>
                         <div class="meta">
                             <i class="fas fa-user-friends"></i>
-                            <span th:text="${b.numberOfPeople}">2</span>
+                            <span th:text="${b.numberOfPeople} + ' Lớn, ' + ${b.numberOfChildren} + ' Trẻ'">2 Lớn, 0 Trẻ</span>
                         </div>
                     </td>
                     <td>
@@ -427,17 +427,20 @@
                             <span th:if="${b.status == 'Pending'}" class="badge badge-pending">
                                 <span class="dot"></span>Cho xac nhan
                             </span>
+                            <span th:if="${b.status == 'Paid 70% Deposit'}" class="badge badge-pending" style="background: rgba(14,165,233,0.08); color: #0284c7; border-color: rgba(14,165,233,0.25);">
+                                <span class="dot" style="background: #0284c7;"></span>Da coc 70%
+                            </span>
                         <span th:if="${b.status == 'Confirmed'}" class="badge badge-confirmed">
                                 <span class="dot"></span>Da xac nhan
                             </span>
-                        <span th:if="${b.status != 'Pending' and b.status != 'Confirmed'}" class="badge badge-cancelled">
+                        <span th:if="${b.status != 'Pending' and b.status != 'Paid 70% Deposit' and b.status != 'Confirmed'}" class="badge badge-cancelled">
                                 <span class="dot"></span>Da huy
                             </span>
                     </td>
                     <td>
 
                         <!-- ĐƯỢC HỦY -->
-                        <form th:if="${b.status == 'Pending' and b.travelDate != null and T(java.time.temporal.ChronoUnit).DAYS.between(today, b.travelDate) >= 7}"
+                        <form th:if="${(b.status == 'Pending' or b.status == 'Paid 70% Deposit') and b.travelDate != null and T(java.time.temporal.ChronoUnit).DAYS.between(today, b.travelDate) >= 7}"
                               th:action="@{/booking/cancel/{id}(id=${b.bookingID})}"
                               method="post"
                               onsubmit="return confirm('Ban co chac chan muon huy tour nay?');"
@@ -448,7 +451,7 @@
                         </form>
 
                         <!-- KHÔNG ĐƯỢC HỦY -->
-                        <span th:if="${b.status != 'Pending' or b.travelDate == null or T(java.time.temporal.ChronoUnit).DAYS.between(today, b.travelDate) < 7}"
+                        <span th:if="${(b.status != 'Pending' and b.status != 'Paid 70% Deposit') or b.travelDate == null or T(java.time.temporal.ChronoUnit).DAYS.between(today, b.travelDate) < 7}"
                               class="locked">
                             <i class="fas fa-lock"></i>Khong the huy
                         </span>

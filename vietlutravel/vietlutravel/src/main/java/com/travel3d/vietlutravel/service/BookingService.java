@@ -26,7 +26,7 @@ public class BookingService {
      * Đặt tour mới + gửi mail xác nhận
      */
     @Transactional
-    public Booking bookTour(int tourID, int customerID, int numberOfPeople,
+    public Booking bookTour(int tourID, int customerID, int numberOfPeople, int numberOfChildren,
                             LocalDate travelDate, String specialRequests) {
 
         if (numberOfPeople <= 0) {
@@ -54,7 +54,12 @@ public class BookingService {
         booking.setBookingDate(LocalDate.now());        // ngày đặt = hôm nay
         booking.setTravelDate(travelDate);              // ngày khởi hành do khách chọn
         booking.setNumberOfPeople(numberOfPeople);
-        booking.setTotalPrice(tour.getPrice().doubleValue() * numberOfPeople);
+        booking.setNumberOfChildren(numberOfChildren);
+        
+        double adultPrice = tour.getPrice().doubleValue() * numberOfPeople;
+        double childPrice = tour.getPrice().doubleValue() * 0.75 * numberOfChildren;
+        booking.setTotalPrice(adultPrice + childPrice);
+        
         booking.setStatus("Pending");
         booking.setSpecialRequests(specialRequests);
 
@@ -78,7 +83,9 @@ public class BookingService {
 
         if (booking.getCustomerID() != currentCustomerID) return false;
 
-        if (!"Pending".equals(booking.getStatus())) return false;
+        if (!"Pending".equals(booking.getStatus()) && !"Paid 70% Deposit".equals(booking.getStatus())) {
+            return false;
+        }
 
         // Tính theo travelDate thay vì startDate của tour
         LocalDate departureDate = booking.getTravelDate() != null

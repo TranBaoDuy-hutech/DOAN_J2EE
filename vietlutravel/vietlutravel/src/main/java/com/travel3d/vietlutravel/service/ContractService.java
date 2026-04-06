@@ -113,7 +113,7 @@ public class ContractService {
             String bookingDate   = booking.getBookingDate() != null
                     ? booking.getBookingDate().format(dateFmt) : "N/A";
             String totalPrice    = numFmt.format(booking.getTotalPrice()) + " VNĐ";
-            String numPeople     = booking.getNumberOfPeople() + " người";
+            String numPeople     = booking.getNumberOfPeople() + " người lớn, " + booking.getNumberOfChildren() + " trẻ em";
             String bookingId     = "#" + booking.getBookingID();
 
             // ── Header/footer event ───────────────────────────────
