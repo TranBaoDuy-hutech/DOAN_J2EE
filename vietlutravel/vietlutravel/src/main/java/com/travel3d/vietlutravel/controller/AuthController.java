@@ -61,7 +61,12 @@ public class AuthController {
 
     // ================= LOGIN =================
     @GetMapping("/login")
-    public String loginForm() {
+    public String loginForm(HttpSession session, Model model) {
+        Object errorMessage = session.getAttribute("errorMessage");
+        if (errorMessage != null && !model.containsAttribute("errorMessage")) {
+            model.addAttribute("errorMessage", errorMessage.toString());
+            session.removeAttribute("errorMessage");
+        }
         return "login";
     }
 

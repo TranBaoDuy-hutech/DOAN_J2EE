@@ -1,53 +1,310 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kết Quả Thanh Toán VNPAY - VietluTravel</title>
-    <!-- Tailwind CSS (assuming it's used or standard styles) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+          --cream: #faf7f2;
+          --ink: #1a1612;
+          --sand: #e8e0d4;
+          --gold: #c9a84c;
+          --gold-light: #f0d98a;
+          --green: #2d6a4f;
+          --green-light: #d8f3e8;
+          --red: #9b2335;
+          --red-light: #fce4e4;
+          --muted: #7a6f63;
+        }
+
+        body {
+          font-family: 'DM Sans', sans-serif;
+          background: var(--cream);
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        /* Decorative background pattern */
+        body::before {
+          content: '';
+          position: fixed;
+          inset: 0;
+          background-image:
+            radial-gradient(circle at 15% 15%, rgba(201,168,76,0.12) 0%, transparent 50%),
+            radial-gradient(circle at 85% 85%, rgba(45,106,79,0.08) 0%, transparent 50%),
+            url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .card {
+          background: #fff;
+          border-radius: 20px;
+          max-width: 420px;
+          width: 100%;
+          padding: 0;
+          position: relative;
+          z-index: 1;
+          overflow: hidden;
+          box-shadow:
+            0 0 0 1px var(--sand),
+            0 20px 60px rgba(26,22,18,0.12),
+            0 4px 12px rgba(26,22,18,0.06);
+          animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes rise {
+          from { opacity: 0; transform: translateY(32px) scale(0.97); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Top stripe */
+        .card-stripe {
+          height: 6px;
+          width: 100%;
+        }
+        .success .card-stripe { background: linear-gradient(90deg, var(--green), #52b788, var(--gold)); }
+        .failure .card-stripe { background: linear-gradient(90deg, var(--red), #e07272, #c9a84c); }
+
+        .card-body {
+          padding: 40px 36px 36px;
+          text-align: center;
+        }
+
+        /* Brand */
+        .brand {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 32px;
+          opacity: 0;
+          animation: fadeUp 0.5s 0.15s ease both;
+        }
+        .brand-icon {
+          width: 32px; height: 32px;
+          background: linear-gradient(135deg, var(--gold), var(--gold-light));
+          border-radius: 8px;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .brand-icon svg { width: 18px; height: 18px; color: #fff; }
+        .brand-name {
+          font-family: 'Playfair Display', serif;
+          font-size: 18px;
+          font-weight: 700;
+          color: var(--ink);
+          letter-spacing: -0.3px;
+        }
+
+        /* Status icon */
+        .icon-wrap {
+          width: 80px; height: 80px;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          margin: 0 auto 24px;
+          position: relative;
+          opacity: 0;
+          animation: popIn 0.5s 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        .success .icon-wrap { background: var(--green-light); }
+        .failure .icon-wrap { background: var(--red-light); }
+
+        .icon-wrap::after {
+          content: '';
+          position: absolute;
+          inset: -6px;
+          border-radius: 50%;
+          border: 2px solid transparent;
+        }
+        .success .icon-wrap::after { border-color: rgba(45,106,79,0.15); }
+        .failure .icon-wrap::after { border-color: rgba(155,35,53,0.12); }
+
+        .icon-wrap svg { width: 36px; height: 36px; }
+        .success .icon-wrap svg { color: var(--green); }
+        .failure .icon-wrap svg { color: var(--red); }
+
+        @keyframes popIn {
+          from { opacity: 0; transform: scale(0.5); }
+          to   { opacity: 1; transform: scale(1); }
+        }
+
+        /* Title */
+        h2 {
+          font-family: 'Playfair Display', serif;
+          font-size: 26px;
+          font-weight: 700;
+          color: var(--ink);
+          margin-bottom: 10px;
+          letter-spacing: -0.5px;
+          opacity: 0;
+          animation: fadeUp 0.5s 0.35s ease both;
+        }
+
+        .message {
+          font-size: 15px;
+          color: var(--muted);
+          line-height: 1.6;
+          margin-bottom: 32px;
+          font-weight: 300;
+          opacity: 0;
+          animation: fadeUp 0.5s 0.42s ease both;
+        }
+
+        /* Divider */
+        .divider {
+          display: flex; align-items: center; gap: 12px;
+          margin-bottom: 24px;
+          opacity: 0;
+          animation: fadeUp 0.5s 0.48s ease both;
+        }
+        .divider::before, .divider::after {
+          content: ''; flex: 1; height: 1px; background: var(--sand);
+        }
+        .divider-icon { font-size: 12px; color: var(--gold); }
+
+        /* Buttons */
+        .actions {
+          display: flex; flex-direction: column; gap: 12px;
+          opacity: 0;
+          animation: fadeUp 0.5s 0.54s ease both;
+        }
+
+        .btn {
+          display: block;
+          width: 100%;
+          padding: 14px 20px;
+          border-radius: 12px;
+          font-family: 'DM Sans', sans-serif;
+          font-size: 15px;
+          font-weight: 500;
+          text-decoration: none;
+          transition: all 0.2s ease;
+          cursor: pointer;
+          border: none;
+          letter-spacing: 0.1px;
+        }
+
+        .btn-primary {
+          background: var(--ink);
+          color: #fff;
+          box-shadow: 0 4px 14px rgba(26,22,18,0.2);
+        }
+        .btn-primary:hover {
+          background: #2d2620;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 18px rgba(26,22,18,0.25);
+        }
+
+        .btn-secondary {
+          background: transparent;
+          color: var(--ink);
+          border: 1.5px solid var(--sand);
+        }
+        .btn-secondary:hover {
+          border-color: var(--gold);
+          color: var(--gold);
+          background: rgba(201,168,76,0.04);
+        }
+
+        /* Footer note */
+        .footer-note {
+          margin-top: 28px;
+          font-size: 12px;
+          color: #bbb;
+          opacity: 0;
+          animation: fadeUp 0.5s 0.6s ease both;
+        }
+        .footer-note span { color: var(--gold); font-weight: 500; }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Checkmark draw animation */
+        .check-path {
+          stroke-dasharray: 30;
+          stroke-dashoffset: 30;
+          animation: drawCheck 0.4s 0.5s ease forwards;
+        }
+        @keyframes drawCheck {
+          to { stroke-dashoffset: 0; }
+        }
+
+        /* X draw animation */
+        .cross-path {
+          stroke-dasharray: 20;
+          stroke-dashoffset: 20;
+          animation: drawCross 0.3s ease forwards;
+        }
+        .cross-path:nth-child(2) { animation-delay: 0.3s; }
+        @keyframes drawCross {
+          to { stroke-dashoffset: 0; }
+        }
+    </style>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body>
+<!--
+  Thymeleaf: thêm class "success" hoặc "failure" vào .card dựa trên ${success}
+  th:classappend="${success} ? 'success' : 'failure'"
+-->
+<div class="card success" th:classappend="${success} ? 'success' : 'failure'">
+    <div class="card-stripe"></div>
+    <div class="card-body">
 
-    <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+        <!-- Brand -->
+        <div class="brand">
+            <div class="brand-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
+                </svg>
+            </div>
+            <span class="brand-name">VietluTravel</span>
+        </div>
 
+        <!-- SUCCESS state -->
         <div th:if="${success}">
-            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            <div class="icon-wrap">
+                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path class="check-path" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                 </svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">Thanh Toán Thành Công!</h2>
+            <h2>Thanh Toán Thành Công!</h2>
         </div>
 
+        <!-- FAILURE state -->
         <div th:if="${!success}">
-            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
+            <div class="icon-wrap">
+                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path class="cross-path" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6"/>
+                    <path class="cross-path" stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12"/>
                 </svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">Giao Dịch Thất Bại</h2>
+            <h2>Giao Dịch Thất Bại</h2>
         </div>
 
-        <p class="text-gray-600 mb-6" th:text="${message}"></p>
+        <p class="message" th:text="${message}">Giao dịch của bạn đã được xử lý thành công.</p>
 
-        <div class="space-y-3">
-            <a href="/"
-                class="block w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded transition duration-200">
-                Về Trang Chủ
-            </a>
-            <a href="/booking-history"
-                class="block w-full py-2 px-4 border border-blue-600 text-blue-600 hover:bg-blue-50 rounded transition duration-200">
-                Lịch Sử Đặt Tour
-            </a>
+        <div class="divider">
+            <span class="divider-icon">✦</span>
         </div>
+
+        <div class="actions">
+            <a href="/" class="btn btn-primary">Về Trang Chủ</a>
+            <a href="/booking-history" class="btn btn-secondary">Lịch Sử Đặt Tour</a>
+        </div>
+
+        <p class="footer-note">Hỗ trợ bởi <span>VNPAY</span> · Thanh toán an toàn &amp; bảo mật</p>
     </div>
-
+</div>
 </body>
-
 </html>
